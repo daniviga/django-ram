@@ -1,0 +1,8 @@
+pytz
+Django
+djangorestframework
+django-health-check
+# psycopg2-binary
+paho-mqtt
+# asyncio-mqtt
+# PyYAML
