@@ -1,5 +1,6 @@
 from uuid import uuid4
 from django.db import models
+from django_countries.fields import CountryField
 # from django.core.files.storage import FileSystemStorage
 # from django.dispatch import receiver
 
@@ -21,11 +22,13 @@ class Manufacturer(models.Model):
 
 class Company(models.Model):
     name = models.CharField(max_length=128, unique=True)
-    country = models.CharField(max_length=128, unique=True)
+    country = CountryField()
+
+    class Meta:
+        verbose_name_plural = "Companies"
 
     def __str__(self):
         return self.name
-
 
 
 class Decoder(models.Model):
@@ -49,6 +52,9 @@ class Cab(models.Model):
         null=True, blank=True)
     decoder = models.ForeignKey(
         Decoder, on_delete=models.CASCADE,
+        null=True, blank=True)
+    company = models.ForeignKey(
+        Company, on_delete=models.CASCADE,
         null=True, blank=True)
     epoch = models.CharField(max_length=32, blank=True)
     production_year = models.SmallIntegerField(null=True, blank=True)

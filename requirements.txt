@@ -4,5 +4,5 @@ djangorestframework
 django-health-check
 # psycopg2-binary
 paho-mqtt
-# asyncio-mqtt
-# PyYAML
+asyncio-mqtt
+pySerial

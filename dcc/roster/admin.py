@@ -1,11 +1,11 @@
 from django.contrib import admin
-from roster.models import Cab, Decoder, Manufacturer
+from roster.models import Cab, Decoder, Manufacturer, Company
 
 
 @admin.register(Cab)
 class CabAdmin(admin.ModelAdmin):
     readonly_fields = ('image_thumbnail', 'creation_time', 'updated_time',)
-    list_display = ('identifier', 'manufacturer', 'address')
+    list_display = ('identifier', 'address', 'manufacturer', 'company')
     list_filter = list_display
     search_fields = list_display
 
@@ -15,6 +15,7 @@ class CabAdmin(admin.ModelAdmin):
                        'address',
                        'manufacturer',
                        'decoder',
+                       'company',
                        'epoch',
                        'production_year',
                        'purchase_date',
@@ -30,4 +31,5 @@ class CabAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Decoder)
+admin.site.register(Company)
 admin.site.register(Manufacturer)
