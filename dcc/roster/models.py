@@ -61,7 +61,7 @@ class Cab(models.Model):
     purchase_date = models.DateField(null=True, blank=True)
 
     image = models.ImageField(
-        upload_to='images/',
+        upload_to='media/images/',
         null=True,
         blank=True)
     notes = models.TextField(blank=True)

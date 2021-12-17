@@ -16,8 +16,27 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
+
+from driver import urls as driver_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('dcc/', include(driver_urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# if settings.DEBUG:
+#     from django.views.generic import TemplateView
+#     from rest_framework.schemas import get_schema_view
+# 
+#     urlpatterns += [
+#         path('swagger/', TemplateView.as_view(
+#             template_name='swagger.html',
+#             extra_context={'schema_url': 'openapi-schema'}
+#         ), name='swagger'),
+#         path('openapi', get_schema_view(
+#             title="BITE - A Basic/IoT/Example",
+#             description="BITE API for IoT",
+#             version="1.0.0"
+#         ), name='openapi-schema'),
+#     ]
