@@ -1,17 +1,30 @@
 from django.views import View
-from django.http import HttpResponse
-from driver.serializers import (
-    FunctionSerializer, CabSerializer, InfraSerializer)
+from django.http import HttpResponse, Http404
+from django.utils.decorators import method_decorator
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from dcc.parsers import PlainTextParser
 from driver.connector import Connector
+from driver.serializers import (
+    FunctionSerializer, CabSerializer, InfraSerializer)
+from roster.models import Cab as CabModel
 
 conn = Connector()
 
 
+def addresschecker(f):
+    def addresslookup(request, address, *args):
+        try:
+            CabModel.objects.get(address=address)
+        except CabModel.DoesNotExist:
+            raise Http404
+        return f(request, address, *args)
+    return addresslookup
+
+
+@method_decorator(addresschecker, name="put")
 class SendCommand(APIView):
     parser_classes = [PlainTextParser]
 
@@ -22,6 +35,7 @@ class SendCommand(APIView):
                         status=status.HTTP_202_ACCEPTED)
 
 
+@method_decorator(addresschecker, name="put")
 class Function(APIView):
     def put(self, request, address):
         serializer = FunctionSerializer(data=request.data)
@@ -34,6 +48,7 @@ class Function(APIView):
                         status=status.HTTP_400_BAD_REQUEST)
 
 
+@method_decorator(addresschecker, name="put")
 class Cab(APIView):
     def put(self, request, address):
         serializer = CabSerializer(data=request.data)
