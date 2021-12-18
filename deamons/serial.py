@@ -16,13 +16,14 @@ async def mqtt_broker(ser):
         async with client.unfiltered_messages() as messages:
             async for message in messages:
                 print(message.payload.decode())
-                ser.write(message.payload)
+                # ser.write(message.payload)
 
 
 def main():
     client = mqtt.Client()
-    ser = serial.Serial('/dev/pts/7')
-    ser.baudrate = 9600
+    # ser = serial.Serial('/dev/pts/7')
+    # ser.baudrate = 9600
+    ser = None  # remove me
     while True:
         try:
             client.connect(MQTT_HOST, MQTT_PORT)
@@ -34,7 +35,7 @@ def main():
     logging.info('Broker subscribed')
     client.disconnect()
     asyncio.run(mqtt_broker(ser))
-    ser.close()
+    # ser.close()
 
 
 if __name__ == "__main__":

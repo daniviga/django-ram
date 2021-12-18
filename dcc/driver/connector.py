@@ -1,8 +1,17 @@
+import paho.mqtt.client as mqtt
+
+
 class Connector:
+    MQTT_HOST = "127.0.0.1"
+    MQTT_PORT = 1883
 
     @classmethod
     def __mqtt_pub(self, message):
         # to be encoded
+        client = mqtt.Client()
+        client.connect(self.MQTT_HOST, self.MQTT_PORT)
+        client.publish("dcc/commands", payload=message)
+        client.disconnect()
         print(message)
         return True
 
