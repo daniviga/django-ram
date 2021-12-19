@@ -1,0 +1,9 @@
+[submodule "arduino/CommandStation-EX"]
+	path = arduino/CommandStation-EX
+	url = https://github.com/DCC-EX/CommandStation-EX.git
+[submodule "arduino/dcc-ex.github.io"]
+	path = arduino/dcc-ex.github.io
+	url = https://github.com/DCC-EX/dcc-ex.github.io
+[submodule "arduino/WebThrottle-EX"]
+	path = arduino/WebThrottle-EX
+	url = https://github.com/DCC-EX/WebThrottle-EX
