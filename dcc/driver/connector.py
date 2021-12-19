@@ -15,7 +15,7 @@ class Connector:
         print(message)
         return True
 
-    def passthrough(self, address, data):
+    def passthrough(self, data):
         self.__mqtt_pub(data)
 
     def ops(self, address, data, function=False):

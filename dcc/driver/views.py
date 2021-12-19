@@ -24,13 +24,12 @@ def addresschecker(f):
     return addresslookup
 
 
-@method_decorator(addresschecker, name="put")
 class SendCommand(APIView):
     parser_classes = [PlainTextParser]
 
-    def put(self, request, address):
+    def put(self, request):
         data = request.data
-        conn.passthrough(address, data)
+        conn.passthrough(data)
         return Response(data,
                         status=status.HTTP_202_ACCEPTED)
 
