@@ -1,5 +1,5 @@
 from django.contrib import admin
-from roster.models import Cab, Decoder, Manufacturer, Company
+from roster.models import Cab
 
 
 @admin.register(Cab)
@@ -28,8 +28,3 @@ class CabAdmin(admin.ModelAdmin):
             'fields': ('creation_time', 'updated_time',)
         }),
     )
-
-
-admin.site.register(Decoder)
-admin.site.register(Company)
-admin.site.register(Manufacturer)

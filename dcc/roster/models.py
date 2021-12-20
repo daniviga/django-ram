@@ -1,44 +1,15 @@
 from uuid import uuid4
 from django.db import models
-from django_countries.fields import CountryField
 # from django.core.files.storage import FileSystemStorage
 # from django.dispatch import receiver
 
 from dcc.utils import get_image_preview
-
+from metadata.models import Manufacturer, Decoder, Company
 
 # class OverwriteMixin(FileSystemStorage):
 #     def get_available_name(self, name, max_length):
 #         self.delete(name)
 #         return name
-
-
-class Manufacturer(models.Model):
-    name = models.CharField(max_length=128, unique=True)
-
-    def __str__(self):
-        return self.name
-
-
-class Company(models.Model):
-    name = models.CharField(max_length=128, unique=True)
-    country = CountryField()
-
-    class Meta:
-        verbose_name_plural = "Companies"
-
-    def __str__(self):
-        return self.name
-
-
-class Decoder(models.Model):
-    name = models.CharField(max_length=128, unique=True)
-    manufacturer = models.ForeignKey(
-        Manufacturer,
-        on_delete=models.CASCADE)
-
-    def __str__(self):
-        return "{0} - {1}".format(self.manufacturer, self.name)
 
 
 class Cab(models.Model):
