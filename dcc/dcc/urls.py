@@ -18,10 +18,12 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
+from roster import urls as roster_urls
 from driver import urls as driver_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('roster/', include(roster_urls)),
     path('dcc/', include(driver_urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
