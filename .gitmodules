@@ -7,3 +7,9 @@
 [submodule "arduino/WebThrottle-EX"]
 	path = arduino/WebThrottle-EX
 	url = https://github.com/DCC-EX/WebThrottle-EX
+[submodule "arduino/vim-arduino"]
+	path = arduino/vim-arduino
+	url = https://github.com/stevearc/vim-arduino
+[submodule "arduino/arduino-cli"]
+	path = arduino/arduino-cli
+	url = https://github.com/arduino/arduino-cli.git
