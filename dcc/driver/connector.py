@@ -1,22 +1,27 @@
-import paho.mqtt.client as mqtt
+import socket
+
+from driver.models import DriverConfiguration
 
 
 class Connector:
-    MQTT_HOST = "127.0.0.1"
-    MQTT_PORT = 1883
 
-    @classmethod
-    def __mqtt_pub(self, message):
+    def __init__(self):
+        config = DriverConfiguration.get_solo()
+        self.remote_host = config.remote_host
+        self.remote_port = config.remote_port
+
+    def __send_data(self, message):
         # to be encoded
-        client = mqtt.Client()
-        client.connect(self.MQTT_HOST, self.MQTT_PORT)
-        client.publish("dcc/commands", payload=message)
-        client.disconnect()
-        print(message)
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            sock.connect((self.remote_host, self.remote_port))
+            sock.sendall(message)
+            resp = sock.recv(1024)
+
+        print(resp)
         return True
 
     def passthrough(self, data):
-        self.__mqtt_pub(data)
+        self.__send_data(data)
 
     def ops(self, address, data, function=False):
         if function:
@@ -25,7 +30,7 @@ class Connector:
         else:
             message = "<t 1 {0} {1} {2}>".format(address, data['speed'],
                                                  data['direction'])
-        self.__mqtt_pub(message)
+        self.__send_data(message)
         return True
 
     def infra(self, data):
@@ -36,9 +41,9 @@ class Connector:
             track = ""
 
         if power:
-            self.__mqtt_pub('<1{}>'.format(track))
+            self.__send_data('<1{}>'.format(track))
         else:
-            self.__mqtt_pub('<0{}>'.format(track))
+            self.__send_data('<0{}>'.format(track))
 
     def emergency(self):
-        self.__mqtt_pub('<!>')
+        self.__send_data('<!>')
