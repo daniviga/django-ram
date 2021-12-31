@@ -1,8 +1,9 @@
 pytz
 Django
 djangorestframework
+django-solo
 django-health-check
 # psycopg2-binary
-paho-mqtt
-asyncio-mqtt
+# paho-mqtt
+# asyncio-mqtt
 pySerial
