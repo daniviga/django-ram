@@ -8,11 +8,8 @@ class CabSerializer(serializers.ModelSerializer):
     manufacturer = ManufacturerSerializer()
     decoder = DecoderSerializer()
     company = CompanySerializer()
-    # manufacturer = serializers.StringRelatedField()
-    # decoder = serializers.StringRelatedField()
-    # company = serializers.StringRelatedField()
 
     class Meta:
         model = Cab
         fields = "__all__"
-        read_only_fields = ("identifier", "creation_time", "updated_time")
+        read_only_fields = ("creation_time", "updated_time")

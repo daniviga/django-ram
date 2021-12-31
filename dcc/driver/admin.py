@@ -1,3 +1,6 @@
 from django.contrib import admin
+from solo.admin import SingletonModelAdmin
 
-# Register your models here.
+from driver.models import DriverConfiguration
+
+admin.site.register(DriverConfiguration, SingletonModelAdmin)
