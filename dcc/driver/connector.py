@@ -6,14 +6,12 @@ from driver.models import DriverConfiguration
 class Connector:
 
     def __init__(self):
-        config = DriverConfiguration.get_solo()
-        self.remote_host = config.remote_host
-        self.remote_port = config.remote_port
+        self.config = DriverConfiguration.get_solo()
 
     def __send_data(self, message):
         # to be encoded
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-            sock.connect((self.remote_host, self.remote_port))
+            sock.connect((self.config.remote_host, self.config.remote_port))
             sock.sendall(message)
             resp = sock.recv(1024)
 
