@@ -32,7 +32,9 @@ class SerialDaemon:
             response = line = self.ser.read()
             while line.strip():
                 line = self.ser.read_until()
-                if not line.decode().startswith("<*"):
+                if line.decode().startswith("<*"):
+                    logging.debug("Serial debug: {}".format(line))
+                else:
                     response += line
             logging.info("Send: {}".format(response))
             writer.write(response)
