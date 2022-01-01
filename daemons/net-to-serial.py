@@ -18,23 +18,26 @@ class SerialDaemon:
             pass
 
     async def handle_echo(self, reader, writer):
-        data = await reader.read(100)
-        addr = writer.get_extra_info('peername')
+        while 1:  # keep connection to client open
+            data = await reader.read(100)
+            if not data:  # client has disconnected
+                break
 
-        logging.info("Received {} from {}".format(data, addr[0]))
+            addr = writer.get_extra_info('peername')
+            logging.info("Received {} from {}".format(data, addr[0]))
 
-        self.ser.write(data)
-        response = line = self.ser.read()
-        while line.strip():
-            line = self.ser.read_until()
-            if not line.decode().startswith("<*"):
-                response += line
-        logging.info("Send: {}".format(response))
-        writer.write(response)
-        await writer.drain()
+            self.ser.write(data)
+            response = line = self.ser.read()
+            while line.strip():
+                line = self.ser.read_until()
+                if not line.decode().startswith("<*"):
+                    response += line
+            logging.info("Send: {}".format(response))
+            writer.write(response)
+            await writer.drain()
 
-        logging.info("Close the connection")
         writer.close()
+        await writer.wait_closed()
 
     async def return_board(self):
         self.ser.write(b'<s>')
