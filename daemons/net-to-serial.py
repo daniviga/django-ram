@@ -3,6 +3,8 @@ import serial
 import asyncio
 import configparser
 
+from pathlib import Path
+
 
 class SerialDaemon:
     def __init__(self, config):
@@ -47,7 +49,8 @@ class SerialDaemon:
 
 async def main():
     config = configparser.ConfigParser()
-    config.read("config.ini")
+    config.read(
+        Path(__file__).resolve().parent / "config.ini")  # mimick os.path.join
     logging.basicConfig(level=config["Daemon"]["LogLevel"].upper())
 
     sd = SerialDaemon(config)
