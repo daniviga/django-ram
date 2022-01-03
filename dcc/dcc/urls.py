@@ -22,6 +22,7 @@ from roster import urls as roster_urls
 from driver import urls as driver_urls
 
 urlpatterns = [
+    path('ht/', include('health_check.urls')),
     path('admin/', admin.site.urls),
     path('roster/', include(roster_urls)),
     path('dcc/', include(driver_urls)),
