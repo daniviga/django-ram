@@ -13,5 +13,6 @@ class CabSerializer(serializers.Serializer):
 
 class InfraSerializer(serializers.Serializer):
     power = serializers.BooleanField(required=True)
-    track = serializers.ChoiceField(choices=('main', 'prog', 'join'),
-                                    required=False)
+    track = serializers.ChoiceField(
+        choices=('main', 'prog', 'join', 'MAIN', 'PROG', 'JOIN'),
+        required=False)

@@ -1,7 +1,6 @@
-from django.views import View
-from django.http import HttpResponse, Http404
+from django.http import Http404
 from django.utils.decorators import method_decorator
-from rest_framework import status
+from rest_framework import status, serializers
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
@@ -10,8 +9,6 @@ from driver.connector import Connector
 from driver.serializers import (
     FunctionSerializer, CabSerializer, InfraSerializer)
 from roster.models import Cab as CabModel
-
-conn = Connector()
 
 
 def addresschecker(f):
@@ -29,8 +26,15 @@ class SendCommand(APIView):
 
     def put(self, request):
         data = request.data
-        conn.passthrough(data)
-        return Response(data,
+        if not data:
+            raise serializers.ValidationError({
+                "error": "a string is expected"})
+        cmd = data.decode().strip()
+        if not (cmd.startswith("<") and cmd.endswith(">")):
+            raise serializers.ValidationError({
+                "error": "please provide a valid command"})
+        response = Connector().passthrough(cmd)
+        return Response({"response": response.decode()},
                         status=status.HTTP_202_ACCEPTED)
 
 
@@ -39,7 +43,7 @@ class Function(APIView):
     def put(self, request, address):
         serializer = FunctionSerializer(data=request.data)
         if serializer.is_valid():
-            conn.ops(address, serializer.data, function=True)
+            Connector().ops(address, serializer.data, function=True)
             return Response(serializer.data,
                             status=status.HTTP_202_ACCEPTED)
 
@@ -52,7 +56,7 @@ class Cab(APIView):
     def put(self, request, address):
         serializer = CabSerializer(data=request.data)
         if serializer.is_valid():
-            conn.ops(address, serializer.data)
+            Connector().ops(address, serializer.data)
             return Response(serializer.data,
                             status=status.HTTP_202_ACCEPTED)
 
@@ -64,7 +68,7 @@ class Infra(APIView):
     def put(self, request):
         serializer = InfraSerializer(data=request.data)
         if serializer.is_valid():
-            conn.infra(serializer.data)
+            Connector().infra(serializer.data)
             return Response(serializer.data,
                             status=status.HTTP_202_ACCEPTED)
 
@@ -72,11 +76,13 @@ class Infra(APIView):
                         status=status.HTTP_400_BAD_REQUEST)
 
 
-class Emergency(View):
+class Emergency(APIView):
     def put(self, request):
-        conn.emergency()
-        return HttpResponse()
+        Connector().emergency()
+        return Response({"response": "emergency stop"},
+                        status=status.HTTP_202_ACCEPTED)
 
     def get(self, request):
-        conn.emergency()
-        return HttpResponse()
+        Connector().emergency()
+        return Response({"response": "emergency stop"},
+                        status=status.HTTP_202_ACCEPTED)
