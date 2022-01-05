@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import re
 import time
 import logging
 import serial
@@ -61,11 +62,12 @@ class SerialDaemon:
 
     async def return_board(self):
         """Return the board signature"""
-        self.__read_serial()  # drain the serial buffer on startup
+        line = ""
+        # drain the serial until we are ready to go
         self.__write_serial(b"<s>")
-        time.sleep(0.5)
-        board = self.__read_serial().decode().split("\n")[1]  # get second line
-
+        while "DCC-EX" not in line:
+            line = self.__read_serial().decode()
+        board = re.findall(r"<iDCC-EX.*>", line)[0]
         return(board)
 
 
@@ -88,8 +90,8 @@ async def main():
             config["Serial"]["Baudrate"],
             config["Serial"]["Timeout"]))
     logging.warning("Initializing board")
-    logging.warning(
-        await sd.return_board())
+    logging.warning("Board {} ready".format(
+        await sd.return_board()))
 
     async with server:
         await server.serve_forever()
