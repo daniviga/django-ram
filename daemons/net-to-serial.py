@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import time
 import logging
 import serial
 import asyncio
@@ -20,7 +21,27 @@ class SerialDaemon:
         except AttributeError:
             pass
 
+    def __read_serial(self):
+        """Serial reader wrapper"""
+        response = b""
+        while True:
+            line = self.ser.read_until()
+            if not line.strip():  # empty line
+                break
+            if line.decode().startswith("<*"):
+                logging.debug("Serial debug: {}".format(line))
+            else:
+                response += line
+        logging.debug("Serial read: {}".format(response))
+
+        return response
+
+    def __write_serial(self, data):
+        """Serial writer wrapper"""
+        self.ser.write(data)
+
     async def handle_echo(self, reader, writer):
+        """Process a request from socket and return the response"""
         while 1:  # keep connection to client open
             data = await reader.read(100)
             if not data:  # client has disconnected
@@ -29,25 +50,23 @@ class SerialDaemon:
             addr = writer.get_extra_info('peername')
             logging.info("Received {} from {}".format(data, addr[0]))
 
-            self.ser.write(data)
-            response = line = self.ser.read()
-            while line.strip():
-                line = self.ser.read_until()
-                if line.decode().startswith("<*"):
-                    logging.debug("Serial debug: {}".format(line))
-                else:
-                    response += line
-            logging.info("Send: {}".format(response))
+            self.__write_serial(data)
+            response = self.__read_serial()
             writer.write(response)
             await writer.drain()
+            logging.info("Sent: {}".format(response))
 
         writer.close()
         await writer.wait_closed()
 
     async def return_board(self):
-        self.ser.write(b'<s>')
-        self.ser.read_until()  # we need the second line
-        return(self.ser.read_until().decode().strip('\n'))
+        """Return the board signature"""
+        self.__read_serial()  # drain the serial buffer on startup
+        self.__write_serial(b"<s>")
+        time.sleep(0.5)
+        board = self.__read_serial().decode().split("\n")[1]  # get second line
+
+        return(board)
 
 
 async def main():
@@ -68,6 +87,7 @@ async def main():
             config["Serial"]["Port"],
             config["Serial"]["Baudrate"],
             config["Serial"]["Timeout"]))
+    logging.warning("Initializing board")
     logging.warning(
         await sd.return_board())
 
