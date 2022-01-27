@@ -1,7 +1,9 @@
 pytz
+pillow
 Django
 djangorestframework
 django-solo
+django-countries
 django-health-check
 # psycopg2-binary
 # paho-mqtt
