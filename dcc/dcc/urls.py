@@ -24,8 +24,8 @@ from driver import urls as driver_urls
 urlpatterns = [
     path('ht/', include('health_check.urls')),
     path('admin/', admin.site.urls),
-    path('roster/', include(roster_urls)),
-    path('dcc/', include(driver_urls)),
+    path('api/v1/roster/', include(roster_urls)),
+    path('api/v1/dcc/', include(driver_urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # if settings.DEBUG:

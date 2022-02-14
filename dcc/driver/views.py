@@ -12,6 +12,9 @@ from roster.models import Cab as CabModel
 
 
 def addresschecker(f):
+    """
+    Check if DCC address does exist in the database
+    """
     def addresslookup(request, address, *args):
         try:
             CabModel.objects.get(address=address)
@@ -21,7 +24,22 @@ def addresschecker(f):
     return addresslookup
 
 
+class Test(APIView):
+    """
+    Send a test <s> command
+    """
+    parser_classes = [PlainTextParser]
+
+    def get(self, request):
+        response = Connector().passthrough("<s>")
+        return Response({"response": response.decode()},
+                        status=status.HTTP_202_ACCEPTED)
+
+
 class SendCommand(APIView):
+    """
+    Command passthrough
+    """
     parser_classes = [PlainTextParser]
 
     def put(self, request):
@@ -40,6 +58,9 @@ class SendCommand(APIView):
 
 @method_decorator(addresschecker, name="put")
 class Function(APIView):
+    """
+    Send "Function" commands to a valid DCC address
+    """
     def put(self, request, address):
         serializer = FunctionSerializer(data=request.data)
         if serializer.is_valid():
@@ -53,6 +74,9 @@ class Function(APIView):
 
 @method_decorator(addresschecker, name="put")
 class Cab(APIView):
+    """
+    Send "Cab" commands to a valid DCC address
+    """
     def put(self, request, address):
         serializer = CabSerializer(data=request.data)
         if serializer.is_valid():
@@ -65,6 +89,9 @@ class Cab(APIView):
 
 
 class Infra(APIView):
+    """
+    Send "Infra" commands to a valid DCC address
+    """
     def put(self, request):
         serializer = InfraSerializer(data=request.data)
         if serializer.is_valid():
@@ -77,6 +104,9 @@ class Infra(APIView):
 
 
 class Emergency(APIView):
+    """
+    Send an "Emergency" stop, no matter the HTTP method used
+    """
     def put(self, request):
         Connector().emergency()
         return Response({"response": "emergency stop"},
