@@ -1,9 +1,9 @@
 from django.contrib import admin
-from roster.models import Cab
+from roster.models import RollingStock
 
 
-@admin.register(Cab)
-class CabAdmin(admin.ModelAdmin):
+@admin.register(RollingStock)
+class RollingStockAdmin(admin.ModelAdmin):
     readonly_fields = ('image_thumbnail', 'creation_time', 'updated_time',)
     list_display = ('identifier', 'address', 'manufacturer', 'company')
     list_filter = list_display
@@ -12,6 +12,7 @@ class CabAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {
             'fields': ('identifier',
+                       'tags',
                        'address',
                        'manufacturer',
                        'decoder',

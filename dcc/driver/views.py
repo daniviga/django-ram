@@ -8,7 +8,7 @@ from dcc.parsers import PlainTextParser
 from driver.connector import Connector
 from driver.serializers import (
     FunctionSerializer, CabSerializer, InfraSerializer)
-from roster.models import Cab as CabModel
+from roster.models import RollingStock
 
 
 def addresschecker(f):
@@ -17,8 +17,8 @@ def addresschecker(f):
     """
     def addresslookup(request, address, *args):
         try:
-            CabModel.objects.get(address=address)
-        except CabModel.DoesNotExist:
+            RollingStock.objects.get(address=address)
+        except RollingStock.DoesNotExist:
             raise Http404
         return f(request, address, *args)
     return addresslookup

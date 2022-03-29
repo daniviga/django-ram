@@ -4,7 +4,7 @@ from django.db import models
 # from django.dispatch import receiver
 
 from dcc.utils import get_image_preview
-from metadata.models import Manufacturer, Decoder, Company
+from metadata.models import Manufacturer, Decoder, Company, Tag
 
 # class OverwriteMixin(FileSystemStorage):
 #     def get_available_name(self, name, max_length):
@@ -12,12 +12,16 @@ from metadata.models import Manufacturer, Decoder, Company
 #         return name
 
 
-class Cab(models.Model):
+class RollingStock(models.Model):
     uuid = models.UUIDField(
         primary_key=True, default=uuid4,
         editable=False)
     identifier = models.CharField(max_length=128, unique=False)
-    address = models.SmallIntegerField(default=3)
+    tags = models.ManyToManyField(
+        Tag,
+        related_name='rolling_stock',
+        blank=True)
+    address = models.SmallIntegerField(default=3, null=True, blank=True)
     manufacturer = models.ForeignKey(
         Manufacturer, on_delete=models.CASCADE,
         null=True, blank=True)
@@ -42,6 +46,7 @@ class Cab(models.Model):
 
     class Meta:
         ordering = ['address', 'identifier']
+        verbose_name_plural = "Rolling stock"
 
     def __str__(self):
         return "{0} {1}".format(self.manufacturer, self.identifier)
