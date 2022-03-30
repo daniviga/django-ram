@@ -16,9 +16,7 @@ def addresschecker(f):
     Check if DCC address does exist in the database
     """
     def addresslookup(request, address, *args):
-        try:
-            RollingStock.objects.get(address=address)
-        except RollingStock.DoesNotExist:
+        if not RollingStock.objects.filter(address=address):
             raise Http404
         return f(request, address, *args)
     return addresslookup

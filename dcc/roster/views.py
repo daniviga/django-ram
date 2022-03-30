@@ -15,7 +15,7 @@ class RosterGet(RetrieveAPIView):
     lookup_field = 'uuid'
 
 
-class RosterAddress(RetrieveAPIView):
+class RosterAddress(ListAPIView):
     queryset = RollingStock.objects.all()
     serializer_class = RollingStockSerializer
     lookup_field = 'address'

@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from django.dispatch.dispatcher import receiver
 from django_countries.fields import CountryField
 
@@ -81,3 +82,15 @@ class Tag(models.Model):
 @receiver(models.signals.pre_save, sender=Tag)
 def tag_pre_save(sender, instance, **kwargs):
     instance.slug = slugify(instance.name)
+
+
+class RollingStockType(models.Model):
+    type = models.CharField(max_length=64)
+    category = models.CharField(
+        max_length=64, choices=settings.ROLLING_STOCK_TYPES)
+
+    class Meta(object):
+        unique_together = ('category', 'type')
+
+    def __str__(self):
+        return "{0}".format(self.type)
