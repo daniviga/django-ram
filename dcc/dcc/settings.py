@@ -43,10 +43,12 @@ INSTALLED_APPS = [
     'django_countries',
     'solo',
     'rest_framework',
+    'adminsortable2',
     'dcc',
     'driver',
     'metadata',
     'roster',
+    'consist',
 ]
 
 MIDDLEWARE = [

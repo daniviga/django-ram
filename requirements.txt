@@ -5,6 +5,7 @@ djangorestframework
 django-solo
 django-countries
 django-health-check
+django-admin-sortable2
 # psycopg2-binary
 # paho-mqtt
 # asyncio-mqtt

@@ -1,6 +1,6 @@
 from django.contrib import admin
 from roster.models import (
-    RollingStock, RollingStockImage, RollingStockDocument, Engine, Car,
+    RollingStockImage, RollingStockDocument, Engine, Car,
     Equipment, Other)
 
 

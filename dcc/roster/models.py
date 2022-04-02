@@ -37,9 +37,7 @@ class RollingStock(models.Model):
     epoch = models.CharField(max_length=32, blank=True)
     production_year = models.SmallIntegerField(null=True, blank=True)
     purchase_date = models.DateField(null=True, blank=True)
-
     notes = models.TextField(blank=True)
-
     creation_time = models.DateTimeField(auto_now_add=True)
     updated_time = models.DateTimeField(auto_now=True)
 
