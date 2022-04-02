@@ -4,5 +4,5 @@
 
 ```bash
 $ podman build -t dcc/net-to-serial:sim . 
-$ podman run --init --cpu 0.1 -d -p 2560:2560 dcc/net-to-serial:sim
+$ podman run --init --cpus 0.1 -d -p 2560:2560 dcc/net-to-serial:sim
 ```
