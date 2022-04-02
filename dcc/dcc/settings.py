@@ -137,7 +137,21 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+COUNTRIES_OVERRIDE = {
+    'ZZ': "Freelance",
+}
+
+DECODER_INTERFACES = [
+        (1, "NEM651"),
+        (2, "NEM652"),
+        (3, "PluX"),
+        (4, "21MTC"),
+        (5, "Next18/Next18S")
+]
+
 ROLLING_STOCK_TYPES = [
-    ("engine", "Engine"), ("car", "Car"),
-    ("equipment", "Equipment"), ("other", "Other")
+    ("engine", "Engine"),
+    ("car", "Car"),
+    ("equipment", "Equipment"),
+    ("other", "Other")
 ]

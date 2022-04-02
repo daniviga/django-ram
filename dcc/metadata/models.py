@@ -8,6 +8,7 @@ from dcc.utils import get_image_preview, slugify
 
 class Manufacturer(models.Model):
     name = models.CharField(max_length=128, unique=True)
+    website = models.URLField(blank=True)
     logo = models.ImageField(
         upload_to='images/',
         null=True,
@@ -22,7 +23,8 @@ class Manufacturer(models.Model):
 
 
 class Company(models.Model):
-    name = models.CharField(max_length=128, unique=True)
+    name = models.CharField(max_length=64, unique=True)
+    extended_name = models.CharField(max_length=128, blank=True)
     country = CountryField()
     logo = models.ImageField(
         upload_to='images/',
@@ -41,20 +43,13 @@ class Company(models.Model):
 
 
 class Decoder(models.Model):
-    class Interface(models.IntegerChoices):
-        NEM651 = 1, "NEM651"
-        NEM652 = 2, "NEM652"
-        NEM658 = 3, "PluX"
-        NEM660 = 4, "21MTC"
-        NEM662 = 5, "Next18/Next18S"
-
     name = models.CharField(max_length=128, unique=True)
     manufacturer = models.ForeignKey(
         Manufacturer,
         on_delete=models.CASCADE)
     version = models.CharField(max_length=64, blank=True)
     interface = models.PositiveSmallIntegerField(
-        choices=Interface.choices,
+        choices=settings.DECODER_INTERFACES,
         null=True,
         blank=True
     )
@@ -69,6 +64,15 @@ class Decoder(models.Model):
     def image_thumbnail(self):
         return get_image_preview(self.image.url)
     image_thumbnail.short_description = "Preview"
+
+
+class Scale(models.Model):
+    scale = models.CharField(max_length=32, unique=True)
+    ratio = models.CharField(max_length=16, blank=True)
+    gauge = models.CharField(max_length=16, blank=True)
+
+    def __str__(self):
+        return str(self.scale)
 
 
 class Tag(models.Model):

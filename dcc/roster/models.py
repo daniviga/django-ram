@@ -1,12 +1,13 @@
 import os
 from uuid import uuid4
 from django.db import models
+from django.urls import reverse
 # from django.core.files.storage import FileSystemStorage
 # from django.dispatch import receiver
 
 from dcc.utils import get_image_preview
 from metadata.models import (
-    Manufacturer, Decoder, Company, Tag, RollingStockType)
+    Scale, Manufacturer, Decoder, Company, Tag, RollingStockType)
 
 # class OverwriteMixin(FileSystemStorage):
 #     def get_available_name(self, name, max_length):
@@ -14,67 +15,66 @@ from metadata.models import (
 #         return name
 
 
-class RollingStock(models.Model):
-    uuid = models.UUIDField(
-        primary_key=True, default=uuid4,
-        editable=False)
+class RollingClass(models.Model):
     identifier = models.CharField(max_length=128, unique=False)
-    tags = models.ManyToManyField(
-        Tag,
-        related_name='rolling_stock',
-        blank=True)
-    address = models.SmallIntegerField(default=None, null=True, blank=True)
-    manufacturer = models.ForeignKey(
-        Manufacturer, on_delete=models.CASCADE,
-        null=True, blank=True)
-    sku = models.CharField(max_length=32, blank=True)
-    decoder = models.ForeignKey(
-        Decoder, on_delete=models.CASCADE,
+    type = models.ForeignKey(
+        RollingStockType, on_delete=models.CASCADE,
         null=True, blank=True)
     company = models.ForeignKey(
         Company, on_delete=models.CASCADE,
         null=True, blank=True)
-    epoch = models.CharField(max_length=32, blank=True)
+
+    class Meta:
+        ordering = ['company', 'identifier']
+        verbose_name = "Class"
+        verbose_name_plural = "Classes"
+
+    def __str__(self):
+        return "{0} {1}".format(self.company, self.identifier)
+
+
+class RollingStock(models.Model):
+    uuid = models.UUIDField(
+        primary_key=True, default=uuid4,
+        editable=False)
+    rolling_class = models.ForeignKey(
+        RollingClass, on_delete=models.CASCADE,
+        null=False, blank=False,
+        verbose_name="Class")
+    road_number = models.CharField(max_length=128, unique=False)
+    manufacturer = models.ForeignKey(
+        Manufacturer, on_delete=models.CASCADE,
+        null=True, blank=True)
+    scale = models.ForeignKey(
+        Scale, on_delete=models.CASCADE)
+    sku = models.CharField(max_length=32, blank=True)
+    decoder = models.ForeignKey(
+        Decoder, on_delete=models.CASCADE,
+        null=True, blank=True)
+    address = models.SmallIntegerField(default=None, null=True, blank=True)
+    era = models.CharField(max_length=32, blank=True)
     production_year = models.SmallIntegerField(null=True, blank=True)
     purchase_date = models.DateField(null=True, blank=True)
     notes = models.TextField(blank=True)
+    tags = models.ManyToManyField(
+        Tag,
+        related_name='rolling_stock',
+        blank=True)
     creation_time = models.DateTimeField(auto_now_add=True)
     updated_time = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ['address', 'identifier']
+        ordering = ['rolling_class', 'road_number']
         verbose_name_plural = "Rolling stock"
 
     def __str__(self):
-        return "{0} {1}".format(self.manufacturer, self.identifier)
+        return "{0} {1}".format(self.rolling_class, self.road_number)
 
+    def country(self):
+        return str(self.rolling_class.company.country)
 
-class Engine(RollingStock):
-    type = models.ForeignKey(
-        RollingStockType, on_delete=models.CASCADE,
-        limit_choices_to={'category': 'engine'},
-        null=True, blank=True)
-
-
-class Car(RollingStock):
-    type = models.ForeignKey(
-        RollingStockType, on_delete=models.CASCADE,
-        limit_choices_to={'category': 'car'},
-        null=True, blank=True)
-
-
-class Equipment(RollingStock):
-    type = models.ForeignKey(
-        RollingStockType, on_delete=models.CASCADE,
-        limit_choices_to={'category': 'equipment'},
-        null=True, blank=True)
-
-
-class Other(RollingStock):
-    type = models.ForeignKey(
-        RollingStockType, on_delete=models.CASCADE,
-        limit_choices_to={'category': 'other'},
-        null=True, blank=True)
+    def company(self):
+        return str(self.rolling_class.company)
 
 
 class RollingStockDocument(models.Model):

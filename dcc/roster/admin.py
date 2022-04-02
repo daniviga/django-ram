@@ -1,7 +1,13 @@
 from django.contrib import admin
 from roster.models import (
-    RollingStockImage, RollingStockDocument, Engine, Car,
-    Equipment, Other)
+    RollingClass, RollingStock, RollingStockImage, RollingStockDocument)
+
+
+@admin.register(RollingClass)
+class RollingClass(admin.ModelAdmin):
+    list_display = ('__str__', 'type', 'company')
+    list_filter = ('type', 'company')
+    search_fields = list_display
 
 
 class RollingStockDocInline(admin.TabularInline):
@@ -17,50 +23,32 @@ class RollingStockImageInline(admin.TabularInline):
     readonly_fields = ('image_thumbnail',)
 
 
+@admin.register(RollingStock)
 class RollingStockAdmin(admin.ModelAdmin):
     inlines = (RollingStockImageInline, RollingStockDocInline)
-    readonly_fields = ('creation_time', 'updated_time',)
-    list_display = ('identifier', 'manufacturer', 'sku', 'company')
-    list_filter = list_display
+    readonly_fields = ('creation_time', 'updated_time')
+    list_display = (
+        '__str__', 'manufacturer', 'scale', 'sku', 'company', 'country')
+    list_filter = ('manufacturer', 'scale')
     search_fields = list_display
 
     fieldsets = (
         (None, {
-            'fields': ('identifier',
-                       'type',
-                       'tags',
+            'fields': ('rolling_class',
+                       'road_number',
                        'manufacturer',
+                       'scale',
                        'sku',
                        'decoder',
                        'address',
-                       'company',
-                       'epoch',
+                       'era',
                        'production_year',
                        'purchase_date',
-                       'notes')
+                       'notes',
+                       'tags')
         }),
         ('Audit', {
             'classes': ('collapse',),
             'fields': ('creation_time', 'updated_time',)
         }),
     )
-
-
-@admin.register(Engine)
-class Engine(RollingStockAdmin):
-    list_display = ('identifier', 'address', 'manufacturer', 'sku', 'company')
-
-
-@admin.register(Car)
-class Car(RollingStockAdmin):
-    pass
-
-
-@admin.register(Equipment)
-class Equipment(RollingStockAdmin):
-    pass
-
-
-@admin.register(Other)
-class Other(RollingStockAdmin):
-    pass

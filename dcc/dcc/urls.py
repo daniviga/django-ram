@@ -21,6 +21,8 @@ from django.urls import include, path
 from roster import urls as roster_urls
 from driver import urls as driver_urls
 
+admin.site.site_header = "Trains assets manager"
+
 urlpatterns = [
     path('ht/', include('health_check.urls')),
     path('admin/', admin.site.urls),
@@ -31,7 +33,7 @@ urlpatterns = [
 # if settings.DEBUG:
 #     from django.views.generic import TemplateView
 #     from rest_framework.schemas import get_schema_view
-# 
+#
 #     urlpatterns += [
 #         path('swagger/', TemplateView.as_view(
 #             template_name='swagger.html',
