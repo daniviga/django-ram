@@ -31,9 +31,10 @@ class ManufacturerAdmin(admin.ModelAdmin):
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
     readonly_fields = ('slug',)
+    list_display = ('name', 'slug')
 
 
 @admin.register(RollingStockType)
 class RollingStockTypeAdmin(admin.ModelAdmin):
-    list_display = ('type', 'category')
-    list_filter = list_display
+    list_display = ('__str__',)
+    list_filter = ('type', 'category')

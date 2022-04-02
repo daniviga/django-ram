@@ -26,6 +26,7 @@ class Company(models.Model):
     name = models.CharField(max_length=64, unique=True)
     extended_name = models.CharField(max_length=128, blank=True)
     country = CountryField()
+    freelance = models.BooleanField(default=False)
     logo = models.ImageField(
         upload_to='images/',
         null=True,
@@ -33,6 +34,7 @@ class Company(models.Model):
 
     class Meta:
         verbose_name_plural = "Companies"
+        ordering = ['name']
 
     def __str__(self):
         return self.name
@@ -53,6 +55,7 @@ class Decoder(models.Model):
         null=True,
         blank=True
     )
+    sound = models.BooleanField(default=False)
     image = models.ImageField(
         upload_to='images/',
         null=True,
@@ -70,6 +73,9 @@ class Scale(models.Model):
     scale = models.CharField(max_length=32, unique=True)
     ratio = models.CharField(max_length=16, blank=True)
     gauge = models.CharField(max_length=16, blank=True)
+
+    class Meta:
+        ordering = ['scale']
 
     def __str__(self):
         return str(self.scale)
@@ -97,4 +103,4 @@ class RollingStockType(models.Model):
         unique_together = ('category', 'type')
 
     def __str__(self):
-        return "{0}".format(self.type)
+        return "{0} {1}".format(self.type, self.category)

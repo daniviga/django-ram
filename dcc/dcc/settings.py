@@ -152,6 +152,7 @@ DECODER_INTERFACES = [
 ROLLING_STOCK_TYPES = [
     ("engine", "Engine"),
     ("car", "Car"),
+    ("railcar", "Railcar"),
     ("equipment", "Equipment"),
     ("other", "Other")
 ]

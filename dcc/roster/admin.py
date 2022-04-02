@@ -6,7 +6,7 @@ from roster.models import (
 @admin.register(RollingClass)
 class RollingClass(admin.ModelAdmin):
     list_display = ('__str__', 'type', 'company')
-    list_filter = ('type', 'company')
+    list_filter = ('company', 'type__category', 'type')
     search_fields = list_display
 
 
@@ -28,8 +28,11 @@ class RollingStockAdmin(admin.ModelAdmin):
     inlines = (RollingStockImageInline, RollingStockDocInline)
     readonly_fields = ('creation_time', 'updated_time')
     list_display = (
-        '__str__', 'manufacturer', 'scale', 'sku', 'company', 'country')
-    list_filter = ('manufacturer', 'scale')
+        '__str__', 'address', 'manufacturer',
+        'scale', 'sku', 'company', 'country')
+    list_filter = (
+        'rolling_class__type__category', 'rolling_class__type',
+        'scale', 'manufacturer')
     search_fields = list_display
 
     fieldsets = (

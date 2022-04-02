@@ -20,6 +20,7 @@ class RollingClass(models.Model):
     type = models.ForeignKey(
         RollingStockType, on_delete=models.CASCADE,
         null=True, blank=True)
+    description = models.CharField(max_length=256, blank=True)
     company = models.ForeignKey(
         Company, on_delete=models.CASCADE,
         null=True, blank=True)
