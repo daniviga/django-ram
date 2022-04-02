@@ -8,7 +8,7 @@ from dcc.parsers import PlainTextParser
 from driver.connector import Connector
 from driver.serializers import (
     FunctionSerializer, CabSerializer, InfraSerializer)
-from roster.models import Cab as CabModel
+from roster.models import RollingStock
 
 
 def addresschecker(f):
@@ -16,9 +16,7 @@ def addresschecker(f):
     Check if DCC address does exist in the database
     """
     def addresslookup(request, address, *args):
-        try:
-            CabModel.objects.get(address=address)
-        except CabModel.DoesNotExist:
+        if not RollingStock.objects.filter(address=address):
             raise Http404
         return f(request, address, *args)
     return addresslookup

@@ -1,15 +1,15 @@
 from rest_framework import serializers
-from roster.models import Cab
+from roster.models import RollingStock
 from metadata.serializers import (
     ManufacturerSerializer, CompanySerializer, DecoderSerializer)
 
 
-class CabSerializer(serializers.ModelSerializer):
+class RollingStockSerializer(serializers.ModelSerializer):
     manufacturer = ManufacturerSerializer()
     decoder = DecoderSerializer()
     company = CompanySerializer()
 
     class Meta:
-        model = Cab
+        model = RollingStock
         fields = "__all__"
         read_only_fields = ("creation_time", "updated_time")

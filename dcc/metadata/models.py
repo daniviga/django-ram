@@ -1,7 +1,9 @@
 from django.db import models
+from django.conf import settings
+from django.dispatch.dispatcher import receiver
 from django_countries.fields import CountryField
 
-from dcc.utils import get_image_preview
+from dcc.utils import get_image_preview, slugify
 
 
 class Manufacturer(models.Model):
@@ -67,3 +69,28 @@ class Decoder(models.Model):
     def image_thumbnail(self):
         return get_image_preview(self.image.url)
     image_thumbnail.short_description = "Preview"
+
+
+class Tag(models.Model):
+    name = models.CharField(max_length=128, unique=True)
+    slug = models.CharField(max_length=128, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+@receiver(models.signals.pre_save, sender=Tag)
+def tag_pre_save(sender, instance, **kwargs):
+    instance.slug = slugify(instance.name)
+
+
+class RollingStockType(models.Model):
+    type = models.CharField(max_length=64)
+    category = models.CharField(
+        max_length=64, choices=settings.ROLLING_STOCK_TYPES)
+
+    class Meta(object):
+        unique_together = ('category', 'type')
+
+    def __str__(self):
+        return "{0}".format(self.type)

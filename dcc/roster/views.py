@@ -1,27 +1,27 @@
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 
-from roster.models import Cab
-from roster.serializers import CabSerializer
+from roster.models import RollingStock
+from roster.serializers import RollingStockSerializer
 
 
 class RosterList(ListAPIView):
-    queryset = Cab.objects.all()
-    serializer_class = CabSerializer
+    queryset = RollingStock.objects.all()
+    serializer_class = RollingStockSerializer
 
 
 class RosterGet(RetrieveAPIView):
-    queryset = Cab.objects.all()
-    serializer_class = CabSerializer
+    queryset = RollingStock.objects.all()
+    serializer_class = RollingStockSerializer
     lookup_field = 'uuid'
 
 
-class RosterAddress(RetrieveAPIView):
-    queryset = Cab.objects.all()
-    serializer_class = CabSerializer
+class RosterAddress(ListAPIView):
+    queryset = RollingStock.objects.all()
+    serializer_class = RollingStockSerializer
     lookup_field = 'address'
 
 
 class RosterIdentifier(RetrieveAPIView):
-    queryset = Cab.objects.all()
-    serializer_class = CabSerializer
+    queryset = RollingStock.objects.all()
+    serializer_class = RollingStockSerializer
     lookup_field = 'identifier'
