@@ -25,7 +25,11 @@ class Consist(models.Model):
 
 
 class ConsistItem(models.Model):
-    consist = models.ForeignKey(Consist, on_delete=models.CASCADE)
+    consist = models.ForeignKey(
+        Consist,
+        on_delete=models.CASCADE,
+        related_name="consist_item"
+    )
     rolling_stock = models.ForeignKey(RollingStock, on_delete=models.CASCADE)
     order = models.PositiveIntegerField(default=0, blank=False, null=False)
 
