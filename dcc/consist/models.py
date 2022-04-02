@@ -6,19 +6,15 @@ from roster.models import RollingStock
 
 
 class Consist(models.Model):
-    uuid = models.UUIDField(
-        primary_key=True, default=uuid4,
-        editable=False)
+    uuid = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     identifier = models.CharField(max_length=128, unique=False)
-    tags = models.ManyToManyField(
-        Tag,
-        related_name='consist',
-        blank=True)
+    tags = models.ManyToManyField(Tag, related_name="consist", blank=True)
     consist_address = models.SmallIntegerField(
-        default=None, null=True, blank=True)
+        default=None, null=True, blank=True
+    )
     company = models.ForeignKey(
-        Company, on_delete=models.CASCADE,
-        null=True, blank=True)
+        Company, on_delete=models.CASCADE, null=True, blank=True
+    )
     era = models.CharField(max_length=32, blank=True)
     notes = models.TextField(blank=True)
     creation_time = models.DateTimeField(auto_now_add=True)
@@ -29,14 +25,12 @@ class Consist(models.Model):
 
 
 class ConsistItem(models.Model):
-    consist = models.ForeignKey(
-        Consist, on_delete=models.CASCADE)
-    rolling_stock = models.ForeignKey(
-        RollingStock, on_delete=models.CASCADE)
+    consist = models.ForeignKey(Consist, on_delete=models.CASCADE)
+    rolling_stock = models.ForeignKey(RollingStock, on_delete=models.CASCADE)
     order = models.PositiveIntegerField(default=0, blank=False, null=False)
 
     class Meta(object):
-        ordering = ['order']
+        ordering = ["order"]
 
     def __str__(self):
         return "{0}".format(self.rolling_stock)

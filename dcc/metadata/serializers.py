@@ -1,7 +1,12 @@
 from rest_framework import serializers
 from metadata.models import (
-    RollingStockType, Scale, Manufacturer,
-    Company, Decoder, Tag)
+    RollingStockType,
+    Scale,
+    Manufacturer,
+    Company,
+    Decoder,
+    Tag,
+)
 
 
 class RollingStockTypeSerializer(serializers.ModelSerializer):

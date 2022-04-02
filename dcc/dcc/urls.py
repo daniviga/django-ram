@@ -24,10 +24,10 @@ from driver import urls as driver_urls
 admin.site.site_header = "Trains assets manager"
 
 urlpatterns = [
-    path('ht/', include('health_check.urls')),
-    path('admin/', admin.site.urls),
-    path('api/v1/roster/', include(roster_urls)),
-    path('api/v1/dcc/', include(driver_urls)),
+    path("ht/", include("health_check.urls")),
+    path("admin/", admin.site.urls),
+    path("api/v1/roster/", include(roster_urls)),
+    path("api/v1/dcc/", include(driver_urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # if settings.DEBUG:

@@ -1,8 +1,13 @@
 from rest_framework import serializers
 from roster.models import RollingClass, RollingStock
 from metadata.serializers import (
-    RollingStockTypeSerializer, ManufacturerSerializer, ScaleSerializer,
-    CompanySerializer, DecoderSerializer, TagSerializer)
+    RollingStockTypeSerializer,
+    ManufacturerSerializer,
+    ScaleSerializer,
+    CompanySerializer,
+    DecoderSerializer,
+    TagSerializer,
+)
 
 
 class RollingClassSerializer(serializers.ModelSerializer):

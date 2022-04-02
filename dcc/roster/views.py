@@ -12,16 +12,16 @@ class RosterList(ListAPIView):
 class RosterGet(RetrieveAPIView):
     queryset = RollingStock.objects.all()
     serializer_class = RollingStockSerializer
-    lookup_field = 'uuid'
+    lookup_field = "uuid"
 
 
 class RosterAddress(ListAPIView):
     queryset = RollingStock.objects.all()
     serializer_class = RollingStockSerializer
-    lookup_field = 'address'
+    lookup_field = "address"
 
 
 class RosterIdentifier(RetrieveAPIView):
     queryset = RollingStock.objects.all()
     serializer_class = RollingStockSerializer
-    lookup_field = 'identifier'
+    lookup_field = "identifier"

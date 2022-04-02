@@ -8,7 +8,7 @@ class Connector:
         self.config = DriverConfiguration.get_solo()
 
     def __send_data(self, message):
-        resp = b''
+        resp = b""
         # convert to binary if str is received
         if isinstance(message, str):
             message = message.encode()
@@ -30,10 +30,12 @@ class Connector:
     def ops(self, address, data, function=False):
         if function:
             message = "<F {0} {1} {2}>".format(
-                address, data['function'], data['state'])
+                address, data["function"], data["state"]
+            )
         else:
             message = "<t 1 {0} {1} {2}>".format(
-                address, data['speed'], data['direction'])
+                address, data["speed"], data["direction"]
+            )
         self.__send_data(message)
 
     def infra(self, data):
@@ -43,9 +45,9 @@ class Connector:
             track = ""
 
         if data["power"]:
-            self.__send_data('<1{}>'.format(track))
+            self.__send_data("<1{}>".format(track))
         else:
-            self.__send_data('<0{}>'.format(track))
+            self.__send_data("<0{}>".format(track))
 
     def emergency(self):
-        self.__send_data('<!>')
+        self.__send_data("<!>")
