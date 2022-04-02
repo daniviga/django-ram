@@ -18,20 +18,24 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
+from consist import urls as consist_urls
 from roster import urls as roster_urls
 from driver import urls as driver_urls
 
+admin.site.site_header = "Trains assets manager"
+
 urlpatterns = [
-    path('ht/', include('health_check.urls')),
-    path('admin/', admin.site.urls),
-    path('api/v1/roster/', include(roster_urls)),
-    path('api/v1/dcc/', include(driver_urls)),
+    path("ht/", include("health_check.urls")),
+    path("admin/", admin.site.urls),
+    path("api/v1/consist/", include(consist_urls)),
+    path("api/v1/roster/", include(roster_urls)),
+    path("api/v1/dcc/", include(driver_urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # if settings.DEBUG:
 #     from django.views.generic import TemplateView
 #     from rest_framework.schemas import get_schema_view
-# 
+#
 #     urlpatterns += [
 #         path('swagger/', TemplateView.as_view(
 #             template_name='swagger.html',

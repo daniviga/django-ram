@@ -8,67 +8,67 @@ from dcc.utils import get_image_preview, slugify
 
 class Manufacturer(models.Model):
     name = models.CharField(max_length=128, unique=True)
-    logo = models.ImageField(
-        upload_to='images/',
-        null=True,
-        blank=True)
+    website = models.URLField(blank=True)
+    logo = models.ImageField(upload_to="images/", null=True, blank=True)
 
     def __str__(self):
         return self.name
 
     def logo_thumbnail(self):
         return get_image_preview(self.logo.url)
+
     logo_thumbnail.short_description = "Preview"
 
 
 class Company(models.Model):
-    name = models.CharField(max_length=128, unique=True)
+    name = models.CharField(max_length=64, unique=True)
+    extended_name = models.CharField(max_length=128, blank=True)
     country = CountryField()
-    logo = models.ImageField(
-        upload_to='images/',
-        null=True,
-        blank=True)
+    freelance = models.BooleanField(default=False)
+    logo = models.ImageField(upload_to="images/", null=True, blank=True)
 
     class Meta:
         verbose_name_plural = "Companies"
+        ordering = ["name"]
 
     def __str__(self):
         return self.name
 
     def logo_thumbnail(self):
         return get_image_preview(self.logo.url)
+
     logo_thumbnail.short_description = "Preview"
 
 
 class Decoder(models.Model):
-    class Interface(models.IntegerChoices):
-        NEM651 = 1, "NEM651"
-        NEM652 = 2, "NEM652"
-        NEM658 = 3, "PluX"
-        NEM660 = 4, "21MTC"
-        NEM662 = 5, "Next18/Next18S"
-
     name = models.CharField(max_length=128, unique=True)
-    manufacturer = models.ForeignKey(
-        Manufacturer,
-        on_delete=models.CASCADE)
+    manufacturer = models.ForeignKey(Manufacturer, on_delete=models.CASCADE)
     version = models.CharField(max_length=64, blank=True)
     interface = models.PositiveSmallIntegerField(
-        choices=Interface.choices,
-        null=True,
-        blank=True
+        choices=settings.DECODER_INTERFACES, null=True, blank=True
     )
-    image = models.ImageField(
-        upload_to='images/',
-        null=True,
-        blank=True)
+    sound = models.BooleanField(default=False)
+    image = models.ImageField(upload_to="images/", null=True, blank=True)
 
     def __str__(self):
         return "{0} - {1}".format(self.manufacturer, self.name)
 
     def image_thumbnail(self):
         return get_image_preview(self.image.url)
+
     image_thumbnail.short_description = "Preview"
+
+
+class Scale(models.Model):
+    scale = models.CharField(max_length=32, unique=True)
+    ratio = models.CharField(max_length=16, blank=True)
+    gauge = models.CharField(max_length=16, blank=True)
+
+    class Meta:
+        ordering = ["scale"]
+
+    def __str__(self):
+        return str(self.scale)
 
 
 class Tag(models.Model):
@@ -87,10 +87,11 @@ def tag_pre_save(sender, instance, **kwargs):
 class RollingStockType(models.Model):
     type = models.CharField(max_length=64)
     category = models.CharField(
-        max_length=64, choices=settings.ROLLING_STOCK_TYPES)
+        max_length=64, choices=settings.ROLLING_STOCK_TYPES
+    )
 
     class Meta(object):
-        unique_together = ('category', 'type')
+        unique_together = ("category", "type")
 
     def __str__(self):
-        return "{0}".format(self.type)
+        return "{0} {1}".format(self.type, self.category)

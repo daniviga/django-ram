@@ -1,13 +1,30 @@
 from rest_framework import serializers
-from roster.models import RollingStock
+from roster.models import RollingClass, RollingStock
 from metadata.serializers import (
-    ManufacturerSerializer, CompanySerializer, DecoderSerializer)
+    RollingStockTypeSerializer,
+    ManufacturerSerializer,
+    ScaleSerializer,
+    CompanySerializer,
+    DecoderSerializer,
+    TagSerializer,
+)
+
+
+class RollingClassSerializer(serializers.ModelSerializer):
+    company = CompanySerializer()
+    type = RollingStockTypeSerializer()
+
+    class Meta:
+        model = RollingClass
+        fields = "__all__"
 
 
 class RollingStockSerializer(serializers.ModelSerializer):
+    rolling_class = RollingClassSerializer()
     manufacturer = ManufacturerSerializer()
     decoder = DecoderSerializer()
-    company = CompanySerializer()
+    scale = ScaleSerializer()
+    tags = TagSerializer(many=True)
 
     class Meta:
         model = RollingStock
