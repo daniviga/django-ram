@@ -23,7 +23,7 @@ class RollingStock(models.Model):
         Tag,
         related_name='rolling_stock',
         blank=True)
-    address = models.SmallIntegerField(default=3, null=True, blank=True)
+    address = models.SmallIntegerField(default=None, null=True, blank=True)
     manufacturer = models.ForeignKey(
         Manufacturer, on_delete=models.CASCADE,
         null=True, blank=True)

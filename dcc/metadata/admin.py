@@ -6,11 +6,15 @@ from metadata.models import (
 @admin.register(Decoder)
 class DecoderAdmin(admin.ModelAdmin):
     readonly_fields = ('image_thumbnail',)
+    list_display = ('__str__', 'interface')
+    list_filter = ('manufacturer', 'interface')
 
 
 @admin.register(Company)
 class CompanyAdmin(admin.ModelAdmin):
     readonly_fields = ('logo_thumbnail',)
+    list_display = ('name', 'country')
+    list_filter = list_display
 
 
 @admin.register(Manufacturer)
