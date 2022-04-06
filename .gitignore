@@ -129,5 +129,5 @@ dmypy.json
 .pyre/
 
 *.swp
-dcc/media
+dcc/storage
 arduino/CommandStation-EX/build/

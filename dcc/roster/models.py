@@ -28,6 +28,11 @@ class RollingClass(models.Model):
         RollingStockType, on_delete=models.CASCADE, null=True, blank=True
     )
     description = models.CharField(max_length=256, blank=True)
+    wheel_arrangement = models.CharField(max_length=64, blank=True)
+    manufacturer = models.ForeignKey(
+        Manufacturer, on_delete=models.CASCADE, null=True, blank=True,
+        limit_choices_to={"category": "real"}
+    )
     company = models.ForeignKey(
         Company, on_delete=models.CASCADE, null=True, blank=True
     )
@@ -52,7 +57,8 @@ class RollingStock(models.Model):
     )
     road_number = models.CharField(max_length=128, unique=False)
     manufacturer = models.ForeignKey(
-        Manufacturer, on_delete=models.CASCADE, null=True, blank=True
+        Manufacturer, on_delete=models.CASCADE, null=True, blank=True,
+        limit_choices_to={"category": "model"}
     )
     scale = models.ForeignKey(Scale, on_delete=models.CASCADE)
     sku = models.CharField(max_length=32, blank=True)

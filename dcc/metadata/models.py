@@ -8,8 +8,14 @@ from dcc.utils import get_image_preview, slugify
 
 class Manufacturer(models.Model):
     name = models.CharField(max_length=128, unique=True)
+    category = models.CharField(
+        max_length=64, choices=settings.MANUFACTURER_TYPES
+    )
     website = models.URLField(blank=True)
     logo = models.ImageField(upload_to="images/", null=True, blank=True)
+
+    class Meta:
+        ordering = ["category", "name"]
 
     def __str__(self):
         return self.name
