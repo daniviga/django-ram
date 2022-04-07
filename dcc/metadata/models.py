@@ -6,6 +6,17 @@ from django_countries.fields import CountryField
 from dcc.utils import get_image_preview, slugify
 
 
+class Property(models.Model):
+    name = models.CharField(max_length=128, unique=True)
+
+    class Meta:
+        verbose_name_plural = "Properties"
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+
 class Manufacturer(models.Model):
     name = models.CharField(max_length=128, unique=True)
     category = models.CharField(

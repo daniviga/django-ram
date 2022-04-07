@@ -1,13 +1,13 @@
 import os
 from uuid import uuid4
 from django.db import models
-from django.urls import reverse
 
 # from django.core.files.storage import FileSystemStorage
 # from django.dispatch import receiver
 
 from dcc.utils import get_image_preview
 from metadata.models import (
+    Property,
     Scale,
     Manufacturer,
     Decoder,
@@ -27,14 +27,13 @@ class RollingClass(models.Model):
     type = models.ForeignKey(
         RollingStockType, on_delete=models.CASCADE, null=True, blank=True
     )
+    company = models.ForeignKey(
+        Company, on_delete=models.CASCADE, null=True, blank=True
+    )
     description = models.CharField(max_length=256, blank=True)
-    wheel_arrangement = models.CharField(max_length=64, blank=True)
     manufacturer = models.ForeignKey(
         Manufacturer, on_delete=models.CASCADE, null=True, blank=True,
         limit_choices_to={"category": "real"}
-    )
-    company = models.ForeignKey(
-        Company, on_delete=models.CASCADE, null=True, blank=True
     )
 
     class Meta:
@@ -44,6 +43,21 @@ class RollingClass(models.Model):
 
     def __str__(self):
         return "{0} {1}".format(self.company, self.identifier)
+
+
+class RollingClassProperty(models.Model):
+    rolling_class = models.ForeignKey(
+        RollingClass,
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        verbose_name="Class",
+    )
+    property = models.ForeignKey(Property, on_delete=models.CASCADE)
+    value = models.CharField(max_length=256)
+
+    def __str__(self):
+        return self.property.name
 
 
 class RollingStock(models.Model):

@@ -1,14 +1,22 @@
 from django.contrib import admin
 from roster.models import (
     RollingClass,
+    RollingClassProperty,
     RollingStock,
     RollingStockImage,
     RollingStockDocument,
 )
 
 
+class RollingClassPropertyInline(admin.TabularInline):
+    model = RollingClassProperty
+    min_num = 0
+    extra = 0
+
+
 @admin.register(RollingClass)
 class RollingClass(admin.ModelAdmin):
+    inlines = (RollingClassPropertyInline,)
     list_display = ("__str__", "type", "company")
     list_filter = ("company", "type__category", "type")
     search_fields = list_display

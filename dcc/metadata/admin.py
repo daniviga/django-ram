@@ -1,5 +1,6 @@
 from django.contrib import admin
 from metadata.models import (
+    Property,
     Decoder,
     Scale,
     Manufacturer,
@@ -7,6 +8,11 @@ from metadata.models import (
     Tag,
     RollingStockType,
 )
+
+
+@admin.register(Property)
+class PropertyAdmin(admin.ModelAdmin):
+    search_fields = ("name",)
 
 
 @admin.register(Decoder)
