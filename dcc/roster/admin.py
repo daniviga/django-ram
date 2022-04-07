@@ -5,6 +5,7 @@ from roster.models import (
     RollingStock,
     RollingStockImage,
     RollingStockDocument,
+    RollingStockProperty,
 )
 
 
@@ -35,9 +36,19 @@ class RollingStockImageInline(admin.TabularInline):
     readonly_fields = ("image_thumbnail",)
 
 
+class RollingStockPropertyInline(admin.TabularInline):
+    model = RollingStockProperty
+    min_num = 0
+    extra = 0
+
+
 @admin.register(RollingStock)
 class RollingStockAdmin(admin.ModelAdmin):
-    inlines = (RollingStockImageInline, RollingStockDocInline)
+    inlines = (
+        RollingStockImageInline,
+        RollingStockDocInline,
+        RollingStockPropertyInline
+    )
     readonly_fields = ("creation_time", "updated_time")
     list_display = (
         "__str__",

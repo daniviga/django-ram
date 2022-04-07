@@ -59,6 +59,9 @@ class RollingClassProperty(models.Model):
     def __str__(self):
         return self.property.name
 
+    class Meta:
+        verbose_name_plural = "Properties"
+
 
 class RollingStock(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid4, editable=False)
@@ -131,6 +134,23 @@ class RollingStockImage(models.Model):
 
     def __str__(self):
         return "{0}".format(os.path.basename(self.image.name))
+
+
+class RollingStockProperty(models.Model):
+    rolling_stock = models.ForeignKey(
+        RollingStock,
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False
+    )
+    property = models.ForeignKey(Property, on_delete=models.CASCADE)
+    value = models.CharField(max_length=256)
+
+    def __str__(self):
+        return self.property.name
+
+    class Meta:
+        verbose_name_plural = "Properties"
 
 
 # @receiver(models.signals.post_delete, sender=Cab)
