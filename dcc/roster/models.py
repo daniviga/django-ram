@@ -123,17 +123,21 @@ class RollingStockDocument(models.Model):
 class RollingStockImage(models.Model):
     rolling_stock = models.ForeignKey(RollingStock, on_delete=models.CASCADE)
     image = models.ImageField(upload_to="images/", null=True, blank=True)
+    is_thumbnail = models.BooleanField()
 
     def image_thumbnail(self):
         return get_image_preview(self.image.url)
 
     image_thumbnail.short_description = "Preview"
 
-    class Meta(object):
-        unique_together = ("rolling_stock", "image")
-
     def __str__(self):
         return "{0}".format(os.path.basename(self.image.name))
+
+    def save(self, **kwargs):
+        if self.is_thumbnail:
+            RollingStockImage.objects.filter(
+                rolling_stock=self.rolling_stock).update(is_thumbnail=False)
+        super().save(**kwargs)
 
 
 class RollingStockProperty(models.Model):
