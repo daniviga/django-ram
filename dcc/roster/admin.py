@@ -1,14 +1,23 @@
 from django.contrib import admin
 from roster.models import (
     RollingClass,
+    RollingClassProperty,
     RollingStock,
     RollingStockImage,
     RollingStockDocument,
+    RollingStockProperty,
 )
+
+
+class RollingClassPropertyInline(admin.TabularInline):
+    model = RollingClassProperty
+    min_num = 0
+    extra = 0
 
 
 @admin.register(RollingClass)
 class RollingClass(admin.ModelAdmin):
+    inlines = (RollingClassPropertyInline,)
     list_display = ("__str__", "type", "company")
     list_filter = ("company", "type__category", "type")
     search_fields = list_display
@@ -27,9 +36,19 @@ class RollingStockImageInline(admin.TabularInline):
     readonly_fields = ("image_thumbnail",)
 
 
+class RollingStockPropertyInline(admin.TabularInline):
+    model = RollingStockProperty
+    min_num = 0
+    extra = 0
+
+
 @admin.register(RollingStock)
 class RollingStockAdmin(admin.ModelAdmin):
-    inlines = (RollingStockImageInline, RollingStockDocInline)
+    inlines = (
+        RollingStockPropertyInline,
+        RollingStockImageInline,
+        RollingStockDocInline,
+    )
     readonly_fields = ("creation_time", "updated_time")
     list_display = (
         "__str__",
@@ -55,16 +74,23 @@ class RollingStockAdmin(admin.ModelAdmin):
                 "fields": (
                     "rolling_class",
                     "road_number",
-                    "manufacturer",
                     "scale",
+                    "manufacturer",
                     "sku",
-                    "decoder",
-                    "address",
                     "era",
                     "production_year",
                     "purchase_date",
                     "notes",
                     "tags",
+                )
+            },
+        ),
+        (
+            "DCC",
+            {
+                "fields": (
+                    "decoder",
+                    "address",
                 )
             },
         ),

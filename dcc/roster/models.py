@@ -1,13 +1,13 @@
 import os
 from uuid import uuid4
 from django.db import models
-from django.urls import reverse
 
 # from django.core.files.storage import FileSystemStorage
 # from django.dispatch import receiver
 
 from dcc.utils import get_image_preview
 from metadata.models import (
+    Property,
     Scale,
     Manufacturer,
     Decoder,
@@ -27,9 +27,13 @@ class RollingClass(models.Model):
     type = models.ForeignKey(
         RollingStockType, on_delete=models.CASCADE, null=True, blank=True
     )
-    description = models.CharField(max_length=256, blank=True)
     company = models.ForeignKey(
         Company, on_delete=models.CASCADE, null=True, blank=True
+    )
+    description = models.CharField(max_length=256, blank=True)
+    manufacturer = models.ForeignKey(
+        Manufacturer, on_delete=models.CASCADE, null=True, blank=True,
+        limit_choices_to={"category": "real"}
     )
 
     class Meta:
@@ -39,6 +43,24 @@ class RollingClass(models.Model):
 
     def __str__(self):
         return "{0} {1}".format(self.company, self.identifier)
+
+
+class RollingClassProperty(models.Model):
+    rolling_class = models.ForeignKey(
+        RollingClass,
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+        verbose_name="Class",
+    )
+    property = models.ForeignKey(Property, on_delete=models.CASCADE)
+    value = models.CharField(max_length=256)
+
+    def __str__(self):
+        return self.property.name
+
+    class Meta:
+        verbose_name_plural = "Properties"
 
 
 class RollingStock(models.Model):
@@ -52,7 +74,8 @@ class RollingStock(models.Model):
     )
     road_number = models.CharField(max_length=128, unique=False)
     manufacturer = models.ForeignKey(
-        Manufacturer, on_delete=models.CASCADE, null=True, blank=True
+        Manufacturer, on_delete=models.CASCADE, null=True, blank=True,
+        limit_choices_to={"category": "model"}
     )
     scale = models.ForeignKey(Scale, on_delete=models.CASCADE)
     sku = models.CharField(max_length=32, blank=True)
@@ -100,17 +123,38 @@ class RollingStockDocument(models.Model):
 class RollingStockImage(models.Model):
     rolling_stock = models.ForeignKey(RollingStock, on_delete=models.CASCADE)
     image = models.ImageField(upload_to="images/", null=True, blank=True)
+    is_thumbnail = models.BooleanField()
 
     def image_thumbnail(self):
         return get_image_preview(self.image.url)
 
     image_thumbnail.short_description = "Preview"
 
-    class Meta(object):
-        unique_together = ("rolling_stock", "image")
-
     def __str__(self):
         return "{0}".format(os.path.basename(self.image.name))
+
+    def save(self, **kwargs):
+        if self.is_thumbnail:
+            RollingStockImage.objects.filter(
+                rolling_stock=self.rolling_stock).update(is_thumbnail=False)
+        super().save(**kwargs)
+
+
+class RollingStockProperty(models.Model):
+    rolling_stock = models.ForeignKey(
+        RollingStock,
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False
+    )
+    property = models.ForeignKey(Property, on_delete=models.CASCADE)
+    value = models.CharField(max_length=256)
+
+    def __str__(self):
+        return self.property.name
+
+    class Meta:
+        verbose_name_plural = "Properties"
 
 
 # @receiver(models.signals.post_delete, sender=Cab)
