@@ -45,9 +45,9 @@ class RollingStockPropertyInline(admin.TabularInline):
 @admin.register(RollingStock)
 class RollingStockAdmin(admin.ModelAdmin):
     inlines = (
+        RollingStockPropertyInline,
         RollingStockImageInline,
         RollingStockDocInline,
-        RollingStockPropertyInline
     )
     readonly_fields = ("creation_time", "updated_time")
     list_display = (
@@ -74,16 +74,23 @@ class RollingStockAdmin(admin.ModelAdmin):
                 "fields": (
                     "rolling_class",
                     "road_number",
-                    "manufacturer",
                     "scale",
+                    "manufacturer",
                     "sku",
-                    "decoder",
-                    "address",
                     "era",
                     "production_year",
                     "purchase_date",
                     "notes",
                     "tags",
+                )
+            },
+        ),
+        (
+            "DCC",
+            {
+                "fields": (
+                    "decoder",
+                    "address",
                 )
             },
         ),
