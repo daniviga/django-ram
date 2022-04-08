@@ -1,0 +1,17 @@
+    <footer class="bg-dark text-white">
+      <div class="container">
+        <p class="float-right">
+          <a href="#">Back to top</a>
+        </p>
+        <p>{% if site_conf.show_copyright %}&copy; {% now "Y" %} {% endif %}</p>
+        {% if rolling_stock and site_conf.footer_short %}
+        {{ site_conf.footer_short | safe }}
+        {% else %}
+        {{ site_conf.footer | safe }}
+        {% endif %}
+      </div>
+      {% if site_conf.show_version and not map %}<div class="container">
+        <p class="small text-muted">Version: {{ site_conf.version }}</p>
+      </div>{% endif %}
+    </footer>
+

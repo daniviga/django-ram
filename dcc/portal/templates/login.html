@@ -1,0 +1,18 @@
+              {% if request.user.is_staff %}
+              <div class="btn-group" role="group" aria-label="User actions">
+                <button type="button" class="btn btn-sm btn-outline-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Welcome back, <strong>{{ request.user }}</strong>
+                </button>
+                <div class="dropdown-menu">
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="{% url 'admin:index' %}">Admin</a>
+                  <a class="dropdown-item" href="{% url 'admin:portal_siteconfiguration_changelist' %}">Site configuration</a>
+                  <a class="dropdown-item" href="{% url 'admin:password_change' %}">Change password</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item text-danger" href="{% url 'admin:logout' %}?next={{ request.path }}">Logout</a>
+                </div>
+              </div>
+              {% else %}
+              <a class="btn btn-sm btn-outline-light" href="{% url 'admin:login' %}?next={{ request.path }}">Log in</a>
+              {% endif %}
+

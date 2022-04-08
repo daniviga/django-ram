@@ -18,6 +18,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
+from portal.views import GetHome
 from consist import urls as consist_urls
 from roster import urls as roster_urls
 from driver import urls as driver_urls
@@ -25,6 +26,7 @@ from driver import urls as driver_urls
 admin.site.site_header = "Trains assets manager"
 
 urlpatterns = [
+    path('', GetHome.as_view(), name='index'),
     path("ht/", include("health_check.urls")),
     path("admin/", admin.site.urls),
     path("api/v1/consist/", include(consist_urls)),

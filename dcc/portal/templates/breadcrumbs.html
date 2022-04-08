@@ -1,0 +1,10 @@
+              <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a></li>
+                  {% for p in pages %}
+                  <li class="breadcrumb-item{% if forloop.last %} active {% endif %}" aria-current="page">{% if forloop.last %}{{ p.name }}{% else %}
+                    <a href="{% url 'portal_page' p.path %}">{{ p.name }}</a>
+                  {% endif %}</li>
+                  {% endfor %}
+                </ol>
+              </nav>

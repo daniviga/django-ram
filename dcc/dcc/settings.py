@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "adminsortable2",
     "dcc",
+    "portal",
     "driver",
     "metadata",
     "roster",

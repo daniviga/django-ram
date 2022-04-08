@@ -121,7 +121,10 @@ class RollingStockDocument(models.Model):
 
 
 class RollingStockImage(models.Model):
-    rolling_stock = models.ForeignKey(RollingStock, on_delete=models.CASCADE)
+    rolling_stock = models.ForeignKey(
+        RollingStock,
+        on_delete=models.CASCADE,
+        related_name="thumbnail")
     image = models.ImageField(upload_to="images/", null=True, blank=True)
     is_thumbnail = models.BooleanField()
 

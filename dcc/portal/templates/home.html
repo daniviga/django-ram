@@ -1,0 +1,147 @@
+{% load static %}
+{% load solo_tags %}
+{% get_solo 'portal.SiteConfiguration' as site_conf %}
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="{{ site_conf.about }}">
+    <meta name="author" content="{{ site_conf.site_author }}">
+    <link rel="icon" type="image/png" href="{% static 'favicon-196x196.png' %}" sizes="196x196">
+    <link rel="icon" type="image/png" href="{% static 'favicon-128.png' %}" sizes="128x128">
+    <link rel="icon" type="image/png" href="{% static 'favicon-96x96.png' %}" sizes="96x96">
+    <link rel="icon" type="image/png" href="{% static 'favicon-32x32.png' %}" sizes="32x32">
+    <link rel="icon" type="image/png" href="{% static 'favicon-16x16.png' %}" sizes="16x16">
+
+    <title>{{ site_conf.site_name }}</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static "css/dist/bootstrap.min.css" %}" rel="stylesheet">
+    <link href="{% static "css/fonts.css" %}" rel="stylesheet">
+    <link href="{% static "css/main.css" %}" rel="stylesheet">
+  </head>
+
+  <body class="bg-dark">
+    <div class="container-fluid">
+     <header>
+       {% include 'navbar.html' %}
+       <div class="row collapse bg-dark shadow-sm" id="navbarHeader">
+         <div class="container">
+           <div class="row">
+             <div class="col-sm-8 col-md-7 py-4">
+               {% if site_conf.about %}<h4 class="text-white">About</h4>
+               <div class="text-justify text-muted">{{ site_conf.about | safe }}</div>{% endif %}
+             </div>
+             <div class="col-sm-4 offset-md-1 py-4 text-right">
+             {% include 'login.html' %}
+             </div>
+           </div>
+         </div>
+       </div>
+     </header>
+    </div>
+
+    <main class="bg-light">
+      <div class="bg-white py-5">
+        <div class="container">
+          {{ site_conf.homepage_content | safe }}
+        </div>
+      </div>
+
+      <a id="maps"></a>
+      <div class="album py-5">
+        <div class="container">
+          <div class="row text-center">
+            <div class="col-md-12">
+             {% if tags %}<p>active filter:
+                 {% for t in tags %}<span class="badge" style="background-color: {{ t.color }}; color: {{ t.label_color }};">{{ t.tag }}</span>{# new line is required #}
+             {% endfor %}</p>{% endif %}
+            </div>
+          </div>
+          <div class="row">
+            {% for r in rolling_stock %}
+            <div class="col-md-4">
+              <div class="card mb-4 shadow-sm">
+                <a href="{{ r.get_absolute_url }}">
+                    {% for t in r.thumbnail.all %}{% if t.is_thumbnail %}<img src="{{ t.image.url }}" alt="Card image cap">
+                    {% else %}<img class="card-img-top" src="{% static "img/empty.svg" %}">{% endif %}</a>{% endfor %}
+                <div class="card-body">
+                  <p class="card-text"><strong>{{ r }}</strong></p>{{ r.description|safe|truncatechars_html:256 }}
+                  <p class="card-text">
+                    {% for t in r.tags.all %}<a class="badge"
+                        style="background-color: {{ t.color }}; color: {{ t.label_color }};" href="{# url 'tags_filtered' t.tag #}">{{ t.tag }}</a>{# new line is required #}
+                    {% endfor %}
+                  </p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="btn-group">
+                      <a class="btn btn-sm btn-outline-secondary" href="{{ r.get_absolute_url }}">View</a>
+                      {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% url 'admin:roster_rollingstock_change' r.pk %}">Edit</a>{% endif %}
+                    </div>
+                    <small class="text-muted published-info">Last update: <em>{{ r.updated_time | date:"M d, Y" }}</em></small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+            {% if request.user.is_staff and not rolling_stock.has_next %}
+            <div class="col-md-4">
+              <div class="card mb-4 shadow-sm">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="btn-group">
+                      <a class="btn btn-sm btn-secondary" href="{#% url 'admin:rolling_stock_add' %#}">Add a new map</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+            {% if rolling_stock.has_other_pages %}
+            <nav aria-label="Page navigation example">
+              <ul class="pagination justify-content-center">
+                {% if rolling_stock.has_previous %}
+                <li class="page-item">
+                  <a class="page-link" href="/page/{{ rolling_stock.previous_page_number }}#rolling_stock" tabindex="-1">Previous</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                  <span class="page-link">Previous</span>
+                </li>
+                {% endif %}
+                {% for i in rolling_stock.paginator.page_range %}
+                  {% if rolling_stock.number == i %}
+                  <li class="page-item active">
+                    <span class="page-link">{{ i }}<span class="sr-only">(current)</span></span>
+                  </li>
+                  {% else %}
+                  <li class="page-item"><a class="page-link" href="/page/{{ i }}#rolling_stock">{{ i }}</a></li>
+                  {% endif %}
+                {% endfor %}
+                {% if rolling_stock.has_next %}
+                <li class="page-item">
+                  <a class="page-link" href="/page/{{ rolling_stock.next_page_number }}#rolling_stock" tabindex="-1">Next</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                  <span class="page-link">Next</span>
+                </li>
+                {% endif %}
+              </ul>
+            </nav>
+            {% endif %}
+        </div>
+      </div>
+    </main>
+
+    {% include 'footer.html' %}
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="{% static "js/dist/jquery.min.js" %}"></script>
+    <script src="{% static "js/dist/bootstrap.bundle.min.js" %}"></script>
+  </body>
+</html>

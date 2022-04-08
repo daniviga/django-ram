@@ -1,0 +1,36 @@
+import django
+from django.db import models
+
+from solo.models import SingletonModel
+
+
+class SiteConfiguration(SingletonModel):
+    site_name = models.CharField(
+        max_length=256,
+        default="Trains assets manager")
+    site_author = models.CharField(max_length=256, blank=True)
+    about = models.TextField(blank=True)
+    maps_per_page = models.CharField(
+        max_length=2, choices=[
+            (str(x * 3), str(x * 3)) for x in range(2, 11)],
+        default='6'
+    )
+
+    homepage_content = models.TextField(blank=True)
+    footer = models.TextField(blank=True)
+    footer_short = models.TextField(blank=True)
+    show_copyright = models.BooleanField(default=True)
+
+    show_version = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = "Site Configuration"
+
+    def __str__(self):
+        return "Site Configuration"
+
+    # def version(self):
+    #     return app_version
+
+    def django_version(self):
+        return django.get_version()
