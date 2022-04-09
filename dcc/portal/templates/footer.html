@@ -1,10 +1,12 @@
+{% load markdown %}
+
 <footer class="text-muted py-5">
   <div class="container">
     <p class="float-end mb-1">
       <a href="#">Back to top</a>
     </p>
-    <p class="mb-1">&copy; {% now "Y" %} {{ site_conf.footer }}</p>
-    <p class="mb-0">{{ site_conf.footer_extended }}</p>
+    <p class="mb-1">&copy; {% now "Y" %} {{ site_conf.footer | markdown | safe }}</p>
+    <p class="mb-0">{{ site_conf.footer_extended | markdown | safe }}</p>
   </div>
   {% if site_conf.show_version %}
   <div class="container">

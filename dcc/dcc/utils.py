@@ -1,5 +1,25 @@
+import os
+import subprocess
+
 from django.utils.html import format_html
 from django.utils.text import slugify as django_slugify
+
+
+def git_suffix(fname):
+    """
+    :returns: `<short git hash>` if Git repository found
+    """
+    try:
+        gh = subprocess.check_output(
+            ['git', 'rev-parse', '--short', 'HEAD'],
+            stderr=open(os.devnull, 'w')).strip()
+        gh = "-git" + gh.decode() if gh else ''
+    except Exception:
+        # trapping everything on purpose; git may not be installed or it
+        # may not work properly
+        gh = ''
+
+    return gh
 
 
 def get_image_preview(url):

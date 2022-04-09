@@ -18,21 +18,20 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
+from portal.utils import get_site_conf
 from portal.views import GetHome
-from consist import urls as consist_urls
-from roster import urls as roster_urls
-from driver import urls as driver_urls
 
-admin.site.site_header = "Trains assets manager"
+site_conf = get_site_conf()
+admin.site.site_header = site_conf.site_name
 
 urlpatterns = [
-    path('', GetHome.as_view(), name='index'),
-    path('page/<int:page>', GetHome.as_view(), name='index_pagination'),
+    path("", GetHome.as_view(), name="index"),
+    path("page/", include("portal.urls")),
     path("ht/", include("health_check.urls")),
     path("admin/", admin.site.urls),
-    path("api/v1/consist/", include(consist_urls)),
-    path("api/v1/roster/", include(roster_urls)),
-    path("api/v1/dcc/", include(driver_urls)),
+    path("api/v1/consist/", include("consist.urls")),
+    path("api/v1/roster/", include("roster.urls")),
+    path("api/v1/dcc/", include("driver.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # if settings.DEBUG:

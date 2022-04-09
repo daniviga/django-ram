@@ -16,8 +16,6 @@ class SiteConfiguration(SingletonModel):
             (str(x * 3), str(x * 3)) for x in range(2, 11)],
         default='6'
     )
-
-    homepage_content = models.TextField(blank=True)
     footer = models.TextField(blank=True)
     footer_extended = models.TextField(blank=True)
     show_version = models.BooleanField(default=True)
