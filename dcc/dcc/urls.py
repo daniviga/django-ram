@@ -27,6 +27,7 @@ admin.site.site_header = "Trains assets manager"
 
 urlpatterns = [
     path('', GetHome.as_view(), name='index'),
+    path('page/<int:page>', GetHome.as_view(), name='index_pagination'),
     path("ht/", include("health_check.urls")),
     path("admin/", admin.site.urls),
     path("api/v1/consist/", include(consist_urls)),

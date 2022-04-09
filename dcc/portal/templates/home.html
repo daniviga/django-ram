@@ -6,142 +6,214 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="{{ site_conf.about }}">
-    <meta name="author" content="{{ site_conf.site_author }}">
-    <link rel="icon" type="image/png" href="{% static 'favicon-196x196.png' %}" sizes="196x196">
-    <link rel="icon" type="image/png" href="{% static 'favicon-128.png' %}" sizes="128x128">
-    <link rel="icon" type="image/png" href="{% static 'favicon-96x96.png' %}" sizes="96x96">
-    <link rel="icon" type="image/png" href="{% static 'favicon-32x32.png' %}" sizes="32x32">
-    <link rel="icon" type="image/png" href="{% static 'favicon-16x16.png' %}" sizes="16x16">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.88.1">
     <title>{{ site_conf.site_name }}</title>
 
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/album/">
+
+    
+
     <!-- Bootstrap core CSS -->
-    <link href="{% static "css/dist/bootstrap.min.css" %}" rel="stylesheet">
-    <link href="{% static "css/fonts.css" %}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="{% static "css/main.css" %}" rel="stylesheet">
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+
+    
   </head>
-
-  <body class="bg-dark">
-    <div class="container-fluid">
-     <header>
-       {% include 'navbar.html' %}
-       <div class="row collapse bg-dark shadow-sm" id="navbarHeader">
-         <div class="container">
-           <div class="row">
-             <div class="col-sm-8 col-md-7 py-4">
-               {% if site_conf.about %}<h4 class="text-white">About</h4>
-               <div class="text-justify text-muted">{{ site_conf.about | safe }}</div>{% endif %}
-             </div>
-             <div class="col-sm-4 offset-md-1 py-4 text-right">
-             {% include 'login.html' %}
-             </div>
-           </div>
-         </div>
-       </div>
-     </header>
+  <body>
+    
+<header>
+  <div class="navbar navbar-dark bg-dark shadow-sm">
+    <div class="container">
+      <a href="#" class="navbar-brand d-flex align-items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true" class="me-2" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        <strong>{{ site_conf.site_name }}</strong>
+      </a>
+    {% include 'login.html' %}
     </div>
+  </div>
+</header>
 
-    <main class="bg-light">
-      <div class="bg-white py-5">
-        <div class="container">
-          {{ site_conf.homepage_content | safe }}
-        </div>
+<main>
+  <section class="py-1 text-start container">
+    <div class="row py-lg-5">
+      <div class="mx-auto">
+        <h1 class="fw-light">About</h1>
+        <p class="lead text-muted">{{ site_conf.about | safe }}</p>
       </div>
+    </div>
+  </section>
 
-      <a id="maps"></a>
-      <div class="album py-5">
-        <div class="container">
-          <div class="row text-center">
-            <div class="col-md-12">
-             {% if tags %}<p>active filter:
-                 {% for t in tags %}<span class="badge" style="background-color: {{ t.color }}; color: {{ t.label_color }};">{{ t.tag }}</span>{# new line is required #}
-             {% endfor %}</p>{% endif %}
-            </div>
-          </div>
-          <div class="row">
-            {% for r in rolling_stock %}
-            <div class="col-md-4">
-              <div class="card mb-4 shadow-sm">
-                <a href="{{ r.get_absolute_url }}">
-                    {% for t in r.thumbnail.all %}{% if t.is_thumbnail %}<img src="{{ t.image.url }}" alt="Card image cap">
-                    {% else %}<img class="card-img-top" src="{% static "img/empty.svg" %}">{% endif %}</a>{% endfor %}
-                <div class="card-body">
-                  <p class="card-text"><strong>{{ r }}</strong></p>{{ r.description|safe|truncatechars_html:256 }}
-                  <p class="card-text">
-                    {% for t in r.tags.all %}<a class="badge"
-                        style="background-color: {{ t.color }}; color: {{ t.label_color }};" href="{# url 'tags_filtered' t.tag #}">{{ t.tag }}</a>{# new line is required #}
-                    {% endfor %}
-                  </p>
-                  <div class="d-flex justify-content-between align-items-center">
-                    <div class="btn-group">
-                      <a class="btn btn-sm btn-outline-secondary" href="{{ r.get_absolute_url }}">View</a>
-                      {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% url 'admin:roster_rollingstock_change' r.pk %}">Edit</a>{% endif %}
-                    </div>
-                    <small class="text-muted published-info">Last update: <em>{{ r.updated_time | date:"M d, Y" }}</em></small>
-                  </div>
-                </div>
+  <div class="album py-5 bg-light">
+    <div class="container">
+      <a id="rolling-stock"></a>
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+        {% for r in rolling_stock %}
+        <div class="col">
+          <div class="card shadow-sm">
+            <a href="#">
+            {% for t in r.thumbnail.all %}{% if t.is_thumbnail %}<img src="{{ t.image.url }}" alt="Card image cap">
+            {% else %}
+            <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"/><text x="50%" y="50%" fill="#eceeef" dy=".3em">Missing thumbnail</text></svg>
+            {% endif %}</a>{% endfor %}
+            <div class="card-body">
+              <p class="card-text"><strong>{{ r }}</strong></p>
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th colspan="2" scope="row">Data</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th width="35%" scope="row">Type</th>
+                    <td>{{ r.rolling_class.type }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Company</th>
+                    <td>{{ r.rolling_class.company }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Class</th>
+                    <td>{{ r.rolling_class.identifier }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Road number</th>
+                    <td>{{ r.road_number }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Era</th>
+                    <td>{{ r.era }}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="btn-group mb-4">
+                <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseModel{{ r.pk }}" aria-expanded="false" aria-controls="collapseModel{{ r.pk }}">Model data</button>
+              {% if r.decoder %}
+                <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDCC{{ r.pk }}" aria-expanded="false" aria-controls="collapseDCC{{ r.pk }}">DCC data</button>
+              {% endif %}
+                <a class="btn btn-sm btn-outline-primary" href="#">Show all data</a>
+                {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% url 'admin:roster_rollingstock_change' r.pk %}">Edit</a>{% endif %}
               </div>
-            </div>
-            {% endfor %}
-            {% if request.user.is_staff and not rolling_stock.has_next %}
-            <div class="col-md-4">
-              <div class="card mb-4 shadow-sm">
-                <div class="card-body">
-                  <div class="d-flex justify-content-between align-items-center">
-                    <div class="btn-group">
-                      <a class="btn btn-sm btn-secondary" href="{#% url 'admin:rolling_stock_add' %#}">Add a new map</a>
-                    </div>
-                  </div>
-                </div>
+			  <div class="collapse" id="collapseModel{{ r.pk }}">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th colspan="2" scope="row">Model data</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th width="35%" scope="row">Manufacturer</th>
+                      <td>{{ r.manufacturer }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Scale</th>
+                      <td>{{ r.scale }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">SKU</th>
+                      <td>{{ r.sku }}</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
-            </div>
-            {% endif %}
-          </div>
-            {% if rolling_stock.has_other_pages %}
-            <nav aria-label="Page navigation example">
-              <ul class="pagination justify-content-center">
-                {% if rolling_stock.has_previous %}
-                <li class="page-item">
-                  <a class="page-link" href="/page/{{ rolling_stock.previous_page_number }}#rolling_stock" tabindex="-1">Previous</a>
-                </li>
-                {% else %}
-                <li class="page-item disabled">
-                  <span class="page-link">Previous</span>
-                </li>
-                {% endif %}
-                {% for i in rolling_stock.paginator.page_range %}
-                  {% if rolling_stock.number == i %}
-                  <li class="page-item active">
-                    <span class="page-link">{{ i }}<span class="sr-only">(current)</span></span>
-                  </li>
-                  {% else %}
-                  <li class="page-item"><a class="page-link" href="/page/{{ i }}#rolling_stock">{{ i }}</a></li>
-                  {% endif %}
+              {% if r.decoder %}
+			  <div class="collapse" id="collapseDCC{{ r.pk }}">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th colspan="2" scope="row">DCC data</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th width="35%" scope="row">Decoder</th>
+                      <td>{{ r.decoder }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Address</th>
+                      <td>{{ r.address }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              {% endif %}
+			  {% if r.tags.all %}
+              <p class="card-text"><small>Tags:</small>
+               {% for t in r.tags.all %}<span class="badge bg-primary">
+                {{ t.name }}</span>{# new line is required #}
                 {% endfor %}
-                {% if rolling_stock.has_next %}
-                <li class="page-item">
-                  <a class="page-link" href="/page/{{ rolling_stock.next_page_number }}#rolling_stock" tabindex="-1">Next</a>
-                </li>
-                {% else %}
-                <li class="page-item disabled">
-                  <span class="page-link">Next</span>
-                </li>
-                {% endif %}
-              </ul>
-            </nav>
-            {% endif %}
+              {% endif %}
+              </p>
+              <div class="d-flex justify-content-between align-items-center">
+                <small class="text-muted">Updated {{ r.updated_time | date:"M d, Y H:m" }}</small>
+              </div>
+            </div>
+          </div>
         </div>
+        {% endfor %}
       </div>
-    </main>
+    </div>
+    <div class="container">
+      {% if rolling_stock.has_other_pages %}
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center mt-4">
+          {% if rolling_stock.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="/page/{{ rolling_stock.previous_page_number }}#rolling_stock" tabindex="-1">Previous</a>
+          </li>
+          {% else %}
+          <li class="page-item disabled">
+            <span class="page-link">Previous</span>
+          </li>
+          {% endif %}
+          {% for i in rolling_stock.paginator.page_range %}
+            {% if rolling_stock.number == i %}
+            <li class="page-item active">
+              <span class="page-link">{{ i }}</span></span>
+            </li>
+            {% else %}
+            <li class="page-item"><a class="page-link" href="/page/{{ i }}#rolling-stock">{{ i }}</a></li>
+            {% endif %}
+          {% endfor %}
+          {% if rolling_stock.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="/page/{{ rolling_stock.next_page_number }}#rolling-stock" tabindex="-1">Next</a>
+          </li>
+          {% else %}
+          <li class="page-item disabled">
+            <span class="page-link">Next</span>
+          </li>
+          {% endif %}
+        </ul>
+      </nav>
+      {% endif %}
+    </div>
+    </div>
+    </div>
+  </div>
+</main>
+{% include 'footer.html' %}
 
-    {% include 'footer.html' %}
-
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="{% static "js/dist/jquery.min.js" %}"></script>
-    <script src="{% static "js/dist/bootstrap.bundle.min.js" %}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>

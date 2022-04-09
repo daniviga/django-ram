@@ -1,18 +1,20 @@
-              {% if request.user.is_staff %}
-              <div class="btn-group" role="group" aria-label="User actions">
-                <button type="button" class="btn btn-sm btn-outline-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Welcome back, <strong>{{ request.user }}</strong>
-                </button>
-                <div class="dropdown-menu">
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="{% url 'admin:index' %}">Admin</a>
-                  <a class="dropdown-item" href="{% url 'admin:portal_siteconfiguration_changelist' %}">Site configuration</a>
-                  <a class="dropdown-item" href="{% url 'admin:password_change' %}">Change password</a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item text-danger" href="{% url 'admin:logout' %}?next={{ request.path }}">Logout</a>
-                </div>
-              </div>
-              {% else %}
-              <a class="btn btn-sm btn-outline-light" href="{% url 'admin:login' %}?next={{ request.path }}">Log in</a>
-              {% endif %}
-
+      {% if request.user.is_staff %}
+      <div class="dropdown">
+        <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
+          Welcome back, <strong>{{ request.user }}</strong>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenu2">
+          <li><a class="dropdown-item" href="{% url 'admin:roster_rollingstock_changelist' %}">Rolling stock</a></li>
+          <li><a class="dropdown-item" href="{% url 'admin:consist_consist_changelist' %}">Consists</a></li>
+          <li><a class="dropdown-item" href="{% url 'admin:app_list' 'metadata' %}">Metadata</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="{% url 'admin:index' %}">Admin</a></li>
+          <li><a class="dropdown-item" href="{% url 'admin:portal_siteconfiguration_changelist' %}">Site configuration</a></li>
+          <li><a class="dropdown-item" href="{% url 'admin:driver_driverconfiguration_changelist' %}">DCC configuration</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item text-danger" href="{% url 'admin:logout' %}?next={{ request.path }}">Logout</a></li>
+        </ul>
+      </div>
+      {% else %}
+      <a class="btn btn-sm btn-outline-light" href="{% url 'admin:login' %}?next={{ request.path }}">Log in</a>
+      {% endif %}
