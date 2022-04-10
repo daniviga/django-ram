@@ -39,7 +39,7 @@
 <header>
   <div class="navbar navbar-dark bg-dark shadow-sm">
     <div class="container">
-      <a href="#" class="navbar-brand d-flex align-items-center">
+      <a href="/" class="navbar-brand d-flex align-items-center">
         <svg class="me-2" width="26" height="16" enable-background="new 0 0 26 26" version="1" viewBox="0 0 26 16" xmlns="http://www.w3.org/2000/svg">
           <path d="m2.8125 0.0010991a1.0001 1.0001 0 0 0-0.8125 1c0 0.55455-0.44545 1-1 1a1.0001 1.0001 0 0 0-1 1v10a1.0001 1.0001 0 0 0 1 1c0.55455 0 1 0.44546 1 1a1.0001 1.0001 0 0 0 1 1h20a1.0001 1.0001 0 0 0 1-1c0-0.55454 0.44546-1 1-1a1.0001 1.0001 0 0 0 1-1v-10a1.0001 1.0001 0 0 0-1-1c-0.55454 0-1-0.44545-1-1a1.0001 1.0001 0 0 0-1-1h-20a1.0001 1.0001 0 0 0-0.09375 0 1.0001 1.0001 0 0 0-0.09375 0zm0.78125 2h14.406v1h2v-1h2.4062c0.30628 0.76906 0.82469 1.2875 1.5938 1.5938v8.8125c-0.76906 0.30628-1.2875 0.82469-1.5938 1.5938h-2.4062v-1h-2v1h-14.406c-0.30628-0.76906-0.82469-1.2875-1.5938-1.5938v-8.8125c0.76906-0.30628 1.2875-0.82469 1.5938-1.5938zm14.406 2v2h2v-2zm0 3v2h2v-2zm0 3v2h2v-2z" enable-background="accumulate" fill="#fff" overflow="visible" stroke-width="2" style="text-indent:0;text-transform:none"/>
         </svg>
@@ -52,7 +52,7 @@
 
 <main>
   <section class="py-1 text-start container">
-    <div class="row py-lg-5">
+    <div class="row py-lg-4">
       <div class="mx-auto">
         <h1 class="fw-light">About</h1>
         <p class="lead text-muted">{{ site_conf.about | markdown | safe }}</p>
@@ -67,10 +67,9 @@
         {% for r in rolling_stock %}
         <div class="col">
           <div class="card shadow-sm">
-            <a href="#">
-            {% for t in r.thumbnail.all %}{% if t.is_thumbnail %}<img src="{{ t.image.url }}" alt="Card image cap">
-            {% else %}
-            <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"/><text x="50%" y="50%" fill="#eceeef" dy=".3em">Missing thumbnail</text></svg>
+            <a href="/portal/{{ r.uuid }}">
+            {% for t in r.thumbnail.all %}
+            {% if t.is_thumbnail %}<img src="{{ t.image.url }}" alt="Card image cap">
             {% endif %}</a>{% endfor %}
             <div class="card-body">
               <p class="card-text"><strong>{{ r }}</strong></p>
@@ -87,7 +86,7 @@
                   </tr>
                   <tr>
                     <th scope="row">Company</th>
-                    <td>{{ r.rolling_class.company }}</td>
+                    <td><abbr title="{{ r.rolling_class.company.extended_name }}">{{ r.rolling_class.company }}</abbr></td>
                   </tr>
                   <tr>
                     <th scope="row">Class</th>
@@ -103,14 +102,6 @@
                   </tr>
                 </tbody>
               </table>
-              <div class="btn-group mb-4">
-                <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="button"><span data-bs-toggle="collapse" data-bs-target="#collapseModel{{ r.pk }}" aria-expanded="false" aria-controls="collapseModel{{ r.pk }}">Model data</span></button>
-              {% if r.decoder %}
-                <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="button"> <span data-bs-toggle="collapse" data-bs-target="#collapseDCC{{ r.pk }}" aria-expanded="false" aria-controls="collapseDCC{{ r.pk }}">DCC data</span></button>
-              {% endif %}
-                <a class="btn btn-sm btn-outline-primary" href="#">Show all data</a>
-                {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% url 'admin:roster_rollingstock_change' r.pk %}">Edit</a>{% endif %}
-              </div>
               <div class="collapse" id="collapseModel{{ r.pk }}">
                 <table class="table table-striped">
                   <thead>
@@ -121,11 +112,11 @@
                   <tbody>
                     <tr>
                       <th width="35%" scope="row">Manufacturer</th>
-                      <td>{{ r.manufacturer }}</td>
+                      <td>{% if r.manufacturer.website %}<a href="{{ r.manufacturer.website }}">{% endif %}{{ r.manufacturer }}{% if r.manufacturer.website %}</a>{% endif %}</th>
                     </tr>
                     <tr>
                       <th scope="row">Scale</th>
-                      <td>{{ r.scale }}</td>
+                      <td><abbr title="{{ r.scale.ratio }} - {{ r.scale.gauge }}">{{ r.scale }}</abbr></td>
                     </tr>
                     <tr>
                       <th scope="row">SKU</th>
@@ -155,13 +146,21 @@
                 </table>
               </div>
               {% endif %}
+              <div class="btn-group mb-4">
+                <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="button"><span data-bs-toggle="collapse" data-bs-target="#collapseModel{{ r.pk }}" aria-expanded="false" aria-controls="collapseModel{{ r.pk }}">Model data</span></button>
+              {% if r.decoder %}
+                <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="button"> <span data-bs-toggle="collapse" data-bs-target="#collapseDCC{{ r.pk }}" aria-expanded="false" aria-controls="collapseDCC{{ r.pk }}">DCC data</span></button>
+              {% endif %}
+                <a class="btn btn-sm btn-outline-primary" href="/portal/{{ r.uuid }}">Show all data</a>
+                {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% url 'admin:roster_rollingstock_change' r.pk %}">Edit</a>{% endif %}
+              </div>
               {% if r.tags.all %}
               <p class="card-text"><small>Tags:</small>
                {% for t in r.tags.all %}<span class="badge bg-primary">
                 {{ t.name }}</span>{# new line is required #}
                 {% endfor %}
-              {% endif %}
               </p>
+              {% endif %}
               <div class="d-flex justify-content-between align-items-center">
                 <small class="text-muted">Updated {{ r.updated_time | date:"M d, Y H:m" }}</small>
               </div>
@@ -177,7 +176,7 @@
         <ul class="pagination justify-content-center mt-4">
           {% if rolling_stock.has_previous %}
           <li class="page-item">
-            <a class="page-link" href="/page/{{ rolling_stock.previous_page_number }}#rolling_stock" tabindex="-1">Previous</a>
+            <a class="page-link" href="/portal/{{ rolling_stock.previous_page_number }}#rolling_stock" tabindex="-1">Previous</a>
           </li>
           {% else %}
           <li class="page-item disabled">
@@ -190,12 +189,12 @@
               <span class="page-link">{{ i }}</span></span>
             </li>
             {% else %}
-            <li class="page-item"><a class="page-link" href="/page/{{ i }}#rolling-stock">{{ i }}</a></li>
+            <li class="page-item"><a class="page-link" href="/portal/{{ i }}#rolling-stock">{{ i }}</a></li>
             {% endif %}
           {% endfor %}
           {% if rolling_stock.has_next %}
           <li class="page-item">
-            <a class="page-link" href="/page/{{ rolling_stock.next_page_number }}#rolling-stock" tabindex="-1">Next</a>
+            <a class="page-link" href="/portal/{{ rolling_stock.next_page_number }}#rolling-stock" tabindex="-1">Next</a>
           </li>
           {% else %}
           <li class="page-item disabled">
