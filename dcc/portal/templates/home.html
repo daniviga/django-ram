@@ -40,7 +40,9 @@
   <div class="navbar navbar-dark bg-dark shadow-sm">
     <div class="container">
       <a href="#" class="navbar-brand d-flex align-items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true" class="me-2" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        <svg class="me-2" width="26" height="16" enable-background="new 0 0 26 26" version="1" viewBox="0 0 26 16" xmlns="http://www.w3.org/2000/svg">
+          <path d="m2.8125 0.0010991a1.0001 1.0001 0 0 0-0.8125 1c0 0.55455-0.44545 1-1 1a1.0001 1.0001 0 0 0-1 1v10a1.0001 1.0001 0 0 0 1 1c0.55455 0 1 0.44546 1 1a1.0001 1.0001 0 0 0 1 1h20a1.0001 1.0001 0 0 0 1-1c0-0.55454 0.44546-1 1-1a1.0001 1.0001 0 0 0 1-1v-10a1.0001 1.0001 0 0 0-1-1c-0.55454 0-1-0.44545-1-1a1.0001 1.0001 0 0 0-1-1h-20a1.0001 1.0001 0 0 0-0.09375 0 1.0001 1.0001 0 0 0-0.09375 0zm0.78125 2h14.406v1h2v-1h2.4062c0.30628 0.76906 0.82469 1.2875 1.5938 1.5938v8.8125c-0.76906 0.30628-1.2875 0.82469-1.5938 1.5938h-2.4062v-1h-2v1h-14.406c-0.30628-0.76906-0.82469-1.2875-1.5938-1.5938v-8.8125c0.76906-0.30628 1.2875-0.82469 1.5938-1.5938zm14.406 2v2h2v-2zm0 3v2h2v-2zm0 3v2h2v-2z" enable-background="accumulate" fill="#fff" overflow="visible" stroke-width="2" style="text-indent:0;text-transform:none"/>
+        </svg>
         <strong>{{ site_conf.site_name }}</strong>
       </a>
     {% include 'login.html' %}
@@ -102,14 +104,14 @@
                 </tbody>
               </table>
               <div class="btn-group mb-4">
-                <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseModel{{ r.pk }}" aria-expanded="false" aria-controls="collapseModel{{ r.pk }}">Model data</button>
+                <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="button"><span data-bs-toggle="collapse" data-bs-target="#collapseModel{{ r.pk }}" aria-expanded="false" aria-controls="collapseModel{{ r.pk }}">Model data</span></button>
               {% if r.decoder %}
-                <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDCC{{ r.pk }}" aria-expanded="false" aria-controls="collapseDCC{{ r.pk }}">DCC data</button>
+                <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="button"> <span data-bs-toggle="collapse" data-bs-target="#collapseDCC{{ r.pk }}" aria-expanded="false" aria-controls="collapseDCC{{ r.pk }}">DCC data</span></button>
               {% endif %}
                 <a class="btn btn-sm btn-outline-primary" href="#">Show all data</a>
                 {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% url 'admin:roster_rollingstock_change' r.pk %}">Edit</a>{% endif %}
               </div>
-			  <div class="collapse" id="collapseModel{{ r.pk }}">
+              <div class="collapse" id="collapseModel{{ r.pk }}">
                 <table class="table table-striped">
                   <thead>
                     <tr>
@@ -133,7 +135,7 @@
                 </table>
               </div>
               {% if r.decoder %}
-			  <div class="collapse" id="collapseDCC{{ r.pk }}">
+              <div class="collapse" id="collapseDCC{{ r.pk }}">
                 <table class="table table-striped">
                   <thead>
                     <tr>
@@ -153,7 +155,7 @@
                 </table>
               </div>
               {% endif %}
-			  {% if r.tags.all %}
+              {% if r.tags.all %}
               <p class="card-text"><small>Tags:</small>
                {% for t in r.tags.all %}<span class="badge bg-primary">
                 {{ t.name }}</span>{# new line is required #}
@@ -209,7 +211,6 @@
   </div>
 </main>
 {% include 'footer.html' %}
-
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>

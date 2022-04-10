@@ -13,9 +13,3 @@ class ConsistGet(RetrieveAPIView):
     queryset = Consist.objects.all()
     serializer_class = ConsistSerializer
     lookup_field = "uuid"
-
-
-# class RosterIdentifier(RetrieveAPIView):
-#     queryset = RollingStock.objects.all()
-#     serializer_class = RollingStockSerializer
-#     lookup_field = "identifier"

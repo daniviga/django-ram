@@ -2,6 +2,10 @@
   width: 100%;
 }
 
+.btn > span {
+  display: inline-block;
+}
+
 #footer > p {
   display: inline;
 }
