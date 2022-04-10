@@ -1,10 +1,17 @@
+from ipaddress import IPv4Address, IPv4Network
 from django.http import Http404
 from django.utils.decorators import method_decorator
 from rest_framework import status, serializers
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import (
+    IsAuthenticated,
+    BasePermission,
+    SAFE_METHODS
+)
 
 from dcc.parsers import PlainTextParser
+from driver.models import DriverConfiguration
 from driver.connector import Connector
 from driver.serializers import (
     FunctionSerializer,
@@ -27,12 +34,35 @@ def addresschecker(f):
     return addresslookup
 
 
+class Firewall(BasePermission):
+    def has_permission(self, request, view):
+        config = DriverConfiguration.get_solo()
+        if not config.network:
+            return request.method in SAFE_METHODS
+
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = IPv4Address(x_forwarded_for.split(',')[0])
+        else:
+            ip = IPv4Address(request.META.get("REMOTE_ADDR"))
+
+        network = IPv4Network("{0}/{1}".format(
+            config.network,
+            config.subnet_mask
+        ))
+
+        # accept IP configured is settings or localhost
+        if ip in network or ip in IPv4Network("127.0.0.0/8"):
+            return request.method in SAFE_METHODS
+
+
 class Test(APIView):
     """
     Send a test <s> command
     """
 
     parser_classes = [PlainTextParser]
+    permission_classes = [IsAuthenticated | Firewall]
 
     def get(self, request):
         response = Connector().passthrough("<s>")
@@ -47,6 +77,7 @@ class SendCommand(APIView):
     """
 
     parser_classes = [PlainTextParser]
+    permission_classes = [IsAuthenticated | Firewall]
 
     def put(self, request):
         data = request.data
@@ -70,6 +101,7 @@ class Function(APIView):
     """
     Send "Function" commands to a valid DCC address
     """
+    permission_classes = [IsAuthenticated | Firewall]
 
     def put(self, request, address):
         serializer = FunctionSerializer(data=request.data)
@@ -85,6 +117,7 @@ class Cab(APIView):
     """
     Send "Cab" commands to a valid DCC address
     """
+    permission_classes = [IsAuthenticated | Firewall]
 
     def put(self, request, address):
         serializer = CabSerializer(data=request.data)
@@ -99,6 +132,7 @@ class Infra(APIView):
     """
     Send "Infra" commands to a valid DCC address
     """
+    permission_classes = [IsAuthenticated | Firewall]
 
     def put(self, request):
         serializer = InfraSerializer(data=request.data)
@@ -113,6 +147,7 @@ class Emergency(APIView):
     """
     Send an "Emergency" stop, no matter the HTTP method used
     """
+    permission_classes = [IsAuthenticated | Firewall]
 
     def put(self, request):
         Connector().emergency()

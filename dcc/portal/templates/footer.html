@@ -5,8 +5,12 @@
     <p class="float-end mb-1">
       <a href="#">Back to top</a>
     </p>
-    <p class="mb-1">&copy; {% now "Y" %} {{ site_conf.footer | markdown | safe }}</p>
-    <p class="mb-0">{{ site_conf.footer_extended | markdown | safe }}</p>
+    <div id="footer" class="mb-1">
+        <p>&copy; {% now "Y" %}</p> {{ site_conf.footer | markdown | safe }}
+    </div>
+    <div id="footer_extended" class="mb-0">
+      {{ site_conf.footer_extended | markdown | safe }}
+    </div>
   </div>
   {% if site_conf.show_version %}
   <div class="container">
