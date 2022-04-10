@@ -8,7 +8,7 @@ from solo.models import SingletonModel
 class SiteConfiguration(SingletonModel):
     site_name = models.CharField(
         max_length=256,
-        default="Trains assets manager")
+        default="Railroad Assets Manager")
     site_author = models.CharField(max_length=256, blank=True)
     about = models.TextField(blank=True)
     items_per_page = models.CharField(
