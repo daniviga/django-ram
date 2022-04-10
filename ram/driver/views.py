@@ -10,7 +10,7 @@ from rest_framework.permissions import (
     SAFE_METHODS
 )
 
-from dcc.parsers import PlainTextParser
+from ram.parsers import PlainTextParser
 from driver.models import DriverConfiguration
 from driver.connector import Connector
 from driver.serializers import (

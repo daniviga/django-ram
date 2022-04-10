@@ -1,7 +1,7 @@
 import django
 from django.db import models
 
-from dcc import __version__ as app_version
+from ram import __version__ as app_version
 from solo.models import SingletonModel
 
 

@@ -3,7 +3,7 @@ from django.conf import settings
 from django.dispatch.dispatcher import receiver
 from django_countries.fields import CountryField
 
-from dcc.utils import get_image_preview, slugify
+from ram.utils import get_image_preview, slugify
 
 
 class Property(models.Model):

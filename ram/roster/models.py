@@ -5,7 +5,7 @@ from django.db import models
 # from django.core.files.storage import FileSystemStorage
 # from django.dispatch import receiver
 
-from dcc.utils import get_image_preview
+from ram.utils import get_image_preview
 from metadata.models import (
     Property,
     Scale,
