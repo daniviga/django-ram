@@ -26,7 +26,7 @@ admin.site.site_header = site_conf.site_name
 
 urlpatterns = [
     path("", GetHome.as_view(), name="index"),
-    path("page/", include("portal.urls")),
+    path("portal/", include("portal.urls")),
     path("ht/", include("health_check.urls")),
     path("admin/", admin.site.urls),
     path("api/v1/consist/", include("consist.urls")),

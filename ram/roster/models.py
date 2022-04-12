@@ -1,7 +1,7 @@
 import os
 from uuid import uuid4
 from django.db import models
-
+from django.urls import reverse
 # from django.core.files.storage import FileSystemStorage
 # from django.dispatch import receiver
 
@@ -100,6 +100,9 @@ class RollingStock(models.Model):
     def __str__(self):
         return "{0} {1}".format(self.rolling_class, self.road_number)
 
+    def get_absolute_url(self):
+        return reverse("rolling_stock", kwargs={"uuid": self.uuid})
+
     def country(self):
         return str(self.rolling_class.company.country)
 
@@ -108,7 +111,11 @@ class RollingStock(models.Model):
 
 
 class RollingStockDocument(models.Model):
-    rolling_stock = models.ForeignKey(RollingStock, on_delete=models.CASCADE)
+    rolling_stock = models.ForeignKey(
+        RollingStock,
+        on_delete=models.CASCADE,
+        related_name="document"
+    )
     description = models.CharField(max_length=128, blank=True)
     file = models.FileField(upload_to="files/", null=True, blank=True)
 
@@ -117,14 +124,17 @@ class RollingStockDocument(models.Model):
 
     def __str__(self):
         return "{0}".format(os.path.basename(self.file.name))
-        # return "{0}".format(self.description)
+
+    def filename(self):
+        return os.path.basename(self.file.name)
 
 
 class RollingStockImage(models.Model):
     rolling_stock = models.ForeignKey(
         RollingStock,
         on_delete=models.CASCADE,
-        related_name="thumbnail")
+        related_name="image"
+    )
     image = models.ImageField(upload_to="images/", null=True, blank=True)
     is_thumbnail = models.BooleanField()
 
@@ -147,6 +157,7 @@ class RollingStockProperty(models.Model):
     rolling_stock = models.ForeignKey(
         RollingStock,
         on_delete=models.CASCADE,
+        related_name="property",
         null=False,
         blank=False
     )

@@ -6,6 +6,14 @@
   display: inline-block;
 }
 
+.tab-pane {
+  min-height: 300px;
+}
+
+#nav-notes > p {
+  padding: .5rem;
+}
+
 #footer > p {
   display: inline;
 }

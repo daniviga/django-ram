@@ -24,3 +24,12 @@ class GetHome(View):
             'rolling_stock': rolling_stock,
             'thumbnails': thumbnails
         })
+
+
+class GetRollingStock(View):
+    def get(self, request, uuid):
+        rolling_stock = RollingStock.objects.get(uuid=uuid)
+
+        return render(request, 'page.html', {
+            'rolling_stock': rolling_stock,
+        })
