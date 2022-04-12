@@ -51,7 +51,7 @@
 </header>
 
 <main>
-  <section class="py-1 text-start container">
+  <section class="py-1 text-center container">
     <div class="row py-lg-4">
       <div class="mx-auto">
         <h1 class="fw-light">About</h1>
@@ -67,10 +67,9 @@
         {% for r in rolling_stock %}
         <div class="col">
           <div class="card shadow-sm">
-            <a href="/portal/{{ r.uuid }}">
-            {% for t in r.thumbnail.all %}
-            {% if t.is_thumbnail %}<img src="{{ t.image.url }}" alt="Card image cap">
-            {% endif %}</a>{% endfor %}
+            {% for i in r.image.all %}
+            {% if i.is_thumbnail %}<a href="/portal/{{ r.uuid }}"><img src="{{ i.image.url }}" alt="Card image cap"></a>{% endif %}
+            {% endfor %}
             <div class="card-body">
               <p class="card-text"><strong>{{ r }}</strong></p>
               <table class="table table-striped">
@@ -149,9 +148,9 @@
               <div class="btn-group mb-4">
                 <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="button"><span data-bs-toggle="collapse" data-bs-target="#collapseModel{{ r.pk }}" aria-expanded="false" aria-controls="collapseModel{{ r.pk }}">Model data</span></button>
               {% if r.decoder %}
-                <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="button"> <span data-bs-toggle="collapse" data-bs-target="#collapseDCC{{ r.pk }}" aria-expanded="false" aria-controls="collapseDCC{{ r.pk }}">DCC data</span></button>
+               <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="button"> <span data-bs-toggle="collapse" data-bs-target="#collapseDCC{{ r.pk }}" aria-expanded="false" aria-controls="collapseDCC{{ r.pk }}">DCC data</span></button>
               {% endif %}
-                <a class="btn btn-sm btn-outline-primary" href="/portal/{{ r.uuid }}">Show all data</a>
+               <a class="btn btn-sm btn-outline-primary" href="/portal/{{ r.uuid }}">Show all data</a>
                 {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% url 'admin:roster_rollingstock_change' r.pk %}">Edit</a>{% endif %}
               </div>
               {% if r.tags.all %}

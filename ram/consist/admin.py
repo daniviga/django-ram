@@ -1,5 +1,5 @@
 from django.contrib import admin
-from adminsortable2.admin import SortableInlineAdminMixin
+from adminsortable2.admin import SortableAdminBase, SortableInlineAdminMixin
 
 from consist.models import Consist, ConsistItem
 
@@ -12,7 +12,7 @@ class ConsistItemInline(SortableInlineAdminMixin, admin.TabularInline):
 
 
 @admin.register(Consist)
-class ConsistAdmin(admin.ModelAdmin):
+class ConsistAdmin(SortableAdminBase, admin.ModelAdmin):
     inlines = (ConsistItemInline,)
     readonly_fields = (
         "creation_time",

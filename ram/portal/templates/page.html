@@ -76,15 +76,17 @@
       <div class="mx-auto">
         <nav>
           <div class="nav nav-tabs" id="nav-tab" role="tablist">
-            <button class="nav-link active" id="nav-data-tab" data-bs-toggle="tab" data-bs-target="#nav-data" type="button" role="tab" aria-controls="nav-data" aria-selected="true">Data</button>
-            <button class="nav-link" id="nav-class-tab" data-bs-toggle="tab" data-bs-target="#nav-class" type="button" role="tab" aria-controls="nav-class" aria-selected="false">Class</button>
-            <button class="nav-link" id="nav-dcc-tab" data-bs-toggle="tab" data-bs-target="#nav-dcc" type="button" role="tab" aria-controls="nav-dcc" aria-selected="false">DCC</button>
-            <button class="nav-link" id="nav-notes-tab" data-bs-toggle="tab" data-bs-target="#nav-notes" type="button" role="tab" aria-controls="nav-notes" aria-selected="false">Notes</button>
-            <button class="nav-link" id="nav-documents-tab" data-bs-toggle="tab" data-bs-target="#nav-documents" type="button" role="tab" aria-controls="nav-documents" aria-selected="false">Documents</button>
+            <button class="nav-link active" id="nav-summary-tab" data-bs-toggle="tab" data-bs-target="#nav-summary" type="button" role="tab" aria-controls="nav-summary" aria-selected="true">Summary</button>
+            <button class="nav-link" id="nav-model-tab" data-bs-toggle="tab" data-bs-target="#nav-model" type="button" role="tab" aria-controls="nav-model" aria-selected="false">Model data</button>
+            <button class="nav-link" id="nav-class-tab" data-bs-toggle="tab" data-bs-target="#nav-class" type="button" role="tab" aria-controls="nav-class" aria-selected="false">Class data</button>
+            {% if rolling_stock.decoder %}<button class="nav-link" id="nav-dcc-tab" data-bs-toggle="tab" data-bs-target="#nav-dcc" type="button" role="tab" aria-controls="nav-dcc" aria-selected="false">DCC</button>{% endif %}
+            {% if rolling_stock.notes %}<button class="nav-link" id="nav-notes-tab" data-bs-toggle="tab" data-bs-target="#nav-notes" type="button" role="tab" aria-controls="nav-notes" aria-selected="false">Notes</button>{% endif %}
+            {% if rolling_stock.property.count > 0 %}<button class="nav-link" id="nav-properties-tab" data-bs-toggle="tab" data-bs-target="#nav-properties" type="button" role="tab" aria-controls="nav-properties" aria-selected="false">Properties</button>{% endif %}
+            {% if rolling_stock.document.count > 0 %}<button class="nav-link" id="nav-documents-tab" data-bs-toggle="tab" data-bs-target="#nav-documents" type="button" role="tab" aria-controls="nav-documents" aria-selected="false">Documents</button>{% endif %}
            </div>
         </nav>
         <div class="tab-content" id="nav-tabContent">
-          <div class="tab-pane fade show active" id="nav-data" role="tabpanel" aria-labelledby="nav-data-tab">
+          <div class="tab-pane fade show active" id="nav-summary" role="tabpanel" aria-labelledby="nav-summary-tab">
             <table class="table table-striped">
               <thead>
                 <tr>
@@ -155,6 +157,41 @@
             </table>
             {% endif %}
           </div>
+          <div class="tab-pane fade" id="nav-model" role="tabpanel" aria-labelledby="nav-model-tab">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th colspan="2" scope="row">Model data</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th width="35%" scope="row">Manufacturer</th>
+                  <td>{% if rolling_stock.manufacturer.website %}<a href="{{ rolling_stock.manufacturer.website }}">{% endif %}{{ rolling_stock.manufacturer }}{% if rolling_stock.manufacturer.website %}</a>{% endif %}</th>
+                </tr>
+                <tr>
+                  <th scope="row">Scale</th>
+                  <td><abbr title="{{ rolling_stock.scale.ratio }} - {{ rolling_stock.scale.gauge }}">{{ rolling_stock.scale }}</abbr></td>
+                </tr>
+                <tr>
+                  <th scope="row">SKU</th>
+                  <td>{{ rolling_stock.sku }}</td>
+                </tr>
+                <tr>
+                  <th scope="row">ERA</th>
+                  <td>{{ rolling_stock.era }}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Production year</th>
+                  <td>{{ rolling_stock.production_year | default_if_none:"" }}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Purchase date</th>
+                  <td>{{ rolling_stock.purchase_date | default_if_none:"" }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
           <div class="tab-pane fade" id="nav-class" role="tabpanel" aria-labelledby="nav-class-tab">
             <table class="table table-striped">
               <thead>
@@ -212,16 +249,52 @@
                 </tr>
                 <tr>
                   <th scope="row">Sound</th>
-                  <td>{{ rolling_stock.decoder.sound | yesno }}</td>
+                  <td>{{ rolling_stock.decoder.sound | yesno:"Yes,No" }}</td>
                 </tr>
               </tbody>
             </table>
           </div>
           <div class="tab-pane fade" id="nav-notes" role="tabpanel" aria-labelledby="nav-notes-tab">
-            <p class="lead text-muted">{{ rolling_stock.notes | markdown | safe }}</p>
+            {{ rolling_stock.notes | markdown | safe }}
+          </div>
+          <div class="tab-pane fade" id="nav-properties" role="tabpanel" aria-labelledby="nav-properties-tab">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th colspan="2" scope="row">Properties</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for p in rolling_stock.property.all %}
+                <tr>
+                  <th scope="row">{{ p.property }}</th>
+                  <td>{{ p.value }}</td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
           </div>
           <div class="tab-pane fade" id="nav-documents" role="tabpanel" aria-labelledby="nav-documents-tab">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th colspan="3" scope="row">Documents</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for d in rolling_stock.document.all %}
+                <tr>
+                  <td>{{ d.description }}</td>
+                  <td><a href="{{ d.file.url }}">{{ d.filename }}</a></td>
+                  <td class="text-end">{{ d.file.size | filesizeformat }}</td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
           </div>
+        </div>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+          {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% url 'admin:roster_rollingstock_change' rolling_stock.pk %}">Edit</a>{% endif %}
         </div>
       </div>
     </div>
@@ -230,11 +303,9 @@
     <div class="container">
       <a id="rolling-stock"></a>
       <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-        {% for t in rolling_stock.thumbnail.all %}
+        {% for t in rolling_stock.image.all %}
         <div class="col">
-          <div class="card shadow-sm">
-            <a href="#"><img src="{{ t.image.url }}" alt="Rolling stock image"></a>
-          </div>
+            <img class="img-thumbnail" src="{{ t.image.url }}" alt="Rolling stock image">
         </div>
         {% endfor %}
       </div>
