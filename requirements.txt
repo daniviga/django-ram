@@ -1,5 +1,6 @@
 pytz
 pillow
+markdown
 Django
 djangorestframework
 django-solo
