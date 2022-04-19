@@ -5,6 +5,7 @@ from django.views import View
 from django.http import Http404
 from django.db.models import Q
 from django.shortcuts import render
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from portal.utils import get_site_conf
@@ -96,7 +97,10 @@ class GetHomeFiltered(View):
 
 class GetRollingStock(View):
     def get(self, request, uuid):
-        rolling_stock = RollingStock.objects.get(uuid=uuid)
+        try:
+            rolling_stock = RollingStock.objects.get(uuid=uuid)
+        except ObjectDoesNotExist:
+            raise Http404
 
         return render(
             request,
@@ -126,7 +130,10 @@ class Consists(View):
 class GetConsist(View):
     def get(self, request, uuid, page=1):
         site_conf = get_site_conf()
-        consist = Consist.objects.get(uuid=uuid)
+        try:
+            consist = Consist.objects.get(uuid=uuid)
+        except ObjectDoesNotExist:
+            raise Http404
         rolling_stock = consist.consist_item.all()
         paginator = Paginator(rolling_stock, site_conf.items_per_page)
 
