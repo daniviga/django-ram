@@ -1,5 +1,6 @@
 from uuid import uuid4
 from django.db import models
+from django.urls import reverse
 
 from metadata.models import Company, Tag
 from roster.models import RollingStock
@@ -22,6 +23,9 @@ class Consist(models.Model):
 
     def __str__(self):
         return "{0}".format(self.identifier)
+
+    def get_absolute_url(self):
+        return reverse("consist", kwargs={"uuid": self.uuid})
 
 
 class ConsistItem(models.Model):

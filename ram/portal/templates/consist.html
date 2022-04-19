@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% load markdown %}
+
+      {% block header %}
+        <h1 class="fw-light">{{ consist }}</h1>
+        {% if consist.tags.all %}
+        <p><small>Tags:</small>
+         {% for t in consist.tags.all %}<span class="badge bg-primary">
+          {{ t.name }}</span>{# new line is required #}
+          {% endfor %}
+        </p>
+        {% endif %}
+      {% endblock %}
+      {% block cards %}
+      {% for r in rolling_stock %}
+      <div class="col">
+        <div class="card shadow-sm">
+          {% for i in r.rolling_stock.image.all %}
+          {% if i.is_thumbnail %}<a href="/portal/{{ r.rolling_stock.uuid }}"><img src="{{ i.image.url }}" alt="Card image cap"></a>{% endif %}
+          {% endfor %}
+          <div class="card-body">
+            <p class="card-text"><strong>{{ r }}</strong></p>
+            {% if r.rolling_stock.tags.all %}
+            <p class="card-text"><small>Tags:</small>
+             {% for t in r.rolling_stock.tags.all %}<span class="badge bg-primary">
+              {{ t.name }}</span>{# new line is required #}
+              {% endfor %}
+            </p>
+            {% endif %}
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th colspan="2" scope="row">Data</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th width="35%" scope="row">Type</th>
+                  <td>{{ r.rolling_stock.rolling_class.type }}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Company</th>
+                  <td><abbr title="{{ r.rolling_stock.rolling_class.company.extended_name }}">{{ r.rolling_stock.rolling_class.company }}</abbr></td>
+                </tr>
+                <tr>
+                  <th scope="row">Class</th>
+                  <td>{{ r.rolling_stock.rolling_class.identifier }}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Road number</th>
+                  <td>{{ r.rolling_stock.road_number }}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Era</th>
+                  <td>{{ r.rolling_stock.era }}</td>
+                </tr>
+                <tr>
+                  <th width="35%" scope="row">Manufacturer</th>
+                  <td>{% if r.rolling_stock.manufacturer.website %}<a href="{{ r.rolling_stock.manufacturer.website }}">{% endif %}{{ r.rolling_stock.manufacturer }}{% if r.rolling_stock.manufacturer.website %}</a>{% endif %}</th>
+                </tr>
+                <tr>
+                  <th scope="row">Scale</th>
+                  <td><abbr title="{{ r.rolling_stock.scale.ratio }} - {{ r.rolling_stock.scale.gauge }}">{{ r.rolling_stock.scale }}</abbr></td>
+                </tr>
+                <tr>
+                  <th scope="row">SKU</th>
+                  <td>{{ r.rolling_stock.sku }}</td>
+                </tr>
+                </tbody>
+              </table>
+            {% if r.rolling_stock.decoder %}
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th colspan="2" scope="row">DCC data</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th width="35%" scope="row">Decoder</th>
+                    <td>{{ r.rolling_stock.decoder }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Address</th>
+                    <td>{{ r.rolling_stock.address }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            {% endif %}
+            <div class="btn-group mb-4">
+             <a class="btn btn-sm btn-outline-primary" href="/portal/{{ r.rolling_stock.uuid }}">Show all data</a>
+              {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% url 'admin:roster_rollingstock_change' r.rolling_stock.pk %}">Edit</a>{% endif %}
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <small class="text-muted">Updated {{ r.rolling_stock.updated_time | date:"M d, Y H:m" }}</small>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+      {% endblock %}
+      {% block pagination %}
+      {% if rolling_stock.has_other_pages %}
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center mt-4">
+          {% if rolling_stock.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="/portal/consist/{{ consist.uuid }}/{{ rolling_stock.previous_page_number }}#rolling_stock" tabindex="-1">Previous</a>
+          </li>
+          {% else %}
+          <li class="page-item disabled">
+            <span class="page-link">Previous</span>
+          </li>
+          {% endif %}
+          {% for i in rolling_stock.paginator.page_range %}
+            {% if rolling_stock.number == i %}
+            <li class="page-item active">
+              <span class="page-link">{{ i }}</span></span>
+            </li>
+            {% else %}
+            <li class="page-item"><a class="page-link" href="/portal/consist/{{ consist.uuid }}/{{ i }}#rolling-stock">{{ i }}</a></li>
+            {% endif %}
+          {% endfor %}
+          {% if rolling_stock.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="/portal/consist/{{ consist.uuid }}/{{ rolling_stock.next_page_number }}#rolling-stock" tabindex="-1">Next</a>
+          </li>
+          {% else %}
+          <li class="page-item disabled">
+            <span class="page-link">Next</span>
+          </li>
+          {% endif %}
+        </ul>
+      </nav>
+      {% endif %}
+      {% endblock %}
+      {% block extra_content %}
+      <section class="py-4 text-start container">
+        <div class="row">
+          <div class="mx-auto">
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+              {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% url 'admin:consist_consist_change' consist.pk %}">Edit</a>{% endif %}
+            </div>
+          </div>
+        </div>
+      </section>
+      {% endblock %}
