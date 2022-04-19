@@ -14,18 +14,18 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.conf import settings
+from django.shortcuts import redirect
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
 from portal.utils import get_site_conf
-from portal.views import GetHome
 
 site_conf = get_site_conf()
 admin.site.site_header = site_conf.site_name
 
 urlpatterns = [
-    path("", GetHome.as_view(), name="index"),
+    path("", lambda r: redirect("/portal/")),
     path("portal/", include("portal.urls")),
     path("ht/", include("health_check.urls")),
     path("admin/", admin.site.urls),

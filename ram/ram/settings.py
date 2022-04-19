@@ -28,7 +28,7 @@ SECRET_KEY = (
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -152,10 +152,7 @@ DECODER_INTERFACES = [
     (5, "Next18/Next18S"),
 ]
 
-MANUFACTURER_TYPES = [
-    ("model", "Model"),
-    ("real", "Real")
-]
+MANUFACTURER_TYPES = [("model", "Model"), ("real", "Real")]
 
 ROLLING_STOCK_TYPES = [
     ("engine", "Engine"),

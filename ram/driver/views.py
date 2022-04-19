@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import (
     IsAuthenticated,
     BasePermission,
-    SAFE_METHODS
+    SAFE_METHODS,
 )
 
 from ram.parsers import PlainTextParser
@@ -40,16 +40,15 @@ class Firewall(BasePermission):
         if not config.network:
             return request.method in SAFE_METHODS
 
-        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
         if x_forwarded_for:
-            ip = IPv4Address(x_forwarded_for.split(',')[0])
+            ip = IPv4Address(x_forwarded_for.split(",")[0])
         else:
             ip = IPv4Address(request.META.get("REMOTE_ADDR"))
 
-        network = IPv4Network("{0}/{1}".format(
-            config.network,
-            config.subnet_mask
-        ))
+        network = IPv4Network(
+            "{0}/{1}".format(config.network, config.subnet_mask)
+        )
 
         # accept IP configured is settings or localhost
         if ip in network or ip in IPv4Network("127.0.0.0/8"):
@@ -101,6 +100,7 @@ class Function(APIView):
     """
     Send "Function" commands to a valid DCC address
     """
+
     permission_classes = [IsAuthenticated | Firewall]
 
     def put(self, request, address):
@@ -117,6 +117,7 @@ class Cab(APIView):
     """
     Send "Cab" commands to a valid DCC address
     """
+
     permission_classes = [IsAuthenticated | Firewall]
 
     def put(self, request, address):
@@ -132,6 +133,7 @@ class Infra(APIView):
     """
     Send "Infra" commands to a valid DCC address
     """
+
     permission_classes = [IsAuthenticated | Firewall]
 
     def put(self, request):
@@ -147,6 +149,7 @@ class Emergency(APIView):
     """
     Send an "Emergency" stop, no matter the HTTP method used
     """
+
     permission_classes = [IsAuthenticated | Firewall]
 
     def put(self, request):

@@ -11,13 +11,14 @@ def git_suffix(fname):
     """
     try:
         gh = subprocess.check_output(
-            ['git', 'rev-parse', '--short', 'HEAD'],
-            stderr=open(os.devnull, 'w')).strip()
-        gh = "-git" + gh.decode() if gh else ''
+            ["git", "rev-parse", "--short", "HEAD"],
+            stderr=open(os.devnull, "w"),
+        ).strip()
+        gh = "-git" + gh.decode() if gh else ""
     except Exception:
         # trapping everything on purpose; git may not be installed or it
         # may not work properly
-        gh = ''
+        gh = ""
 
     return gh
 
