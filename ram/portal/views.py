@@ -9,6 +9,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from portal.utils import get_site_conf
 from roster.models import RollingStock
+from consist.models import Consist
 
 
 class GetHome(View):
@@ -28,30 +29,37 @@ class GetHome(View):
 
 
 class GetHomeFiltered(View):
-    def run_search(self, request, search, page=1):
+    def run_search(self, request, search, _filter, page=1):
         # if not hasattr(RollingStock, _filter):
         #     raise Http404
         site_conf = get_site_conf()
-        # query = {
-        #     _filter: _value
-        # }
-        query = reduce(
-            operator.or_,
-            (
-                Q(
-                    Q(rolling_class__identifier__icontains=s)
-                    | Q(rolling_class__description__icontains=s)
-                    | Q(rolling_class__type__type__icontains=s)
-                    | Q(road_number__icontains=s)
-                    | Q(rolling_class__company__name__icontains=s)
-                    | Q(rolling_class__company__country__icontains=s)
-                    | Q(manufacturer__name__icontains=s)
-                    | Q(scale__scale__icontains=s)
-                    | Q(tags__name__icontains=s)
-                )
-                for s in search.split()
-            ),
-        )
+        if _filter is None:
+            query = reduce(
+                operator.or_,
+                (
+                    Q(
+                        Q(rolling_class__identifier__icontains=s)
+                        | Q(rolling_class__description__icontains=s)
+                        | Q(rolling_class__type__type__icontains=s)
+                        | Q(road_number__icontains=s)
+                        | Q(rolling_class__company__name__icontains=s)
+                        | Q(rolling_class__company__country__icontains=s)
+                        | Q(manufacturer__name__icontains=s)
+                        | Q(scale__scale__icontains=s)
+                        | Q(tags__name__icontains=s)
+                    )
+                    for s in search.split()
+                ),
+            )
+        elif _filter == "company":
+            query = Q(
+                Q(rolling_class__company__name__icontains=search)
+                | Q(rolling_class__company__extended_name__icontains=search)
+            )
+        elif _filter == "scale":
+            query = Q(scale__scale__icontains=search)
+        else:
+            raise Http404
         rolling_stock = RollingStock.objects.filter(query)
         paginator = Paginator(rolling_stock, site_conf.items_per_page)
 
@@ -64,8 +72,8 @@ class GetHomeFiltered(View):
 
         return rolling_stock
 
-    def get(self, request, search, page=1):
-        rolling_stock = self.run_search(request, search, page)
+    def get(self, request, search, _filter=None, page=1):
+        rolling_stock = self.run_search(request, search, _filter, page)
 
         return render(
             request,
@@ -73,11 +81,11 @@ class GetHomeFiltered(View):
             {"search": search, "rolling_stock": rolling_stock},
         )
 
-    def post(self, request, page=1):
+    def post(self, request, _filter=None, page=1):
         search = request.POST.get("search")
         if not search:
             raise Http404
-        rolling_stock = self.run_search(request, search, page)
+        rolling_stock = self.run_search(request, search, _filter, page)
 
         return render(
             request,
@@ -96,4 +104,41 @@ class GetRollingStock(View):
             {
                 "rolling_stock": rolling_stock,
             },
+        )
+
+
+class Consists(View):
+    def get(self, request, page=1):
+        site_conf = get_site_conf()
+        consist = Consist.objects.all()
+        paginator = Paginator(consist, site_conf.items_per_page)
+
+        try:
+            consist = paginator.page(page)
+        except PageNotAnInteger:
+            consist = paginator.page(1)
+        except EmptyPage:
+            consist = paginator.page(paginator.num_pages)
+
+        return render(request, "consists.html", {"consist": consist})
+
+
+class GetConsist(View):
+    def get(self, request, uuid, page=1):
+        site_conf = get_site_conf()
+        consist = Consist.objects.get(uuid=uuid)
+        rolling_stock = consist.consist_item.all()
+        paginator = Paginator(rolling_stock, site_conf.items_per_page)
+
+        try:
+            rolling_stock = paginator.page(page)
+        except PageNotAnInteger:
+            rolling_stock = paginator.page(1)
+        except EmptyPage:
+            rolling_stock = paginator.page(paginator.num_pages)
+
+        return render(
+            request,
+            "consist.html",
+            {"consist": consist, "rolling_stock": rolling_stock},
         )

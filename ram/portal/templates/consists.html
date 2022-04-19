@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% load markdown %}
+
+      {% block header %}
+        <h1 class="fw-light">Consists</h1>
+      {% endblock %}
+      {% block cards %}
+      {% for c in consist %}
+      <div class="col">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <p class="card-text"><strong>{{ c.identifier }}</strong></p>
+            {% if c.tags.all %}
+            <p class="card-text"><small>Tags:</small>
+             {% for t in c.tags.all %}<span class="badge bg-primary">
+              {{ t.name }}</span>{# new line is required #}
+              {% endfor %}
+            </p>
+            {% endif %}
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th colspan="2" scope="row">Consist data</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% if c.address %}
+                <tr>
+                  <th width="35%" scope="row">Address</th>
+                  <td>{{ c.address }}</td>
+                </tr>
+                {% endif %}
+                <tr>
+                  <th width="35%" scope="row">Company</th>
+                  <td><abbr title="{{ c.company.extended_name }}">{{ c.company }}</abbr></td>
+                </tr>
+                <tr>
+                  <th scope="row">Era</th>
+                  <td>{{ c.era }}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Length</th>
+                  <td>{{ c.consist_item.all | length }}</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="btn-group mb-4">
+             <a class="btn btn-sm btn-outline-primary" href="/portal/consist/{{ c.uuid }}">Show all data</a>
+              {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{# url 'admin:consist_consist_change' c.pk #}">Edit</a>{% endif %}
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <small class="text-muted">Updated {{ c.updated_time | date:"M d, Y H:m" }}</small>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+      {% endblock %}
+      {% block pagination %}
+      {% if rolling_stock.has_other_pages %}
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center mt-4">
+          {% if rolling_stock.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="/portal/consist/{{ consist.uuid }}/{{ rolling_stock.previous_page_number }}#rolling_stock" tabindex="-1">Previous</a>
+          </li>
+          {% else %}
+          <li class="page-item disabled">
+            <span class="page-link">Previous</span>
+          </li>
+          {% endif %}
+          {% for i in rolling_stock.paginator.page_range %}
+            {% if rolling_stock.number == i %}
+            <li class="page-item active">
+              <span class="page-link">{{ i }}</span></span>
+            </li>
+            {% else %}
+            <li class="page-item"><a class="page-link" href="/portal/consist/{{ consist.uuid }}/{{ i }}#rolling-stock">{{ i }}</a></li>
+            {% endif %}
+          {% endfor %}
+          {% if rolling_stock.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="/portal/consist/{{ consist.uuid }}/{{ rolling_stock.next_page_number }}#rolling-stock" tabindex="-1">Next</a>
+          </li>
+          {% else %}
+          <li class="page-item disabled">
+            <span class="page-link">Next</span>
+          </li>
+          {% endif %}
+        </ul>
+      </nav>
+      {% endif %}
+      {% endblock %}
