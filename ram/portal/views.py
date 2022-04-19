@@ -31,8 +31,6 @@ class GetHome(View):
 
 class GetHomeFiltered(View):
     def run_search(self, request, search, _filter, page=1):
-        # if not hasattr(RollingStock, _filter):
-        #     raise Http404
         site_conf = get_site_conf()
         if _filter is None:
             query = reduce(
@@ -62,6 +60,7 @@ class GetHomeFiltered(View):
         else:
             raise Http404
         rolling_stock = RollingStock.objects.filter(query)
+        matches = len(rolling_stock)
         paginator = Paginator(rolling_stock, site_conf.items_per_page)
 
         try:
@@ -71,10 +70,11 @@ class GetHomeFiltered(View):
         except EmptyPage:
             rolling_stock = paginator.page(paginator.num_pages)
 
-        return rolling_stock
+        return rolling_stock, matches
 
     def get(self, request, search, _filter=None, page=1):
-        rolling_stock = self.run_search(request, search, _filter, page)
+        rolling_stock, matches = self.run_search(
+            request, search, _filter, page)
 
         return render(
             request,
@@ -82,6 +82,7 @@ class GetHomeFiltered(View):
             {
                 "search": search,
                 "filter": _filter,
+                "matches": matches,
                 "rolling_stock": rolling_stock,
             },
         )
@@ -90,7 +91,8 @@ class GetHomeFiltered(View):
         search = request.POST.get("search")
         if not search:
             raise Http404
-        rolling_stock = self.run_search(request, search, _filter, page)
+        rolling_stock, matches = self.run_search(
+            request, search, _filter, page)
 
         return render(
             request,
@@ -98,6 +100,7 @@ class GetHomeFiltered(View):
             {
                 "search": search,
                 "filter": _filter,
+                "matches": matches,
                 "rolling_stock": rolling_stock,
             },
         )

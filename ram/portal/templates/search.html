@@ -2,7 +2,7 @@
 
       {% block header %}
         <h1 class="fw-light">{{ filter | default_if_none:"Search" | title }}: {{ search }}</h1>
-        <p class="lead text-muted">Results found: {{ rolling_stock | length }}</p>
+        <p class="lead text-muted">Results found: {{ matches }}</p>
       {% endblock %}
       {% block pagination %}
       {% if rolling_stock.has_other_pages %}
