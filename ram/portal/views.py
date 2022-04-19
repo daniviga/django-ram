@@ -79,7 +79,11 @@ class GetHomeFiltered(View):
         return render(
             request,
             "search.html",
-            {"search": search, "rolling_stock": rolling_stock},
+            {
+                "search": search,
+                "filter": _filter,
+                "rolling_stock": rolling_stock,
+            },
         )
 
     def post(self, request, _filter=None, page=1):
@@ -91,7 +95,11 @@ class GetHomeFiltered(View):
         return render(
             request,
             "search.html",
-            {"search": search, "rolling_stock": rolling_stock},
+            {
+                "search": search,
+                "filter": _filter,
+                "rolling_stock": rolling_stock,
+            },
         )
 
 

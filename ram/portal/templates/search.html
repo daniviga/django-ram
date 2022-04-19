@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
       {% block header %}
-        <h1 class="fw-light">Search: {{ search }}</h1>
+        <h1 class="fw-light">{{ filter | default_if_none:"Search" | title }}: {{ search }}</h1>
         <p class="lead text-muted">Results found: {{ rolling_stock | length }}</p>
       {% endblock %}
       {% block pagination %}
