@@ -16,5 +16,5 @@
         </ul>
       </div>
       {% else %}
-      <a class="btn btn-sm btn-outline-light" href="{% url 'admin:login' %}?next={{ request.path }}">Log in</a>
+      <a class="btn btn-sm btn-outline-dark" href="{% url 'admin:login' %}?next={{ request.path }}">Log in</a>
       {% endif %}
