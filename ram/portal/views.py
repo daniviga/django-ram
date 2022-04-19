@@ -24,9 +24,7 @@ class GetHome(View):
         except EmptyPage:
             rolling_stock = paginator.page(paginator.num_pages)
 
-        return render(request, "home.html", {
-            "rolling_stock": rolling_stock
-        })
+        return render(request, "home.html", {"rolling_stock": rolling_stock})
 
 
 class GetHomeFiltered(View):
@@ -37,17 +35,23 @@ class GetHomeFiltered(View):
         # query = {
         #     _filter: _value
         # }
-        query = reduce(operator.or_, (Q(
-            Q(rolling_class__identifier__icontains=s) |
-            Q(rolling_class__description__icontains=s) |
-            Q(rolling_class__type__type__icontains=s) |
-            Q(road_number__icontains=s) |
-            Q(rolling_class__company__name__icontains=s) |
-            Q(rolling_class__company__country__icontains=s) |
-            Q(manufacturer__name__icontains=s) |
-            Q(scale__scale__icontains=s) |
-            Q(tags__name__icontains=s)
-        ) for s in search.split()))
+        query = reduce(
+            operator.or_,
+            (
+                Q(
+                    Q(rolling_class__identifier__icontains=s)
+                    | Q(rolling_class__description__icontains=s)
+                    | Q(rolling_class__type__type__icontains=s)
+                    | Q(road_number__icontains=s)
+                    | Q(rolling_class__company__name__icontains=s)
+                    | Q(rolling_class__company__country__icontains=s)
+                    | Q(manufacturer__name__icontains=s)
+                    | Q(scale__scale__icontains=s)
+                    | Q(tags__name__icontains=s)
+                )
+                for s in search.split()
+            ),
+        )
         rolling_stock = RollingStock.objects.filter(query)
         paginator = Paginator(rolling_stock, site_conf.items_per_page)
 
@@ -63,10 +67,11 @@ class GetHomeFiltered(View):
     def get(self, request, search, page=1):
         rolling_stock = self.run_search(request, search, page)
 
-        return render(request, "search.html", {
-            "search": search,
-            "rolling_stock": rolling_stock
-        })
+        return render(
+            request,
+            "search.html",
+            {"search": search, "rolling_stock": rolling_stock},
+        )
 
     def post(self, request, page=1):
         search = request.POST.get("search")
@@ -74,16 +79,21 @@ class GetHomeFiltered(View):
             raise Http404
         rolling_stock = self.run_search(request, search, page)
 
-        return render(request, "search.html", {
-            "search": search,
-            "rolling_stock": rolling_stock
-        })
+        return render(
+            request,
+            "search.html",
+            {"search": search, "rolling_stock": rolling_stock},
+        )
 
 
 class GetRollingStock(View):
     def get(self, request, uuid):
         rolling_stock = RollingStock.objects.get(uuid=uuid)
 
-        return render(request, "page.html", {
-            "rolling_stock": rolling_stock,
-        })
+        return render(
+            request,
+            "page.html",
+            {
+                "rolling_stock": rolling_stock,
+            },
+        )

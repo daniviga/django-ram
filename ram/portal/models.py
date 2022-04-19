@@ -7,14 +7,14 @@ from solo.models import SingletonModel
 
 class SiteConfiguration(SingletonModel):
     site_name = models.CharField(
-        max_length=256,
-        default="Railroad Assets Manager")
+        max_length=256, default="Railroad Assets Manager"
+    )
     site_author = models.CharField(max_length=256, blank=True)
     about = models.TextField(blank=True)
     items_per_page = models.CharField(
-        max_length=2, choices=[
-            (str(x * 3), str(x * 3)) for x in range(2, 11)],
-        default='6'
+        max_length=2,
+        choices=[(str(x * 3), str(x * 3)) for x in range(2, 11)],
+        default="6",
     )
     footer = models.TextField(blank=True)
     footer_extended = models.TextField(blank=True)
