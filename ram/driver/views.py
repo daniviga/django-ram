@@ -57,7 +57,7 @@ class Firewall(BasePermission):
 
 class Test(APIView):
     """
-    Send a test <s> command
+    Send a test 's' command
     """
 
     parser_classes = [PlainTextParser]
