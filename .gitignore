@@ -129,5 +129,6 @@ dmypy.json
 .pyre/
 
 *.swp
-ram/storage
+ram/storage/
+!ram/storage/.gitignore
 arduino/CommandStation-EX/build/
