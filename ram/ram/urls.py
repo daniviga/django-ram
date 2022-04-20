@@ -19,11 +19,6 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
-from portal.utils import get_site_conf
-
-site_conf = get_site_conf()
-admin.site.site_header = site_conf.site_name
-
 urlpatterns = [
     path("", lambda r: redirect("/portal/")),
     path("portal/", include("portal.urls")),
