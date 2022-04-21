@@ -10,7 +10,7 @@
 $(document).ready(function(){
     console.log("Command Controller loaded");
     uiDisable(true)
-    emulatorClass = new Emulator({logger: displayLog});
+    emulatorClass = new RestAPI({logger: displayLog});
 });
 
 // - Request a port and open an asynchronous connection, 

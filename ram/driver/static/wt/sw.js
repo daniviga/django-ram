@@ -1,6 +1,5 @@
 var cacheName = 'WebThrottle-EX';
 var filesToCache = [
-  '/WebThrottle-EX/',
   'index.html',
   'images/favicon.ico',
   'images/carbon_fibre.png',
