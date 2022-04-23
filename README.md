@@ -30,14 +30,14 @@ Project is based on the following technologies and components:
 - [Django](https://www.djangoproject.com/): *the* web framework
 - [Django REST](https://www.django-rest-framework.org/): API for the lazy
 - [Bootstrap](https://getbootstrap.com/): for the web frontend
-- [Arduino](https://arduino.cc): DCC hardware
+- [Arduino](https://arduino.cc): DCC hardware; you must get one, really
 - [DCC++ EX Command Station](https://dcc-ex.com/): DCC firmware; an amazing project
-- [DCC++ EX WebThrottle](https://github.com/DCC-EX/WebThrottle-EX): a slighly modified version of the DCC++ EX web throttle
+- [DCC++ EX WebThrottle](https://github.com/DCC-EX/WebThrottle-EX): the DCC++ EX web throttle, a slightly modified version
 
 It has been developed with:
 
 - [vim](https://www.vim.org/): because it rocks
-- [arduino-cli](https://github.com/arduino/arduino-cli/): a mouse? What the hack?
+- [arduino-cli](https://github.com/arduino/arduino-cli/): a mouse? What the heck?
 - [vim-arduino](https://github.com/stevearc/vim-arduino): another IDE? No thanks
 - [podman](https://podman.io/): because containers are fancy
 - [QEMU (avr)](https://qemu-project.gitlab.io/qemu/system/target-avr.html): QEMU can even make toast!
