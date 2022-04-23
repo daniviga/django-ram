@@ -25,7 +25,7 @@ class RestAPI {
       type: "PUT",
       url: "/api/v1/dcc/command",
       data: packet,
-      success: function (data) { displayLog('[RECEIVE] '+data.response.replace(/\n/g,"")); },
+      success: function (data) { displayLog('[RECEIVE] '+data.response); },
       contentType: "text/plain",
       headers: {'X-CSRFToken': this.csrftoken}
     });
