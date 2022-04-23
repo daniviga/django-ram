@@ -52,7 +52,7 @@ class Firewall(BasePermission):
 
         # accept IP configured is settings or localhost
         if ip in network or ip in IPv4Network("127.0.0.0/8"):
-            return request.method in SAFE_METHODS
+            return True
 
 
 class Test(APIView):

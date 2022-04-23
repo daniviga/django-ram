@@ -1,1 +1,1 @@
-# django-dcc
+# Django Railroad Assets Manager (django-ram)
