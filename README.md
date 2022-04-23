@@ -1,1 +1,1 @@
-# Django Railroad Assets Manager (django-rma)
+# Django Railroad Assets Manager (django-ram)

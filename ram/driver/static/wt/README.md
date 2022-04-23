@@ -1,4 +1,4 @@
-# DCC++ EX Web Throttle for django-rma
+# DCC++ EX Web Throttle for django-ram
 
 A slightly modiffied version of [DCC++ EX Web Throttle](https://github.com/DCC-EX/WebThrottle-EX) to be used with django-rma.
 
