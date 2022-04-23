@@ -5,7 +5,7 @@
 A `jff` (just for fun) project that aims to create a
 model railroad assets manager that allows to:
 
-- Create a database of assets (model trains) and consits with their metadata
+- Create a database of assets (model trains) and consists with their metadata
 - Manage the database via a simple but rationale backoffice
 - Expose main data via an HTML interface to show how beautiful is your collection
   to the outside world
@@ -14,7 +14,7 @@ model railroad assets manager that allows to:
 
 ## Preface
 
-**This project is work in progress**. It is intended to have fun only and
+**This project is work in progress**. It is intended for fun only and
 it has been developed with a commitment of few minutes a day;
 it lacks any kind of documentation, code review, architectural review,
 security assesment, pentest, ISO certification, etc.
