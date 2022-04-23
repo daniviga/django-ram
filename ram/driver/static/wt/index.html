@@ -44,7 +44,7 @@
         <script  type="text/javascript" src="js/commandController.js"></script>
         <script  type="text/javascript" src="js/storageController.js"></script> 
         <script  type="text/javascript" src="js/addloco.js"></script> 
-        <script  type="text/javascript" src="js/emulator.js"></script>
+        <script  type="text/javascript" src="js/restapi.js"></script>
         <script  type="text/javascript" src="js/exwebthrottle.js"></script>
         <script type="text/javascript" src="js/pwa.js"></script>
 
@@ -120,8 +120,7 @@
                             </div>
                             <div class="server-button column-5">
                                 <select id="select-method" class="select-control select-xl" name="selectMethod" title="Change the connection method">
-                                    <option value="serial">Serial</option>
-                                    <option value="emulator">Emulator</option>
+                                    <option value="rest">RestAPI</option>
                                 </select>
                                 <button type="button" class="btn-default btn" title="Connect to the Command Station" aria-state="connected" name="button-connect" access="false" id="button-connect">
                                     <span class="con-ind"></span>Connect DCC++ EX

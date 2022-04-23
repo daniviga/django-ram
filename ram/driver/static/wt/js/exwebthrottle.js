@@ -58,7 +58,7 @@ window.functions = {
 };
 window.isStopped = true;
 let port;
-let emulatorMode;
+let restMode;
 let reader;
 let inputDone;
 let outputDone;

@@ -10,7 +10,7 @@
 $(document).ready(function(){
     console.log("Command Controller loaded");
     uiDisable(true)
-    emulatorClass = new RestAPI({logger: displayLog});
+    restClass = new RestAPI({logger: displayLog});
 });
 
 // - Request a port and open an asynchronous connection, 
@@ -64,11 +64,10 @@ async function connectServer() {
             return false;
         }
     } else{
-        // If using the emulator
-        emulatorMode = true;
+        restMode = true;
         // Displays dummy hardware message
-        displayLog("\n[CONNECTION] Emulator connected")
-        displayLog("[RECEIVE] DCC++ EX COMMAND STATION FOR EMULATOR / EMULATOR MOTOR SHIELD: V-1.0.0 / Feb 30 2020 13:10:04")
+        displayLog("\n[CONNECTION] Connected to "+window.location.host);
+        restClass.write("<s>");
         uiDisable(false)
         return true;
     }
@@ -95,8 +94,7 @@ async function readLoop() {
 }
 
 function writeToStream(...lines) {
-  // Stops data being written to nonexistent port if using emulator
-  let stream = emulatorClass
+  let stream = restClass
   if (port) {
     stream = outputStream.getWriter();
   }
@@ -188,8 +186,8 @@ async function disconnectServer() {
         displayLog("[CONNECTION] Serial disconnected");
     } else {
         // Disables emulator
-        emulatorMode = undefined;
-        displayLog("[CONNECTION] Emulator disconnected");
+        restMode = undefined;
+        displayLog("[CONNECTION] "+window.location.host+" disconnected");
     }
     // Allows a new method to be chosen
     selectMethod.disabled = false;
@@ -198,7 +196,7 @@ async function disconnectServer() {
 // Connect or disconnect from the command station
 async function toggleServer(btn) {
     // If already connected, disconnect
-    if (port || emulatorMode) {
+    if (port || restMode) {
         await disconnectServer();
         btn.attr('aria-state','Disconnected');
         btn.html('<span class="con-ind"></span>Connect DCC++ EX'); //<span id="con-ind"></span>Connect DCC++ EX
@@ -218,8 +216,8 @@ async function toggleServer(btn) {
 
 // Display log of events
 function displayLog(data){
-    data = data.replace("<"," ");
-    data = data.replace(">"," ");
+    data = data.replaceAll("<"," ");
+    data = data.replaceAll(">"," ");
     $("#log-box").append("<br>"+data.toString()+"<br>");
     $("#log-box").scrollTop($("#log-box").prop("scrollHeight"));
 }
