@@ -14,10 +14,10 @@ model railroad assets manager that allows to:
 
 ## Preface
 
-Project is intended to have fun only and it has been developed with a
-commitment of few minutes a day; it lacks any kind of documentation, code
-review, architectural review, security assesment, pentest, ISO certification,
-etc.
+**This project is work in progress**. It is intended to have fun only and
+it has been developed with a commitment of few minutes a day;
+it lacks any kind of documentation, code review, architectural review,
+security assesment, pentest, ISO certification, etc.
 
 This project probably doesn't match you needs nor expectations. Be aware.
 
