@@ -10,7 +10,7 @@ model railroad assets manager that allows to:
 - Expose main data via an HTML interface to show how beautiful is your collection
   to the outside world
 - Act as a DCC++ EX REST API gateway to control assets remotely via DCC.
-  By anyone, if you'd like (really?).
+  By anyone, if you'd like (seriously?).
 
 ## Preface
 
@@ -43,7 +43,7 @@ It has been developed with:
 - [QEMU (avr)](https://qemu-project.gitlab.io/qemu/system/target-avr.html): QEMU can even make toast!
 
 
-## Requirments
+## Requirements
 
 - Python 3.8+
 - A USB port when running Arduino hardware (and adaptors if you have a Mac)
@@ -131,14 +131,3 @@ $ podman run --init --cpus 0.1 -d -p 2560:2560 dcc/net-to-serial:sim
 ```
 
 To be continued ...
-
-
-
-
-
-
-
-
-
-
-
