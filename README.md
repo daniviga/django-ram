@@ -2,6 +2,9 @@
 
 [![Django CI](https://github.com/daniviga/django-rma/actions/workflows/django.yml/badge.svg)](https://github.com/daniviga/django-rma/actions/workflows/django.yml)
 
+![image](https://user-images.githubusercontent.com/1818657/175789825-9a03f0ff-a95e-42a2-9611-e14d2817e22f.png)
+
+
 A `jff` (just for fun) project that aims to create a
 model railroad assets manager that allows to:
 
@@ -131,3 +134,30 @@ $ podman run --init --cpus 0.1 -d -p 2560:2560 dcc/net-to-serial:sim
 ```
 
 To be continued ...
+
+## Screenshots
+
+### Frontend
+
+![image](https://user-images.githubusercontent.com/1818657/175789897-9ec4a9bb-9c65-48ef-9b57-ae94e094e6a7.png)
+---
+![image](https://user-images.githubusercontent.com/1818657/175789901-ef50acd7-8c05-4788-92a2-1bb1280d598c.png)
+---
+![image](https://user-images.githubusercontent.com/1818657/175790004-18926d23-28f9-45bb-b279-6c26575ae3a5.png)
+---
+![image](https://user-images.githubusercontent.com/1818657/175790008-62eea2cc-1c41-42df-9026-4cf6e8ef712c.png)
+
+
+### Backoffice
+
+![image](https://user-images.githubusercontent.com/1818657/175789937-3e4970a2-b37d-44c3-8605-62dabe209c65.png)
+---
+![image](https://user-images.githubusercontent.com/1818657/175789946-d7ce882c-1ba6-49b2-8e0a-1144e5c6bc35.png)
+---
+![image](https://user-images.githubusercontent.com/1818657/175789954-0735a4ea-bcaf-4a45-adbc-64105091b051.png)
+
+
+
+
+
+
