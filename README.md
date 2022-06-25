@@ -156,6 +156,9 @@ To be continued ...
 ---
 ![image](https://user-images.githubusercontent.com/1818657/175789954-0735a4ea-bcaf-4a45-adbc-64105091b051.png)
 
+### Rest API
+
+![image](https://user-images.githubusercontent.com/1818657/175790055-4afc5d4e-1d50-4f5b-beeb-822c2496ed46.png)
 
 
 
