@@ -20,7 +20,7 @@ from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
-    path("", lambda r: redirect("/portal/")),
+    path("", lambda r: redirect("portal/")),
     path("portal/", include("portal.urls")),
     path("ht/", include("health_check.urls")),
     path("admin/", admin.site.urls),
