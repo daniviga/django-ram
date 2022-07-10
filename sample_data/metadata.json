@@ -1,1 +1,376 @@
-[{"model": "metadata.property", "pk": 1, "fields": {"name": "Wheel arrangement"}}, {"model": "metadata.property", "pk": 2, "fields": {"name": "Trucks"}}, {"model": "metadata.manufacturer", "pk": 1, "fields": {"name": "Roco", "category": "model", "website": "https://www.roco.cc/", "logo": "images/Roco_logo_ABtacmm.png"}}, {"model": "metadata.manufacturer", "pk": 2, "fields": {"name": "Liliput", "category": "model", "website": "https://liliput.de/", "logo": "images/liliput_logo.png"}}, {"model": "metadata.manufacturer", "pk": 3, "fields": {"name": "Stängl", "category": "model", "website": "https://www.halling.at/", "logo": "images/staengl_logo.png"}}, {"model": "metadata.manufacturer", "pk": 4, "fields": {"name": "Ferro-Train", "category": "model", "website": "https://www.halling.at/", "logo": "images/ferro_logo.png"}}, {"model": "metadata.manufacturer", "pk": 5, "fields": {"name": "Bachmann", "category": "model", "website": "https://bachmanntrains.com/", "logo": "images/Bachmann_bros_logo.png"}}, {"model": "metadata.manufacturer", "pk": 6, "fields": {"name": "ESU", "category": "model", "website": "https://www.esu.eu/", "logo": ""}}, {"model": "metadata.manufacturer", "pk": 7, "fields": {"name": "Soundtraxx", "category": "model", "website": "https://soundtraxx.com/", "logo": ""}}, {"model": "metadata.manufacturer", "pk": 8, "fields": {"name": "Lima Locomotive Works", "category": "real", "website": "", "logo": ""}}, {"model": "metadata.manufacturer", "pk": 9, "fields": {"name": "Baldwin Locomotive Works", "category": "real", "website": "", "logo": ""}}, {"model": "metadata.manufacturer", "pk": 10, "fields": {"name": "Rogers Locomotive and Machine Works", "category": "real", "website": "", "logo": ""}}, {"model": "metadata.manufacturer", "pk": 11, "fields": {"name": "Porter Locomotive Works", "category": "real", "website": "", "logo": ""}}, {"model": "metadata.manufacturer", "pk": 12, "fields": {"name": "Krauss & Comp. / Österreichische Siemens-Schuckert Werke", "category": "real", "website": "", "logo": ""}}, {"model": "metadata.manufacturer", "pk": 13, "fields": {"name": "Simmering-Graz-Pauker", "category": "real", "website": "", "logo": ""}}, {"model": "metadata.manufacturer", "pk": 14, "fields": {"name": "Davenport Locomotive Works", "category": "real", "website": "", "logo": ""}}, {"model": "metadata.company", "pk": 1, "fields": {"name": "ÖBB", "extended_name": "Österreichische Bundesbahnen", "country": "AT", "freelance": false, "logo": "images/ÖBB_Logo_Pflatsch_neu_vQraZ8r.png"}}, {"model": "metadata.company", "pk": 2, "fields": {"name": "SCRR", "extended_name": "Sand Creek Railroad", "country": "US", "freelance": true, "logo": "images/scrr_Ikh9VQ4.png"}}, {"model": "metadata.company", "pk": 3, "fields": {"name": "RhB", "extended_name": "Rhätische Bahn", "country": "CH", "freelance": false, "logo": ""}}, {"model": "metadata.company", "pk": 4, "fields": {"name": "FO", "extended_name": "Furka-Oberalp", "country": "CH", "freelance": false, "logo": ""}}, {"model": "metadata.decoder", "pk": 1, "fields": {"name": "Basic", "manufacturer": 5, "version": "", "interface": 2, "sound": false, "image": ""}}, {"model": "metadata.decoder", "pk": 2, "fields": {"name": "Tsunami", "manufacturer": 7, "version": "1", "interface": 2, "sound": true, "image": ""}}, {"model": "metadata.decoder", "pk": 3, "fields": {"name": "LokPilot Micro", "manufacturer": 6, "version": "v4", "interface": 1, "sound": false, "image": ""}}, {"model": "metadata.scale", "pk": 1, "fields": {"scale": "H0e", "ratio": "1:87", "gauge": "9 mm"}}, {"model": "metadata.scale", "pk": 2, "fields": {"scale": "H0", "ratio": "1:87", "gauge": "16.5 mm"}}, {"model": "metadata.scale", "pk": 3, "fields": {"scale": "0n30", "ratio": "1:48", "gauge": "16.5 mm"}}, {"model": "metadata.scale", "pk": 4, "fields": {"scale": "H0m", "ratio": "1:87", "gauge": "11 mm"}}, {"model": "metadata.tag", "pk": 1, "fields": {"name": "Mariazellerbahn", "slug": "mariazellerbahn"}}, {"model": "metadata.tag", "pk": 2, "fields": {"name": "Colorado", "slug": "colorado"}}, {"model": "metadata.tag", "pk": 3, "fields": {"name": "Narrow gauge", "slug": "narrow-gauge"}}, {"model": "metadata.rollingstocktype", "pk": 1, "fields": {"type": "Electric", "category": "engine"}}, {"model": "metadata.rollingstocktype", "pk": 2, "fields": {"type": "Diesel", "category": "engine"}}, {"model": "metadata.rollingstocktype", "pk": 3, "fields": {"type": "Steam", "category": "engine"}}, {"model": "metadata.rollingstocktype", "pk": 4, "fields": {"type": "EMU", "category": "railcar"}}, {"model": "metadata.rollingstocktype", "pk": 5, "fields": {"type": "DMU", "category": "railcar"}}, {"model": "metadata.rollingstocktype", "pk": 6, "fields": {"type": "Electric", "category": "railcar"}}, {"model": "metadata.rollingstocktype", "pk": 7, "fields": {"type": "Diesel", "category": "railcar"}}, {"model": "metadata.rollingstocktype", "pk": 8, "fields": {"type": "Passenger", "category": "car"}}, {"model": "metadata.rollingstocktype", "pk": 9, "fields": {"type": "Freight", "category": "car"}}, {"model": "metadata.rollingstocktype", "pk": 10, "fields": {"type": "Caboose", "category": "equipment"}}]
+[
+{
+    "model": "metadata.property",
+    "pk": 1,
+    "fields": {
+        "name": "Wheel arrangement"
+    }
+},
+{
+    "model": "metadata.property",
+    "pk": 2,
+    "fields": {
+        "name": "Trucks"
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 1,
+    "fields": {
+        "name": "Roco",
+        "category": "model",
+        "website": "https://www.roco.cc/",
+        "logo": "images/Roco_logo_ABtacmm.png"
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 2,
+    "fields": {
+        "name": "Liliput",
+        "category": "model",
+        "website": "https://liliput.de/",
+        "logo": "images/liliput_logo.png"
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 3,
+    "fields": {
+        "name": "Stängl",
+        "category": "model",
+        "website": "https://www.halling.at/",
+        "logo": "images/staengl_logo.png"
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 4,
+    "fields": {
+        "name": "Ferro-Train",
+        "category": "model",
+        "website": "https://www.halling.at/",
+        "logo": "images/ferro_logo.png"
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 5,
+    "fields": {
+        "name": "Bachmann",
+        "category": "model",
+        "website": "https://bachmanntrains.com/",
+        "logo": "images/Bachmann_bros_logo.png"
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 6,
+    "fields": {
+        "name": "ESU",
+        "category": "model",
+        "website": "https://www.esu.eu/",
+        "logo": ""
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 7,
+    "fields": {
+        "name": "Soundtraxx",
+        "category": "model",
+        "website": "https://soundtraxx.com/",
+        "logo": ""
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 8,
+    "fields": {
+        "name": "Lima Locomotive Works",
+        "category": "real",
+        "website": "",
+        "logo": ""
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 9,
+    "fields": {
+        "name": "Baldwin Locomotive Works",
+        "category": "real",
+        "website": "",
+        "logo": ""
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 10,
+    "fields": {
+        "name": "Rogers Locomotive and Machine Works",
+        "category": "real",
+        "website": "",
+        "logo": ""
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 11,
+    "fields": {
+        "name": "Porter Locomotive Works",
+        "category": "real",
+        "website": "",
+        "logo": ""
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 12,
+    "fields": {
+        "name": "Krauss & Comp. / Österreichische Siemens-Schuckert Werke",
+        "category": "real",
+        "website": "",
+        "logo": ""
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 13,
+    "fields": {
+        "name": "Simmering-Graz-Pauker",
+        "category": "real",
+        "website": "",
+        "logo": ""
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 14,
+    "fields": {
+        "name": "Davenport Locomotive Works",
+        "category": "real",
+        "website": "",
+        "logo": ""
+    }
+},
+{
+    "model": "metadata.company",
+    "pk": 1,
+    "fields": {
+        "name": "ÖBB",
+        "extended_name": "Österreichische Bundesbahnen",
+        "country": "AT",
+        "freelance": false,
+        "logo": "images/ÖBB_Logo_Pflatsch_neu_vQraZ8r.png"
+    }
+},
+{
+    "model": "metadata.company",
+    "pk": 2,
+    "fields": {
+        "name": "SCRR",
+        "extended_name": "Sand Creek Railroad",
+        "country": "US",
+        "freelance": true,
+        "logo": "images/scrr_Ikh9VQ4.png"
+    }
+},
+{
+    "model": "metadata.company",
+    "pk": 3,
+    "fields": {
+        "name": "RhB",
+        "extended_name": "Rhätische Bahn",
+        "country": "CH",
+        "freelance": false,
+        "logo": ""
+    }
+},
+{
+    "model": "metadata.company",
+    "pk": 4,
+    "fields": {
+        "name": "FO",
+        "extended_name": "Furka-Oberalp",
+        "country": "CH",
+        "freelance": false,
+        "logo": ""
+    }
+},
+{
+    "model": "metadata.decoder",
+    "pk": 1,
+    "fields": {
+        "name": "Basic",
+        "manufacturer": 5,
+        "version": "",
+        "interface": 2,
+        "sound": false,
+        "image": ""
+    }
+},
+{
+    "model": "metadata.decoder",
+    "pk": 2,
+    "fields": {
+        "name": "Tsunami",
+        "manufacturer": 7,
+        "version": "1",
+        "interface": 2,
+        "sound": true,
+        "image": ""
+    }
+},
+{
+    "model": "metadata.decoder",
+    "pk": 3,
+    "fields": {
+        "name": "LokPilot Micro",
+        "manufacturer": 6,
+        "version": "v4",
+        "interface": 1,
+        "sound": false,
+        "image": ""
+    }
+},
+{
+    "model": "metadata.scale",
+    "pk": 1,
+    "fields": {
+        "scale": "H0e",
+        "ratio": "1:87",
+        "gauge": "9 mm"
+    }
+},
+{
+    "model": "metadata.scale",
+    "pk": 2,
+    "fields": {
+        "scale": "H0",
+        "ratio": "1:87",
+        "gauge": "16.5 mm"
+    }
+},
+{
+    "model": "metadata.scale",
+    "pk": 3,
+    "fields": {
+        "scale": "0n30",
+        "ratio": "1:48",
+        "gauge": "16.5 mm"
+    }
+},
+{
+    "model": "metadata.scale",
+    "pk": 4,
+    "fields": {
+        "scale": "H0m",
+        "ratio": "1:87",
+        "gauge": "11 mm"
+    }
+},
+{
+    "model": "metadata.tag",
+    "pk": 1,
+    "fields": {
+        "name": "Mariazellerbahn",
+        "slug": "mariazellerbahn"
+    }
+},
+{
+    "model": "metadata.tag",
+    "pk": 2,
+    "fields": {
+        "name": "Colorado",
+        "slug": "colorado"
+    }
+},
+{
+    "model": "metadata.tag",
+    "pk": 3,
+    "fields": {
+        "name": "Narrow gauge",
+        "slug": "narrow-gauge"
+    }
+},
+{
+    "model": "metadata.rollingstocktype",
+    "pk": 1,
+    "fields": {
+        "type": "Electric",
+        "category": "engine"
+    }
+},
+{
+    "model": "metadata.rollingstocktype",
+    "pk": 2,
+    "fields": {
+        "type": "Diesel",
+        "category": "engine"
+    }
+},
+{
+    "model": "metadata.rollingstocktype",
+    "pk": 3,
+    "fields": {
+        "type": "Steam",
+        "category": "engine"
+    }
+},
+{
+    "model": "metadata.rollingstocktype",
+    "pk": 4,
+    "fields": {
+        "type": "EMU",
+        "category": "railcar"
+    }
+},
+{
+    "model": "metadata.rollingstocktype",
+    "pk": 5,
+    "fields": {
+        "type": "DMU",
+        "category": "railcar"
+    }
+},
+{
+    "model": "metadata.rollingstocktype",
+    "pk": 6,
+    "fields": {
+        "type": "Electric",
+        "category": "railcar"
+    }
+},
+{
+    "model": "metadata.rollingstocktype",
+    "pk": 7,
+    "fields": {
+        "type": "Diesel",
+        "category": "railcar"
+    }
+},
+{
+    "model": "metadata.rollingstocktype",
+    "pk": 8,
+    "fields": {
+        "type": "Passenger",
+        "category": "car"
+    }
+},
+{
+    "model": "metadata.rollingstocktype",
+    "pk": 9,
+    "fields": {
+        "type": "Freight",
+        "category": "car"
+    }
+},
+{
+    "model": "metadata.rollingstocktype",
+    "pk": 10,
+    "fields": {
+        "type": "Caboose",
+        "category": "equipment"
+    }
+}
+]
