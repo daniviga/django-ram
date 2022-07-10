@@ -105,7 +105,7 @@
         <ul class="pagination justify-content-center mt-4">
           {% if rolling_stock.has_previous %}
           <li class="page-item">
-            <a class="page-link" href="{{ consist.get_absolute_url }}/{{ rolling_stock.previous_page_number }}#rolling_stock" tabindex="-1">Previous</a>
+            <a class="page-link" href="{% url 'consist_pagination' uuid=consist.uuid page=rolling_stock.previous_page_number %}#rolling-stock" tabindex="-1">Previous</a>
           </li>
           {% else %}
           <li class="page-item disabled">
@@ -118,12 +118,12 @@
               <span class="page-link">{{ i }}</span></span>
             </li>
             {% else %}
-            <li class="page-item"><a class="page-link" href="{{ consist.get_absolute_url }}/{{ i }}#rolling-stock">{{ i }}</a></li>
+            <li class="page-item"><a class="page-link" href="{% url 'consist_pagination' uuid=consist.uuid page=i %}#rolling-stock">{{ i }}</a></li>
             {% endif %}
           {% endfor %}
           {% if rolling_stock.has_next %}
           <li class="page-item">
-            <a class="page-link" href="{{ consist.get_absolute_url }}/{{ rolling_stock.next_page_number }}#rolling-stock" tabindex="-1">Next</a>
+            <a class="page-link" href="{% url 'consist_pagination' uuid=consist.uuid page=rolling_stock.next_page_number %}#rolling-stock" tabindex="-1">Next</a>
           </li>
           {% else %}
           <li class="page-item disabled">
