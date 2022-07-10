@@ -45,7 +45,7 @@
               </tbody>
             </table>
             <div class="btn-group mb-4">
-             <a class="btn btn-sm btn-outline-primary" href="/portal/consist/{{ c.uuid }}">Show all data</a>
+             <a class="btn btn-sm btn-outline-primary" href="{{ c.get_absolute_url }}">Show all data</a>
               {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{# url 'admin:consist_consist_change' c.pk #}">Edit</a>{% endif %}
             </div>
             <div class="d-flex justify-content-between align-items-center">
@@ -57,30 +57,30 @@
       {% endfor %}
       {% endblock %}
       {% block pagination %}
-      {% if rolling_stock.has_other_pages %}
+      {% if consist.has_other_pages %}
       <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center mt-4">
-          {% if rolling_stock.has_previous %}
+          {% if consist.has_previous %}
           <li class="page-item">
-            <a class="page-link" href="/portal/consist/{{ consist.uuid }}/{{ rolling_stock.previous_page_number }}#rolling_stock" tabindex="-1">Previous</a>
+            <a class="page-link" href="{% url 'consists' %}/{{ consist.previous_page_number }}#rolling_stock" tabindex="-1">Previous</a>
           </li>
           {% else %}
           <li class="page-item disabled">
             <span class="page-link">Previous</span>
           </li>
           {% endif %}
-          {% for i in rolling_stock.paginator.page_range %}
-            {% if rolling_stock.number == i %}
+          {% for i in consist.paginator.page_range %}
+            {% if consist.number == i %}
             <li class="page-item active">
               <span class="page-link">{{ i }}</span></span>
             </li>
             {% else %}
-            <li class="page-item"><a class="page-link" href="/portal/consist/{{ consist.uuid }}/{{ i }}#rolling-stock">{{ i }}</a></li>
+            <li class="page-item"><a class="page-link" href="{% url 'consists' %}/{{ i }}#rolling-stock">{{ i }}</a></li>
             {% endif %}
           {% endfor %}
-          {% if rolling_stock.has_next %}
+          {% if consist.has_next %}
           <li class="page-item">
-            <a class="page-link" href="/portal/consist/{{ consist.uuid }}/{{ rolling_stock.next_page_number }}#rolling-stock" tabindex="-1">Next</a>
+            <a class="page-link" href="{% url 'consists' %}/{{ consist.next_page_number }}#rolling-stock" tabindex="-1">Next</a>
           </li>
           {% else %}
           <li class="page-item disabled">

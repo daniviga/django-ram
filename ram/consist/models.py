@@ -27,6 +27,9 @@ class Consist(models.Model):
     def get_absolute_url(self):
         return reverse("consist", kwargs={"uuid": self.uuid})
 
+    class Meta:
+        ordering = ["creation_time"]
+
 
 class ConsistItem(models.Model):
     consist = models.ForeignKey(
