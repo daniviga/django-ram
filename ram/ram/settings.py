@@ -161,3 +161,10 @@ ROLLING_STOCK_TYPES = [
     ("equipment", "Equipment"),
     ("other", "Other"),
 ]
+
+try:
+    from ram.local_settings import *
+except ImportError:
+    # If a local_setting.py does not exist
+    # settings in this file only will be used
+    pass
