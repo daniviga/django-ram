@@ -59,7 +59,11 @@ class Company(models.Model):
 
 class Decoder(models.Model):
     name = models.CharField(max_length=128, unique=True)
-    manufacturer = models.ForeignKey(Manufacturer, on_delete=models.CASCADE)
+    manufacturer = models.ForeignKey(
+        Manufacturer,
+        on_delete=models.CASCADE,
+        limit_choices_to={"category": "model"}
+    )
     version = models.CharField(max_length=64, blank=True)
     interface = models.PositiveSmallIntegerField(
         choices=settings.DECODER_INTERFACES, null=True, blank=True
