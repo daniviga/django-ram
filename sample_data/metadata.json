@@ -20,7 +20,7 @@
         "name": "Roco",
         "category": "model",
         "website": "https://www.roco.cc/",
-        "logo": "images/Roco_logo_ABtacmm.png"
+        "logo": "images/roco_logo.png"
     }
 },
 {
@@ -60,7 +60,7 @@
         "name": "Bachmann",
         "category": "model",
         "website": "https://bachmanntrains.com/",
-        "logo": "images/Bachmann_bros_logo.png"
+        "logo": "images/bachmann_logo.png"
     }
 },
 {
@@ -161,7 +161,7 @@
         "extended_name": "Österreichische Bundesbahnen",
         "country": "AT",
         "freelance": false,
-        "logo": "images/ÖBB_Logo_Pflatsch_neu_vQraZ8r.png"
+        "logo": "images/oebb_logo.png"
     }
 },
 {
@@ -172,7 +172,7 @@
         "extended_name": "Sand Creek Railroad",
         "country": "US",
         "freelance": true,
-        "logo": "images/scrr_Ikh9VQ4.png"
+        "logo": "images/scrr.png"
     }
 },
 {
