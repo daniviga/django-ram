@@ -1,10 +1,11 @@
 from django.db import models
 from django.core.exceptions import ValidationError
-from ipaddress import IPv4Address, IPv4Network
+from ipaddress import IPv4Network
 from solo.models import SingletonModel
 
 
 class DriverConfiguration(SingletonModel):
+    enabled = models.BooleanField(default=False)
     remote_host = models.GenericIPAddressField(
         protocol="IPv4", default="192.168.4.1"
     )

@@ -8,6 +8,14 @@ from driver.models import DriverConfiguration
 class DriverConfigurationAdmin(SingletonModelAdmin):
     fieldsets = (
         (
+            "General configuration",
+            {
+                "fields": (
+                    "enabled",
+                )
+            },
+        ),
+        (
             "Remote DCC-EX configuration",
             {
                 "fields": (

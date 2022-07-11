@@ -34,9 +34,22 @@ def addresschecker(f):
     return addresslookup
 
 
+class IsEnabled(BasePermission):
+    def has_permission(self, request, view):
+        config = DriverConfiguration.get_solo()
+
+        # if driver is disabled, block all connections
+        if not config.enabled:
+            raise Http404
+
+        return True
+
+
 class Firewall(BasePermission):
     def has_permission(self, request, view):
         config = DriverConfiguration.get_solo()
+
+        # if network is not configured, accept only read ops
         if not config.network:
             return request.method in SAFE_METHODS
 
@@ -61,7 +74,7 @@ class Test(APIView):
     """
 
     parser_classes = [PlainTextParser]
-    permission_classes = [IsAuthenticated | Firewall]
+    permission_classes = [IsEnabled & IsAuthenticated | Firewall]
 
     def get(self, request):
         response = Connector().passthrough("<s>")
@@ -76,7 +89,7 @@ class SendCommand(APIView):
     """
 
     parser_classes = [PlainTextParser]
-    permission_classes = [IsAuthenticated | Firewall]
+    permission_classes = [IsEnabled & IsAuthenticated | Firewall]
 
     def put(self, request):
         data = request.data
@@ -101,7 +114,7 @@ class Function(APIView):
     Send "Function" commands to a valid DCC address
     """
 
-    permission_classes = [IsAuthenticated | Firewall]
+    permission_classes = [IsEnabled & IsAuthenticated | Firewall]
 
     def put(self, request, address):
         serializer = FunctionSerializer(data=request.data)
@@ -118,7 +131,7 @@ class Cab(APIView):
     Send "Cab" commands to a valid DCC address
     """
 
-    permission_classes = [IsAuthenticated | Firewall]
+    permission_classes = [IsEnabled & IsAuthenticated | Firewall]
 
     def put(self, request, address):
         serializer = CabSerializer(data=request.data)
@@ -134,7 +147,7 @@ class Infra(APIView):
     Send "Infra" commands to a valid DCC address
     """
 
-    permission_classes = [IsAuthenticated | Firewall]
+    permission_classes = [IsEnabled & IsAuthenticated | Firewall]
 
     def put(self, request):
         serializer = InfraSerializer(data=request.data)
@@ -150,7 +163,7 @@ class Emergency(APIView):
     Send an "Emergency" stop, no matter the HTTP method used
     """
 
-    permission_classes = [IsAuthenticated | Firewall]
+    permission_classes = [IsEnabled & IsAuthenticated | Firewall]
 
     def put(self, request):
         Connector().emergency()
