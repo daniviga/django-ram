@@ -113,11 +113,18 @@ class GetRollingStock(View):
         except ObjectDoesNotExist:
             raise Http404
 
+        properties = (
+            rolling_stock.property.all() if
+            request.user.is_authenticated else
+            rolling_stock.property.filter(property__private=False)
+        )
+
         return render(
             request,
             "page.html",
             {
                 "rolling_stock": rolling_stock,
+                "properties": properties,
             },
         )
 

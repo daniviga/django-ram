@@ -31,6 +31,7 @@ class ConsistAdmin(SortableAdminBase, admin.ModelAdmin):
                     "consist_address",
                     "company",
                     "era",
+                    "image",
                     "notes",
                     "tags",
                 )

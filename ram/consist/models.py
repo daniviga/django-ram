@@ -17,6 +17,7 @@ class Consist(models.Model):
         Company, on_delete=models.CASCADE, null=True, blank=True
     )
     era = models.CharField(max_length=32, blank=True)
+    image = models.ImageField(upload_to="images/", null=True, blank=True)
     notes = models.TextField(blank=True)
     creation_time = models.DateTimeField(auto_now_add=True)
     updated_time = models.DateTimeField(auto_now=True)

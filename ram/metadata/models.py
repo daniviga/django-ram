@@ -8,6 +8,7 @@ from ram.utils import get_image_preview, slugify
 
 class Property(models.Model):
     name = models.CharField(max_length=128, unique=True)
+    private = models.BooleanField(default=False)
 
     class Meta:
         verbose_name_plural = "Properties"
