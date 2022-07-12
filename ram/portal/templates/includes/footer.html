@@ -12,9 +12,9 @@
         {{ site_conf.footer_extended | markdown | safe }}
       </div>
     </div>
-    {% if site_conf.show_version %}
+
     <div class="container">
-        <p class="small text-muted">Made with ❤️ and <a href="https://github.com/daniviga/django-ram">django-ram</a> version {{ site_conf.version }}</p>
+        <p class="small text-muted">Made with ❤️ for 🚂 and <a href="https://github.com/daniviga/django-ram">django-ram</a>
+        {% if site_conf.show_version %}<br/>Version {{ site_conf.version }}{% endif %}
     </div>
-    {% endif %}
   </footer>

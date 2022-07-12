@@ -29,18 +29,18 @@ urlpatterns = [
     path("api/v1/dcc/", include("driver.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-# if settings.DEBUG:
-#     from django.views.generic import TemplateView
-#     from rest_framework.schemas import get_schema_view
-#
-#     urlpatterns += [
-#         path('swagger/', TemplateView.as_view(
-#             template_name='swagger.html',
-#             extra_context={'schema_url': 'openapi-schema'}
-#         ), name='swagger'),
-#         path('openapi', get_schema_view(
-#             title="BITE - A Basic/IoT/Example",
-#             description="BITE API for IoT",
-#             version="1.0.0"
-#         ), name='openapi-schema'),
-#     ]
+if settings.DEBUG:
+    from django.views.generic import TemplateView
+    from rest_framework.schemas import get_schema_view
+
+    urlpatterns += [
+        path('swagger/', TemplateView.as_view(
+            template_name='swagger.html',
+            extra_context={'schema_url': 'openapi-schema'}
+        ), name='swagger'),
+        path('openapi', get_schema_view(
+            title="RAM - Railroad Assets Manager",
+            description="RAM API",
+            version="1.0.0"
+        ), name='openapi-schema'),
+    ]
