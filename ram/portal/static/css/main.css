@@ -10,6 +10,10 @@
   min-height: 300px;
 }
 
+.img-thumbnail {
+  padding: 0;
+}
+
 #nav-notes > p {
   padding: .5rem;
 }
