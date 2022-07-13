@@ -55,6 +55,7 @@ class RollingClassProperty(models.Model):
         on_delete=models.CASCADE,
         null=False,
         blank=False,
+        related_name="property",
         verbose_name="Class",
     )
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
@@ -74,6 +75,7 @@ class RollingStock(models.Model):
         on_delete=models.CASCADE,
         null=False,
         blank=False,
+        related_name="rolling_class",
         verbose_name="Class",
     )
     road_number = models.CharField(max_length=128, unique=False)

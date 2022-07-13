@@ -29,7 +29,6 @@
                   <button class="nav-link" id="nav-class-tab" data-bs-toggle="tab" data-bs-target="#nav-class" type="button" role="tab" aria-controls="nav-class" aria-selected="false">Class data</button>
                   {% if rolling_stock.decoder %}<button class="nav-link" id="nav-dcc-tab" data-bs-toggle="tab" data-bs-target="#nav-dcc" type="button" role="tab" aria-controls="nav-dcc" aria-selected="false">DCC</button>{% endif %}
                   {% if rolling_stock.notes %}<button class="nav-link" id="nav-notes-tab" data-bs-toggle="tab" data-bs-target="#nav-notes" type="button" role="tab" aria-controls="nav-notes" aria-selected="false">Notes</button>{% endif %}
-                  {% if properties.count > 0 %}<button class="nav-link" id="nav-properties-tab" data-bs-toggle="tab" data-bs-target="#nav-properties" type="button" role="tab" aria-controls="nav-properties" aria-selected="false">Properties</button>{% endif %}
                   {% if rolling_stock.document.count > 0 %}<button class="nav-link" id="nav-documents-tab" data-bs-toggle="tab" data-bs-target="#nav-documents" type="button" role="tab" aria-controls="nav-documents" aria-selected="false">Documents</button>{% endif %}
                  </div>
               </nav>
@@ -139,6 +138,23 @@
                       </tr>
                     </tbody>
                   </table>
+                  {% if rolling_stock_properties %}
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th colspan="2" scope="row">Properties</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    {% for p in rolling_stock_properties %}
+                      <tr>
+                        <th width="35%" scope="row">{{ p.property }}</th>
+                        <td>{{ p.value }}</td>
+                      </tr>
+                    {% endfor %}
+                    </tbody>
+                  </table>
+                  {% endif %}
                 </div>
                 <div class="tab-pane fade" id="nav-class" role="tabpanel" aria-labelledby="nav-class-tab">
                   <table class="table table-striped">
@@ -170,6 +186,23 @@
                       </tr>
                     </tbody>
                   </table>
+                  {% if class_properties %}
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th colspan="2" scope="row">Properties</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    {% for p in class_properties %}
+                      <tr>
+                        <th width="35%" scope="row">{{ p.property }}</th>
+                        <td>{{ p.value }}</td>
+                      </tr>
+                    {% endfor %}
+                    </tbody>
+                  </table>
+                  {% endif %}
                 </div>
                 <div class="tab-pane fade" id="nav-dcc" role="tabpanel" aria-labelledby="nav-dcc-tab">
                   <table class="table table-striped">
@@ -208,23 +241,6 @@
                 </div>
                 <div class="tab-pane fade" id="nav-notes" role="tabpanel" aria-labelledby="nav-notes-tab">
                   {{ rolling_stock.notes | markdown | safe }}
-                </div>
-                <div class="tab-pane fade" id="nav-properties" role="tabpanel" aria-labelledby="nav-properties-tab">
-                  <table class="table table-striped">
-                    <thead>
-                      <tr>
-                        <th colspan="2" scope="row">Properties</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                    {% for p in properties %}
-                      <tr>
-                        <th scope="row">{{ p.property }}</th>
-                        <td>{{ p.value }}</td>
-                      </tr>
-                    {% endfor %}
-                    </tbody>
-                  </table>
                 </div>
                 <div class="tab-pane fade" id="nav-documents" role="tabpanel" aria-labelledby="nav-documents-tab">
                   <table class="table table-striped">

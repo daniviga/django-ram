@@ -113,7 +113,14 @@ class GetRollingStock(View):
         except ObjectDoesNotExist:
             raise Http404
 
-        properties = (
+        import pdb; pdb.set_trace()
+        class_properties = (
+            rolling_stock.rolling_class.property.all() if
+            request.user.is_authenticated else
+            rolling_stock.rolling_class.property.filter(
+                property__private=False)
+        )
+        rolling_stock_properties = (
             rolling_stock.property.all() if
             request.user.is_authenticated else
             rolling_stock.property.filter(property__private=False)
@@ -124,7 +131,8 @@ class GetRollingStock(View):
             "page.html",
             {
                 "rolling_stock": rolling_stock,
-                "properties": properties,
+                "class_properties": class_properties,
+                "rolling_stock_properties": rolling_stock_properties,
             },
         )
 
