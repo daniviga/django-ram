@@ -113,7 +113,6 @@ class GetRollingStock(View):
         except ObjectDoesNotExist:
             raise Http404
 
-        import pdb; pdb.set_trace()
         class_properties = (
             rolling_stock.rolling_class.property.all() if
             request.user.is_authenticated else
