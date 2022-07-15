@@ -1,5 +1,24 @@
-          <form class="d-flex" action="{% url 'search' %}" method="post">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search">
-            <button class="btn btn-outline-primary" type="submit">Search</button>
+          <form class="d-flex needs-validation" action="{% url 'search' %}" method="post" novalidate>
+            <div class="input-group has-validation">
+              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search" id="searchValidation" required>
+              <button class="btn btn-outline-primary" type="submit">Search</button>
+            </div>
           </form>
-
+		  <script>
+          (function () {
+            'use strict'
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.querySelectorAll('.needs-validation')
+            // Loop over them and prevent submission
+            Array.prototype.slice.call(forms)
+              .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                  if (!form.checkValidity()) {
+                    form.classList.add('was-validated')
+                    event.preventDefault()
+                    event.stopPropagation()
+                  }
+                }, false)
+              })
+          })()
+	      </script>
