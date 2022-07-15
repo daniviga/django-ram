@@ -18,7 +18,7 @@ def order_by_fields():
     fields = ["rolling_class__type",
               "rolling_class__company",
               "rolling_class__identifier",
-              "road_number"]
+              "road_number_cleaned"]
 
     if order_by == "type":
         return (fields[0], fields[1], fields[2], fields[3])

@@ -2,9 +2,9 @@ import os
 from uuid import uuid4
 from django.db import models
 from django.urls import reverse
+from django.dispatch import receiver
 
 # from django.core.files.storage import FileSystemStorage
-# from django.dispatch import receiver
 
 from ram.utils import get_image_preview
 from metadata.models import (
@@ -75,6 +75,7 @@ class RollingStock(models.Model):
         verbose_name="Class",
     )
     road_number = models.CharField(max_length=128, unique=False)
+    road_number_cleaned = models.CharField(max_length=128, unique=False)
     manufacturer = models.ForeignKey(
         Manufacturer,
         on_delete=models.CASCADE,
@@ -99,7 +100,7 @@ class RollingStock(models.Model):
     updated_time = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ["rolling_class", "road_number"]
+        ordering = ["rolling_class", "road_number_cleaned"]
         verbose_name_plural = "Rolling stock"
 
     def __str__(self):
@@ -113,6 +114,11 @@ class RollingStock(models.Model):
 
     def company(self):
         return str(self.rolling_class.company)
+
+
+@receiver(models.signals.pre_save, sender=RollingStock)
+def pre_save_running_number(sender, instance, *args, **kwargs):
+    instance.road_number_cleaned = instance.road_number.lstrip("#").lstrip("0")
 
 
 class RollingStockDocument(models.Model):

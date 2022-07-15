@@ -13,9 +13,7 @@ class Consist(models.Model):
     consist_address = models.SmallIntegerField(
         default=None, null=True, blank=True
     )
-    company = models.ForeignKey(
-        Company, on_delete=models.CASCADE, null=True, blank=True
-    )
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
     era = models.CharField(max_length=32, blank=True)
     image = models.ImageField(upload_to="images/", null=True, blank=True)
     notes = models.TextField(blank=True)
