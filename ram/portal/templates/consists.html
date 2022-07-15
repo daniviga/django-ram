@@ -10,7 +10,7 @@
         <div class="card shadow-sm">
           {% if c.image %}<a href="{{ c.get_absolute_url }}"><img src="{{ c.image.url }}" alt="Card image cap"></a>{% endif %}
           <div class="card-body">
-            <p class="card-text"><strong>{{ c.identifier }}</strong></p>
+            <p class="card-text"><strong>{{ c }}</strong></p>
             {% if c.tags.all %}
             <p class="card-text"><small>Tags:</small>
              {% for t in c.tags.all %}<span class="badge bg-primary">

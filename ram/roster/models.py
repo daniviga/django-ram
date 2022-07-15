@@ -25,12 +25,8 @@ from metadata.models import (
 
 class RollingClass(models.Model):
     identifier = models.CharField(max_length=128, unique=False)
-    type = models.ForeignKey(
-        RollingStockType, on_delete=models.CASCADE, null=True, blank=True
-    )
-    company = models.ForeignKey(
-        Company, on_delete=models.CASCADE, null=True, blank=True
-    )
+    type = models.ForeignKey(RollingStockType, on_delete=models.CASCADE)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
     description = models.CharField(max_length=256, blank=True)
     manufacturer = models.ForeignKey(
         Manufacturer,

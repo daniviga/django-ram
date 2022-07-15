@@ -108,12 +108,14 @@ def tag_pre_save(sender, instance, **kwargs):
 
 class RollingStockType(models.Model):
     type = models.CharField(max_length=64)
+    order = models.PositiveSmallIntegerField()
     category = models.CharField(
         max_length=64, choices=settings.ROLLING_STOCK_TYPES
     )
 
     class Meta(object):
         unique_together = ("category", "type")
+        ordering = ["order"]
 
     def __str__(self):
         return "{0} {1}".format(self.type, self.category)

@@ -13,10 +13,26 @@ from roster.models import RollingStock
 from consist.models import Consist
 
 
+def order_by_fields():
+    order_by = get_site_conf().items_ordering
+    fields = ["rolling_class__type",
+              "rolling_class__company",
+              "rolling_class__identifier",
+              "road_number"]
+
+    if order_by == "type":
+        return (fields[0], fields[1], fields[2], fields[3])
+    elif order_by == "company":
+        return (fields[1], fields[0], fields[2], fields[3])
+    elif order_by == "identifier":
+        return (fields[2], fields[0], fields[1], fields[3])
+
+
 class GetHome(View):
     def get(self, request, page=1):
         site_conf = get_site_conf()
-        rolling_stock = RollingStock.objects.all()
+        rolling_stock = RollingStock.objects.order_by(*order_by_fields())
+
         paginator = Paginator(rolling_stock, site_conf.items_per_page)
 
         try:
@@ -59,7 +75,9 @@ class GetHomeFiltered(View):
             query = Q(scale__scale__icontains=search)
         else:
             raise Http404
-        rolling_stock = RollingStock.objects.filter(query)
+        rolling_stock = (
+            RollingStock.objects.filter(query).order_by(*order_by_fields())
+        )
         matches = len(rolling_stock)
         paginator = Paginator(rolling_stock, site_conf.items_per_page)
 

@@ -23,7 +23,7 @@ class Consist(models.Model):
     updated_time = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return "{0}".format(self.identifier)
+        return "{0} {1}".format(self.company, self.identifier)
 
     def get_absolute_url(self):
         return reverse("consist", kwargs={"uuid": self.uuid})

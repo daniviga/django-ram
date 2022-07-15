@@ -1,4 +1,6 @@
 from django.contrib import admin
+from adminsortable2.admin import SortableAdminMixin
+
 from metadata.models import (
     Property,
     Decoder,
@@ -54,7 +56,7 @@ class TagAdmin(admin.ModelAdmin):
 
 
 @admin.register(RollingStockType)
-class RollingStockTypeAdmin(admin.ModelAdmin):
+class RollingStockTypeAdmin(SortableAdminMixin, admin.ModelAdmin):
     list_display = ("__str__",)
     list_filter = ("type", "category")
     search_fields = list_display
