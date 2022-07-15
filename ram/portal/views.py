@@ -73,6 +73,8 @@ class GetHomeFiltered(View):
             )
         elif _filter == "scale":
             query = Q(scale__scale__icontains=search)
+        elif _filter == "tag":
+            query = Q(tags__slug__icontains=search)
         else:
             raise Http404
         rolling_stock = (

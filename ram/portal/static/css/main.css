@@ -6,6 +6,11 @@
   display: inline-block;
 }
 
+a.badge, a.badge:hover {
+  text-decoration: none;
+  color: #fff;
+}
+
 .tab-pane {
   min-height: 300px;
 }

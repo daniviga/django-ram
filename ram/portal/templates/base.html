@@ -85,8 +85,8 @@
                   <p class="card-text"><strong>{{ r }}</strong></p>
                   {% if r.tags.all %}
                   <p class="card-text"><small>Tags:</small>
-                   {% for t in r.tags.all %}<span class="badge bg-primary">
-                    {{ t.name }}</span>{# new line is required #}
+                    {% for t in r.tags.all %}<a href="{% url 'filtered' _filter="tag" search=t.slug %}" class="badge rounded-pill bg-primary">
+                    {{ t.name }}</a>{# new line is required #}
                     {% endfor %}
                   </p>
                   {% endif %}
