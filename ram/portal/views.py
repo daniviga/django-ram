@@ -34,8 +34,15 @@ class GetHome(View):
         rolling_stock = RollingStock.objects.order_by(*order_by_fields())
         paginator = Paginator(rolling_stock, site_conf.items_per_page)
         rolling_stock = paginator.get_page(page)
+        page_range = paginator.get_elided_page_range(
+            rolling_stock.paginator.number
+        )
 
-        return render(request, "home.html", {"rolling_stock": rolling_stock})
+        return render(
+            request,
+            "home.html",
+            {"rolling_stock": rolling_stock, "page_range": page_range}
+        )
 
 
 class GetHomeFiltered(View):
