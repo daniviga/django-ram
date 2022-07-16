@@ -14,14 +14,16 @@ class SiteConfiguration(SingletonModel):
     items_per_page = models.CharField(
         max_length=2,
         choices=[(str(x * 3), str(x * 3)) for x in range(2, 11)],
-        default="6"
+        default="6",
     )
     items_ordering = models.CharField(
         max_length=10,
-        choices=[("type", "By rolling stock type"),
-                 ("company", "By company name"),
-                 ("identifier", "By rolling stock class")],
-        default="type"
+        choices=[
+            ("type", "By rolling stock type"),
+            ("company", "By company name"),
+            ("identifier", "By rolling stock class"),
+        ],
+        default="type",
     )
     footer = models.TextField(blank=True)
     footer_extended = models.TextField(blank=True)

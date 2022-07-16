@@ -24,8 +24,7 @@ urlpatterns = [
     ),
     path("consists", Consists.as_view(), name="consists"),
     path(
-        "consists/<int:page>",
-        Consists.as_view(), name="consists_pagination"
+        "consists/<int:page>", Consists.as_view(), name="consists_pagination"
     ),
     path("consist/<uuid:uuid>", GetConsist.as_view(), name="consist"),
     path(

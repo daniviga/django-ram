@@ -34,13 +34,21 @@ if settings.DEBUG:
     from rest_framework.schemas import get_schema_view
 
     urlpatterns += [
-        path('swagger/', TemplateView.as_view(
-            template_name='swagger.html',
-            extra_context={'schema_url': 'openapi-schema'}
-        ), name='swagger'),
-        path('openapi', get_schema_view(
-            title="RAM - Railroad Assets Manager",
-            description="RAM API",
-            version="1.0.0"
-        ), name='openapi-schema'),
+        path(
+            "swagger/",
+            TemplateView.as_view(
+                template_name="swagger.html",
+                extra_context={"schema_url": "openapi-schema"},
+            ),
+            name="swagger",
+        ),
+        path(
+            "openapi",
+            get_schema_view(
+                title="RAM - Railroad Assets Manager",
+                description="RAM API",
+                version="1.0.0",
+            ),
+            name="openapi-schema",
+        ),
     ]

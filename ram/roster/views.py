@@ -15,17 +15,13 @@ class RosterGet(RetrieveAPIView):
     serializer_class = RollingStockSerializer
     lookup_field = "uuid"
 
-    schema = AutoSchema(
-        operation_id_base="retrieveRollingStockByUUID"
-    )
+    schema = AutoSchema(operation_id_base="retrieveRollingStockByUUID")
 
 
 class RosterAddress(ListAPIView):
     serializer_class = RollingStockSerializer
 
-    schema = AutoSchema(
-        operation_id_base="retrieveRollingStockByAddress"
-    )
+    schema = AutoSchema(operation_id_base="retrieveRollingStockByAddress")
 
     def get_queryset(self):
         address = self.kwargs["address"]
@@ -35,9 +31,7 @@ class RosterAddress(ListAPIView):
 class RosterClass(ListAPIView):
     serializer_class = RollingStockSerializer
 
-    schema = AutoSchema(
-        operation_id_base="retrieveRollingStockByClass"
-    )
+    schema = AutoSchema(operation_id_base="retrieveRollingStockByClass")
 
     def get_queryset(self):
         _class = self.kwargs["class"]

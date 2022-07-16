@@ -9,11 +9,7 @@ class DriverConfigurationAdmin(SingletonModelAdmin):
     fieldsets = (
         (
             "General configuration",
-            {
-                "fields": (
-                    "enabled",
-                )
-            },
+            {"fields": ("enabled",)},
         ),
         (
             "Remote DCC-EX configuration",

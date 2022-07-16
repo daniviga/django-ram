@@ -170,7 +170,7 @@ class Consists(View):
         return render(
             request,
             "consists.html",
-            {"consist": consist, "page_range": page_range}
+            {"consist": consist, "page_range": page_range},
         )
 
 
@@ -193,6 +193,6 @@ class GetConsist(View):
             {
                 "consist": consist,
                 "rolling_stock": rolling_stock,
-                "page_range": page_range
+                "page_range": page_range,
             },
         )

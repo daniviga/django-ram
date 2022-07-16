@@ -63,7 +63,7 @@ class Decoder(models.Model):
     manufacturer = models.ForeignKey(
         Manufacturer,
         on_delete=models.CASCADE,
-        limit_choices_to={"category": "model"}
+        limit_choices_to={"category": "model"},
     )
     version = models.CharField(max_length=64, blank=True)
     interface = models.PositiveSmallIntegerField(

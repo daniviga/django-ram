@@ -121,7 +121,8 @@ class RollingStock(models.Model):
 def pre_save_running_number(sender, instance, *args, **kwargs):
     try:
         instance.road_number_int = int(
-            re.findall(r"\d+", instance.road_number)[0])
+            re.findall(r"\d+", instance.road_number)[0]
+        )
     except IndexError:
         pass
 
