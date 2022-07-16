@@ -112,7 +112,7 @@
             <span class="page-link">Previous</span>
           </li>
           {% endif %}
-          {% for i in rolling_stock.paginator.get_elided_page_range %}
+          {% for i in page_range %}
             {% if rolling_stock.number == i %}
             <li class="page-item active">
               <span class="page-link">{{ i }}</span></span>

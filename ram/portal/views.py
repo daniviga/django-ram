@@ -15,10 +15,12 @@ from consist.models import Consist
 
 def order_by_fields():
     order_by = get_site_conf().items_ordering
-    fields = ["rolling_class__type",
-              "rolling_class__company",
-              "rolling_class__identifier",
-              "road_number_int"]
+    fields = [
+        "rolling_class__type",
+        "rolling_class__company",
+        "rolling_class__identifier",
+        "road_number_int",
+    ]
 
     if order_by == "type":
         return (fields[0], fields[1], fields[2], fields[3])
@@ -32,6 +34,7 @@ class GetHome(View):
     def get(self, request, page=1):
         site_conf = get_site_conf()
         rolling_stock = RollingStock.objects.order_by(*order_by_fields())
+
         paginator = Paginator(rolling_stock, site_conf.items_per_page)
         rolling_stock = paginator.get_page(page)
         page_range = paginator.get_elided_page_range(rolling_stock.number)
@@ -39,7 +42,7 @@ class GetHome(View):
         return render(
             request,
             "home.html",
-            {"rolling_stock": rolling_stock, "page_range": page_range}
+            {"rolling_stock": rolling_stock, "page_range": page_range},
         )
 
 
@@ -75,18 +78,21 @@ class GetHomeFiltered(View):
             query = Q(tags__slug__icontains=search)
         else:
             raise Http404
-        rolling_stock = (
-            RollingStock.objects.filter(query).order_by(*order_by_fields())
+        rolling_stock = RollingStock.objects.filter(query).order_by(
+            *order_by_fields()
         )
         matches = len(rolling_stock)
+
         paginator = Paginator(rolling_stock, site_conf.items_per_page)
         rolling_stock = paginator.get_page(page)
+        page_range = paginator.get_elided_page_range(rolling_stock.number)
 
-        return rolling_stock, matches
+        return rolling_stock, matches, page_range
 
     def get(self, request, search, _filter=None, page=1):
-        rolling_stock, matches = self.run_search(
-            request, search, _filter, page)
+        rolling_stock, matches, page_range = self.run_search(
+            request, search, _filter, page
+        )
 
         return render(
             request,
@@ -96,6 +102,7 @@ class GetHomeFiltered(View):
                 "filter": _filter,
                 "matches": matches,
                 "rolling_stock": rolling_stock,
+                "page_range": page_range,
             },
         )
 
@@ -103,8 +110,9 @@ class GetHomeFiltered(View):
         search = request.POST.get("search")
         if not search:
             raise Http404
-        rolling_stock, matches = self.run_search(
-            request, search, _filter, page)
+        rolling_stock, matches, page_range = self.run_search(
+            request, search, _filter, page
+        )
 
         return render(
             request,
@@ -114,6 +122,7 @@ class GetHomeFiltered(View):
                 "filter": _filter,
                 "matches": matches,
                 "rolling_stock": rolling_stock,
+                "page_range": page_range,
             },
         )
 
@@ -126,15 +135,16 @@ class GetRollingStock(View):
             raise Http404
 
         class_properties = (
-            rolling_stock.rolling_class.property.all() if
-            request.user.is_authenticated else
-            rolling_stock.rolling_class.property.filter(
-                property__private=False)
+            rolling_stock.rolling_class.property.all()
+            if request.user.is_authenticated
+            else rolling_stock.rolling_class.property.filter(
+                property__private=False
+            )
         )
         rolling_stock_properties = (
-            rolling_stock.property.all() if
-            request.user.is_authenticated else
-            rolling_stock.property.filter(property__private=False)
+            rolling_stock.property.all()
+            if request.user.is_authenticated
+            else rolling_stock.property.filter(property__private=False)
         )
 
         return render(
@@ -152,10 +162,16 @@ class Consists(View):
     def get(self, request, page=1):
         site_conf = get_site_conf()
         consist = Consist.objects.all()
+
         paginator = Paginator(consist, site_conf.items_per_page)
         consist = paginator.get_page(page)
+        page_range = paginator.get_elided_page_range(consist.number)
 
-        return render(request, "consists.html", {"consist": consist})
+        return render(
+            request,
+            "consists.html",
+            {"consist": consist, "page_range": page_range}
+        )
 
 
 class GetConsist(View):
@@ -166,11 +182,17 @@ class GetConsist(View):
         except ObjectDoesNotExist:
             raise Http404
         rolling_stock = consist.consist_item.all()
+
         paginator = Paginator(rolling_stock, site_conf.items_per_page)
         rolling_stock = paginator.get_page(page)
+        page_range = paginator.get_elided_page_range(rolling_stock.number)
 
         return render(
             request,
             "consist.html",
-            {"consist": consist, "rolling_stock": rolling_stock},
+            {
+                "consist": consist,
+                "rolling_stock": rolling_stock,
+                "page_range": page_range
+            },
         )
