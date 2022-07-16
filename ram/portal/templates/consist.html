@@ -60,7 +60,7 @@
                 </tr>
                 <tr>
                   <th scope="row">Scale</th>
-                  <td><abbr title="{{ r.rolling_stock.scale.ratio }} - {{ r.rolling_stock.scale.gauge }}">{{ r.rolling_stock.scale }}</abbr></td>
+                  <td><a href="{% url 'filtered' _filter="scale" search=r.rolling_stock.scale %}"><abbr title="{{ r.rolling_stock.scale.ratio }} - {{ r.rolling_stock.scale.gauge }}">{{ r.rolling_stock.scale }}</abbr></a></td>
                 </tr>
                 <tr>
                   <th scope="row">SKU</th>
