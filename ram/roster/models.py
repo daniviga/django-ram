@@ -1,4 +1,5 @@
 import os
+import re
 from uuid import uuid4
 from django.db import models
 from django.urls import reverse
@@ -75,7 +76,7 @@ class RollingStock(models.Model):
         verbose_name="Class",
     )
     road_number = models.CharField(max_length=128, unique=False)
-    road_number_cleaned = models.CharField(max_length=128, unique=False)
+    road_number_int = models.PositiveSmallIntegerField(default=0, unique=False)
     manufacturer = models.ForeignKey(
         Manufacturer,
         on_delete=models.CASCADE,
@@ -100,7 +101,7 @@ class RollingStock(models.Model):
     updated_time = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ["rolling_class", "road_number_cleaned"]
+        ordering = ["rolling_class", "road_number_int"]
         verbose_name_plural = "Rolling stock"
 
     def __str__(self):
@@ -118,7 +119,11 @@ class RollingStock(models.Model):
 
 @receiver(models.signals.pre_save, sender=RollingStock)
 def pre_save_running_number(sender, instance, *args, **kwargs):
-    instance.road_number_cleaned = instance.road_number.lstrip("#").lstrip("0")
+    try:
+        instance.road_number_int = int(
+            re.findall(r"\d+", instance.road_number)[0])
+    except IndexError:
+        pass
 
 
 class RollingStockDocument(models.Model):
