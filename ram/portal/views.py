@@ -32,15 +32,8 @@ class GetHome(View):
     def get(self, request, page=1):
         site_conf = get_site_conf()
         rolling_stock = RollingStock.objects.order_by(*order_by_fields())
-
         paginator = Paginator(rolling_stock, site_conf.items_per_page)
-
-        try:
-            rolling_stock = paginator.page(page)
-        except PageNotAnInteger:
-            rolling_stock = paginator.page(1)
-        except EmptyPage:
-            rolling_stock = paginator.page(paginator.num_pages)
+        rolling_stock = paginator.get_page(page)
 
         return render(request, "home.html", {"rolling_stock": rolling_stock})
 
@@ -82,13 +75,7 @@ class GetHomeFiltered(View):
         )
         matches = len(rolling_stock)
         paginator = Paginator(rolling_stock, site_conf.items_per_page)
-
-        try:
-            rolling_stock = paginator.page(page)
-        except PageNotAnInteger:
-            rolling_stock = paginator.page(1)
-        except EmptyPage:
-            rolling_stock = paginator.page(paginator.num_pages)
+        rolling_stock = paginator.get_page(page)
 
         return rolling_stock, matches
 
@@ -161,13 +148,7 @@ class Consists(View):
         site_conf = get_site_conf()
         consist = Consist.objects.all()
         paginator = Paginator(consist, site_conf.items_per_page)
-
-        try:
-            consist = paginator.page(page)
-        except PageNotAnInteger:
-            consist = paginator.page(1)
-        except EmptyPage:
-            consist = paginator.page(paginator.num_pages)
+        consist = paginator.get_page(page)
 
         return render(request, "consists.html", {"consist": consist})
 
@@ -181,13 +162,7 @@ class GetConsist(View):
             raise Http404
         rolling_stock = consist.consist_item.all()
         paginator = Paginator(rolling_stock, site_conf.items_per_page)
-
-        try:
-            rolling_stock = paginator.page(page)
-        except PageNotAnInteger:
-            rolling_stock = paginator.page(1)
-        except EmptyPage:
-            rolling_stock = paginator.page(paginator.num_pages)
+        rolling_stock = paginator.get_page(page)
 
         return render(
             request,

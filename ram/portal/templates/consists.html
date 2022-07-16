@@ -70,13 +70,17 @@
             <span class="page-link">Previous</span>
           </li>
           {% endif %}
-          {% for i in consist.paginator.page_range %}
+          {% for i in consist.paginator.get_elided_page_range %}
             {% if consist.number == i %}
             <li class="page-item active">
               <span class="page-link">{{ i }}</span></span>
             </li>
             {% else %}
-            <li class="page-item"><a class="page-link" href="{% url 'consists_pagination' page=i %}#rolling-stock">{{ i }}</a></li>
+              {% if i == rolling_stock.paginator.ELLIPSIS %}
+              <li class="page-item"><span class="page-link">{{ i }}</span></li>
+              {% else %}
+              <li class="page-item"><a class="page-link" href="{% url 'consists_pagination' page=i %}#rolling-stock">{{ i }}</a></li>
+              {% endif %}
             {% endif %}
           {% endfor %}
           {% if consist.has_next %}

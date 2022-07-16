@@ -17,13 +17,17 @@
             <span class="page-link">Previous</span>
           </li>
           {% endif %}
-          {% for i in rolling_stock.paginator.page_range %}
+          {% for i in rolling_stock.paginator.get_elided_page_range %}
             {% if rolling_stock.number == i %}
             <li class="page-item active">
               <span class="page-link">{{ i }}</span></span>
             </li>
             {% else %}
-            <li class="page-item"><a class="page-link" href="{% url 'search_pagination' search=search page=i %}#rolling-stock">{{ i }}</a></li>
+              {% if i == rolling_stock.paginator.ELLIPSIS %}
+              <li class="page-item"><span class="page-link">{{ i }}</span></li>
+              {% else %}
+              <li class="page-item"><a class="page-link" href="{% url 'index_pagination' page=i %}#rolling-stock">{{ i }}</a></li>
+              {% endif %}
             {% endif %}
           {% endfor %}
           {% if rolling_stock.has_next %}
