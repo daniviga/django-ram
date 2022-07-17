@@ -88,7 +88,10 @@
                 {% if i.is_thumbnail %}<a href="{{r.get_absolute_url}}"><img src="{{ i.image.url }}" alt="Card image cap"></a>{% endif %}
                 {% endfor %}
                 <div class="card-body">
-                  <p class="card-text"><strong>{{ r }}</strong></p>
+                  <p class="card-text" style="position: relative;">
+                    <strong>{{ r }}</strong>
+                    <a class="stretched-link" href="{{ r.get_absolute_url }}"></a>
+                  </p>
                   {% if r.tags.all %}
                   <p class="card-text"><small>Tags:</small>
                     {% for t in r.tags.all %}<a href="{% url 'filtered' _filter="tag" search=t.slug %}" class="badge rounded-pill bg-primary">

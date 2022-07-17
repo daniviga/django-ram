@@ -10,7 +10,10 @@
         <div class="card shadow-sm">
           {% if c.image %}<a href="{{ c.get_absolute_url }}"><img src="{{ c.image.url }}" alt="Card image cap"></a>{% endif %}
           <div class="card-body">
-            <p class="card-text"><strong>{{ c }}</strong></p>
+            <p class="card-text" style="position: relative;">
+              <strong>{{ c }}</strong>
+              <a class="stretched-link" href="{{ c.get_absolute_url }}"></a>
+            </p>
             {% if c.tags.all %}
             <p class="card-text"><small>Tags:</small>
               {% for t in c.tags.all %}<a href="{% url 'filtered' _filter="tag" search=t.slug %}" class="badge rounded-pill bg-primary">
