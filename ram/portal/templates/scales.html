@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load markdown %}
+
+      {% block header %}
+        <h1 class="fw-light">Scales</h1>
+      {% endblock %}
+      {% block cards %}
+      {% for s in scale %}
+      <div class="col">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <p class="card-text"><strong>{{ s }}</strong></p>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th colspan="2" scope="row">Scale</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th width="35%" scope="row">Name</th>
+                  <td>{{ s.scale }}</td>
+                </tr>
+                <tr>
+                  <th width="35%" scope="row">Ratio</th>
+                  <td>{{ s.ratio }}</td>
+                </tr>
+                <tr>
+                  <th width="35%" scope="row">Gauge</th>
+                  <td>{{ s.gauge }}</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="btn-group mb-4">
+              <a class="btn btn-sm btn-outline-primary" href="{% url 'filtered' _filter="scale" search=s %}">Show all rolling stock</a>
+              {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% url 'admin:metadata_scale_change' s.pk %}">Edit</a>{% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+      {% endblock %}
+      {% block pagination %}
+      {% if scale.has_other_pages %}
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center mt-4">
+          {% if scale.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="{% url 'scale_pagination' page=scale.previous_page_number %}#rolling-stock" tabindex="-1">Previous</a>
+          </li>
+          {% else %}
+          <li class="page-item disabled">
+            <span class="page-link">Previous</span>
+          </li>
+          {% endif %}
+          {% for i in page_range %}
+            {% if scale.number == i %}
+            <li class="page-item active">
+              <span class="page-link">{{ i }}</span></span>
+            </li>
+            {% else %}
+              {% if i == scale.paginator.ELLIPSIS %}
+              <li class="page-item"><span class="page-link">{{ i }}</span></li>
+              {% else %}
+              <li class="page-item"><a class="page-link" href="{% url 'scale_pagination' page=i %}#rolling-stock">{{ i }}</a></li>
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+          {% if scale.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="{% url 'scale_pagination' page=scale.next_page_number %}#rolling-stock" tabindex="-1">Next</a>
+          </li>
+          {% else %}
+          <li class="page-item disabled">
+            <span class="page-link">Next</span>
+          </li>
+          {% endif %}
+        </ul>
+      </nav>
+      {% endif %}
+      {% endblock %}

@@ -6,6 +6,8 @@ from portal.views import (
     GetRollingStock,
     GetConsist,
     Consists,
+    Companies,
+    Scales,
 )
 
 urlpatterns = [
@@ -31,6 +33,18 @@ urlpatterns = [
         "consist/<uuid:uuid>/<int:page>",
         GetConsist.as_view(),
         name="consist_pagination",
+    ),
+    path("companies", Companies.as_view(), name="companies"),
+    path(
+        "companies/<int:page>",
+        Companies.as_view(),
+        name="companies_pagination"
+    ),
+    path("scales", Scales.as_view(), name="scales"),
+    path(
+        "scales/<int:page>",
+        Scales.as_view(),
+        name="scales_pagination"
     ),
     path(
         "<str:_filter>/<str:search>",

@@ -11,6 +11,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from portal.utils import get_site_conf
 from roster.models import RollingStock
 from consist.models import Consist
+from metadata.models import Company, Scale
 
 
 def order_by_fields():
@@ -195,4 +196,36 @@ class GetConsist(View):
                 "rolling_stock": rolling_stock,
                 "page_range": page_range,
             },
+        )
+
+
+class Companies(View):
+    def get(self, request, page=1):
+        site_conf = get_site_conf()
+        company = Company.objects.all()
+
+        paginator = Paginator(company, site_conf.items_per_page)
+        company = paginator.get_page(page)
+        page_range = paginator.get_elided_page_range(company.number)
+
+        return render(
+            request,
+            "companies.html",
+            {"company": company, "page_range": page_range},
+        )
+
+
+class Scales(View):
+    def get(self, request, page=1):
+        site_conf = get_site_conf()
+        scale = Scale.objects.all()
+
+        paginator = Paginator(scale, site_conf.items_per_page)
+        scale = paginator.get_page(page)
+        page_range = paginator.get_elided_page_range(scale.number)
+
+        return render(
+            request,
+            "scales.html",
+            {"scale": scale, "page_range": page_range},
         )

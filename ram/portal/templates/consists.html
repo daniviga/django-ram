@@ -76,7 +76,7 @@
               <span class="page-link">{{ i }}</span></span>
             </li>
             {% else %}
-              {% if i == rolling_stock.paginator.ELLIPSIS %}
+              {% if i == consist.paginator.ELLIPSIS %}
               <li class="page-item"><span class="page-link">{{ i }}</span></li>
               {% else %}
               <li class="page-item"><a class="page-link" href="{% url 'consists_pagination' page=i %}#rolling-stock">{{ i }}</a></li>
