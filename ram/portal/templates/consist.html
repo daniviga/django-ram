@@ -5,11 +5,11 @@
         <h1 class="fw-light">{{ consist }}</h1>
         {% if consist.tags.all %}
         <p><small>Tags:</small>
-         {% for t in consist.tags.all %}<span class="badge bg-primary">
-          {{ t.name }}</span>{# new line is required #}
+          {% for t in consist.tags.all %}<a href="{% url 'filtered' _filter="tag" search=t.slug %}" class="badge rounded-pill bg-primary">
+          {{ t.name }}</a>{# new line is required #}
           {% endfor %}
         </p>
-        {% endif %}
+      {% endif %}
       {% endblock %}
       {% block cards %}
       {% for r in rolling_stock %}
@@ -25,8 +25,8 @@
             </p>
             {% if r.rolling_stock.tags.all %}
             <p class="card-text"><small>Tags:</small>
-             {% for t in r.rolling_stock.tags.all %}<span class="badge bg-primary">
-              {{ t.name }}</span>{# new line is required #}
+              {% for t in r.rolling_stock.tags.all %}<a href="{% url 'filtered' _filter="tag" search=t.slug %}" class="badge rounded-pill bg-primary">
+              {{ t.name }}</a>{# new line is required #}
               {% endfor %}
             </p>
             {% endif %}

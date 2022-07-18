@@ -27,8 +27,8 @@ class DecoderAdmin(admin.ModelAdmin):
 
 @admin.register(Scale)
 class ScaleAdmin(admin.ModelAdmin):
-    list_display = ("scale", "ratio", "gauge")
-    list_filter = ("ratio", "gauge")
+    list_display = ("scale", "ratio", "gauge", "track")
+    list_filter = ("ratio", "gauge", "track")
     search_fields = list_display
 
 
