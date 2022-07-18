@@ -50,7 +50,7 @@ class GetHome(View):
 class GetHomeFiltered(View):
     def run_search(self, request, search, _filter, page=1):
         site_conf = get_site_conf()
-        if _filter is None:
+        if _filter == "search":
             query = reduce(
                 operator.or_,
                 (
@@ -90,7 +90,7 @@ class GetHomeFiltered(View):
 
         return rolling_stock, matches, page_range
 
-    def get(self, request, search, _filter=None, page=1):
+    def get(self, request, search, _filter="search", page=1):
         rolling_stock, matches, page_range = self.run_search(
             request, search, _filter, page
         )
@@ -107,7 +107,7 @@ class GetHomeFiltered(View):
             },
         )
 
-    def post(self, request, _filter=None, page=1):
+    def post(self, request, _filter="search", page=1):
         search = request.POST.get("search")
         if not search:
             raise Http404

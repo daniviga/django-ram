@@ -18,12 +18,6 @@ urlpatterns = [
         GetHomeFiltered.as_view(http_method_names=["post"]),
         name="search",
     ),
-    path("search/<str:search>", GetHomeFiltered.as_view(), name="search"),
-    path(
-        "search/<str:search>/<int:page>",
-        GetHomeFiltered.as_view(),
-        name="search_pagination",
-    ),
     path("consists", Consists.as_view(), name="consists"),
     path(
         "consists/<int:page>", Consists.as_view(), name="consists_pagination"
