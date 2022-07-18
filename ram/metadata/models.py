@@ -85,7 +85,7 @@ class Scale(models.Model):
     scale = models.CharField(max_length=32, unique=True)
     ratio = models.CharField(max_length=16, blank=True)
     gauge = models.CharField(max_length=16, blank=True)
-    track = models.CharField(max_length=16, blank=True)
+    tracks = models.CharField(max_length=16, blank=True)
 
     class Meta:
         ordering = ["scale"]
