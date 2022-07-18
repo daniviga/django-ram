@@ -20,7 +20,11 @@ class RollingClass(admin.ModelAdmin):
     inlines = (RollingClassPropertyInline,)
     list_display = ("__str__", "type", "company")
     list_filter = ("company", "type__category", "type")
-    search_fields = list_display
+    search_fields = (
+        "identifier",
+        "company__name",
+        "type__type",
+    )
 
 
 class RollingStockDocInline(admin.TabularInline):
@@ -62,10 +66,18 @@ class RollingStockAdmin(admin.ModelAdmin):
     list_filter = (
         "rolling_class__type__category",
         "rolling_class__type",
+        "rolling_class__company__name",
         "scale",
         "manufacturer",
     )
-    search_fields = list_display
+    search_fields = (
+        "rolling_class__identifier",
+        "rolling_class__company__name",
+        "manufacturer__name",
+        "road_number",
+        "address",
+        "sku",
+    )
 
     fieldsets = (
         (

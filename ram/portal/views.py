@@ -74,9 +74,9 @@ class GetHomeFiltered(View):
                 | Q(rolling_class__company__extended_name__icontains=search)
             )
         elif _filter == "scale":
-            query = Q(scale__scale__icontains=search)
+            query = Q(scale__scale__iexact=search)
         elif _filter == "tag":
-            query = Q(tags__slug__icontains=search)
+            query = Q(tags__slug__iexact=search)
         else:
             raise Http404
         rolling_stock = RollingStock.objects.filter(query).order_by(

@@ -26,7 +26,7 @@
               {% if i == rolling_stock.paginator.ELLIPSIS %}
               <li class="page-item"><span class="page-link">{{ i }}</span></li>
               {% else %}
-              <li class="page-item"><a class="page-link" href="{% url 'index_pagination' page=i %}#rolling-stock">{{ i }}</a></li>
+              <li class="page-item"><a class="page-link" href="{% url 'search_pagination' search=search page=i %}#rolling-stock">{{ i }}</a></li>
               {% endif %}
             {% endif %}
           {% endfor %}

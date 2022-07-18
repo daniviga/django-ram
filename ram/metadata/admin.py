@@ -22,7 +22,7 @@ class DecoderAdmin(admin.ModelAdmin):
     readonly_fields = ("image_thumbnail",)
     list_display = ("__str__", "interface")
     list_filter = ("manufacturer", "interface")
-    search_fields = ("__str__",)
+    search_fields = ("name", "manufacturer__name")
 
 
 @admin.register(Scale)
@@ -59,4 +59,4 @@ class TagAdmin(admin.ModelAdmin):
 class RollingStockTypeAdmin(SortableAdminMixin, admin.ModelAdmin):
     list_display = ("__str__",)
     list_filter = ("type", "category")
-    search_fields = list_display
+    search_fields = ("type", "category")
