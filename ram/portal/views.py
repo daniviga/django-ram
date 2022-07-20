@@ -38,7 +38,9 @@ class GetHome(View):
 
         paginator = Paginator(rolling_stock, site_conf.items_per_page)
         rolling_stock = paginator.get_page(page)
-        page_range = paginator.get_elided_page_range(rolling_stock.number)
+        page_range = paginator.get_elided_page_range(
+            rolling_stock.number, on_each_side=2, on_ends=1
+        )
 
         return render(
             request,
@@ -86,7 +88,9 @@ class GetHomeFiltered(View):
 
         paginator = Paginator(rolling_stock, site_conf.items_per_page)
         rolling_stock = paginator.get_page(page)
-        page_range = paginator.get_elided_page_range(rolling_stock.number)
+        page_range = paginator.get_elided_page_range(
+            rolling_stock.number, on_each_side=2, on_ends=1
+        )
 
         return rolling_stock, matches, page_range
 
@@ -166,7 +170,9 @@ class Consists(View):
 
         paginator = Paginator(consist, site_conf.items_per_page)
         consist = paginator.get_page(page)
-        page_range = paginator.get_elided_page_range(consist.number)
+        page_range = paginator.get_elided_page_range(
+            consist.number, on_each_side=2, on_ends=1
+        )
 
         return render(
             request,
@@ -186,7 +192,9 @@ class GetConsist(View):
 
         paginator = Paginator(rolling_stock, site_conf.items_per_page)
         rolling_stock = paginator.get_page(page)
-        page_range = paginator.get_elided_page_range(rolling_stock.number)
+        page_range = paginator.get_elided_page_range(
+            rolling_stock.number, on_each_side=2, on_ends=1
+        )
 
         return render(
             request,
@@ -206,7 +214,9 @@ class Companies(View):
 
         paginator = Paginator(company, site_conf.items_per_page)
         company = paginator.get_page(page)
-        page_range = paginator.get_elided_page_range(company.number)
+        page_range = paginator.get_elided_page_range(
+            company.number, on_each_side=2, on_ends=1
+        )
 
         return render(
             request,
@@ -222,7 +232,9 @@ class Scales(View):
 
         paginator = Paginator(scale, site_conf.items_per_page)
         scale = paginator.get_page(page)
-        page_range = paginator.get_elided_page_range(scale.number)
+        page_range = paginator.get_elided_page_range(
+            scale.number, company.number, on_each_side=2, on_ends=1
+        )
 
         return render(
             request,
