@@ -233,7 +233,7 @@ class Scales(View):
         paginator = Paginator(scale, site_conf.items_per_page)
         scale = paginator.get_page(page)
         page_range = paginator.get_elided_page_range(
-            scale.number, company.number, on_each_side=2, on_ends=1
+            scale.number, on_each_side=2, on_ends=1
         )
 
         return render(
