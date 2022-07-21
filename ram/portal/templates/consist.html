@@ -2,13 +2,14 @@
 {% load markdown %}
 
       {% block header %}
-        <h1 class="fw-light">{{ consist }}</h1>
-        {% if consist.tags.all %}
-        <p><small>Tags:</small>
-          {% for t in consist.tags.all %}<a href="{% url 'filtered' _filter="tag" search=t.slug %}" class="badge rounded-pill bg-primary">
-          {{ t.name }}</a>{# new line is required #}
-          {% endfor %}
-        </p>
+      <h1 class="fw-light">{{ consist }}</h1>
+      {% if consist.tags.all %}
+      <p><small>Tags:</small>
+        {% for t in consist.tags.all %}<a href="{% url 'filtered' _filter="tag" search=t.slug %}" class="badge rounded-pill bg-primary">
+        {{ t.name }}</a>{# new line is required #}
+        {% endfor %}
+      </p>
+      <small class="text-muted">Updated {{ consist.updated_time | date:"M d, Y H:i" }}</small>
       {% endif %}
       {% endblock %}
       {% block cards %}
@@ -90,12 +91,9 @@
                 </tbody>
               </table>
             {% endif %}
-            <div class="btn-group mb-4">
+            <div class="d-grid gap-2 mb-1 d-md-block">
              <a class="btn btn-sm btn-outline-primary" href="{{r.rolling_stock.get_absolute_url}}">Show all data</a>
               {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% url 'admin:roster_rollingstock_change' r.rolling_stock.pk %}">Edit</a>{% endif %}
-            </div>
-            <div class="d-flex justify-content-between align-items-center">
-              <small class="text-muted">Updated {{ r.rolling_stock.updated_time | date:"M d, Y H:m" }}</small>
             </div>
           </div>
         </div>

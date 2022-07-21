@@ -10,6 +10,7 @@
           {% endfor %}
         </p>
         {% endif %}
+        <small class="text-muted">Updated {{ rolling_stock.updated_time | date:"M d, Y H:i" }}</small>
         {% endblock %}
         {% block cards %}
         {% for t in rolling_stock.image.all %}
