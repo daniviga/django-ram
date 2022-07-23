@@ -8,7 +8,17 @@
       {% for c in consist %}
       <div class="col">
         <div class="card shadow-sm">
-          {% if c.image %}<a href="{{ c.get_absolute_url }}"><img src="{{ c.image.url }}" alt="Card image cap"></a>{% endif %}
+          <a href="{{ c.get_absolute_url }}">
+          {% if c.image %}
+            <img src="{{ c.image.url }}" alt="Card image cap">
+          {% else %}
+            {% with c.consist_item.first.rolling_stock as r %}
+            {% for i in r.image.all %}
+              {% if i.is_thumbnail %}<img src="{{ i.image.url }}" alt="Card image cap">{% endif %}
+            {% endfor %}
+            {% endwith %}
+          {% endif %}
+          </a>
           <div class="card-body">
             <p class="card-text" style="position: relative;">
               <strong>{{ c }}</strong>
