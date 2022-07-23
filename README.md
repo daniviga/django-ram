@@ -2,8 +2,7 @@
 
 [![Django CI](https://github.com/daniviga/django-rma/actions/workflows/django.yml/badge.svg)](https://github.com/daniviga/django-rma/actions/workflows/django.yml)
 
-![image](https://user-images.githubusercontent.com/1818657/175789825-9a03f0ff-a95e-42a2-9611-e14d2817e22f.png)
-
+![Screenshot 2022-07-23 at 22-40-17 Railroad Assets Manager](https://user-images.githubusercontent.com/1818657/180622177-a4bba00e-47da-42b3-a7f6-b24773e69936.png)
 
 A `jff` (just for fun) project that aims to create a
 model railroad assets manager that allows to:
@@ -25,6 +24,8 @@ security assesment, pentest, ISO certification, etc.
 This project probably doesn't match you needs nor expectations. Be aware.
 
 Your model train may also catch fire while using this software.
+
+Checkout [my own instance)(https://daniele.mynarrowgauge.org).
 
 ## Components
 
@@ -138,14 +139,13 @@ To be continued ...
 ## Screenshots
 
 ### Frontend
+![Screenshot 2022-07-23 at 22-41-44 Railroad Assets Manager](https://user-images.githubusercontent.com/1818657/180622406-760774a9-f028-44fc-b332-fa74e43307df.png)
+---
+![Screenshot 2022-07-23 at 22-44-35 Railroad Assets Manager](https://user-images.githubusercontent.com/1818657/180622342-40586d75-239a-400c-93a1-1cb9583a7d17.png)
+---
+![Screenshot 2022-07-23 at 22-44-46 Railroad Assets Manager](https://user-images.githubusercontent.com/1818657/180622321-1ab76440-9c6e-4667-9247-dbbcf6c6055c.png)
+---
 
-![image](https://user-images.githubusercontent.com/1818657/175789897-9ec4a9bb-9c65-48ef-9b57-ae94e094e6a7.png)
----
-![image](https://user-images.githubusercontent.com/1818657/175789901-ef50acd7-8c05-4788-92a2-1bb1280d598c.png)
----
-![image](https://user-images.githubusercontent.com/1818657/175790004-18926d23-28f9-45bb-b279-6c26575ae3a5.png)
----
-![image](https://user-images.githubusercontent.com/1818657/175790008-62eea2cc-1c41-42df-9026-4cf6e8ef712c.png)
 
 
 ### Backoffice
@@ -158,8 +158,7 @@ To be continued ...
 
 ### Rest API
 
-![image](https://user-images.githubusercontent.com/1818657/175790064-23ec038e-e8bf-4c39-964c-3118e4295b59.png)
-
+![image](https://user-images.githubusercontent.com/1818657/180622471-ade06c84-c73b-41d5-a2a7-02a95b2ffc02.png)
 
 
 
