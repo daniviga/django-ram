@@ -25,7 +25,7 @@ This project probably doesn't match you needs nor expectations. Be aware.
 
 Your model train may also catch fire while using this software.
 
-Checkout [my own instance)(https://daniele.mynarrowgauge.org).
+Checkout [my own instance](https://daniele.mynarrowgauge.org).
 
 ## Components
 
