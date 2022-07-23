@@ -144,6 +144,11 @@ To be continued ...
 ![Screenshot 2022-07-23 at 22-44-35 Railroad Assets Manager](https://user-images.githubusercontent.com/1818657/180622342-40586d75-239a-400c-93a1-1cb9583a7d17.png)
 ---
 ![Screenshot 2022-07-23 at 22-44-46 Railroad Assets Manager](https://user-images.githubusercontent.com/1818657/180622321-1ab76440-9c6e-4667-9247-dbbcf6c6055c.png)
+
+#### Dark mode
+
+![Screenshot 2022-07-23 at 22-53-43 Railroad Assets Manager](https://user-images.githubusercontent.com/1818657/180622629-65d81eaf-cca4-4f44-b39b-3b0077b43a34.png)
+
 ---
 
 
