@@ -15,7 +15,24 @@
         {% block cards %}
         {% for t in rolling_stock.image.all %}
         <div class="col">
-          <img class="img-thumbnail" src="{{ t.image.url }}" alt="Rolling stock image">
+            <a href="" data-bs-toggle="modal" data-bs-target="#pictureModal{{ forloop.counter }}"><img class="img-thumbnail" src="{{ t.image.url }}" alt="Rolling stock image"></a>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="pictureModal{{ forloop.counter }}" tabindex="-1" aria-labelledby="pictureModalLabel{{ forloop.counter }}" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="pictureModalLabel{{ forloop.counter }}">{{ rolling_stock }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body text-center">
+                  <img class="roundedi img-fluid" src="{{ t.image.url }}" alt="Rolling stock image">
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
         </div>
         {% endfor %}
         {% endblock %}
