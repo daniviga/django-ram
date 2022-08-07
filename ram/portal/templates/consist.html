@@ -103,7 +103,7 @@
       {% block pagination %}
       {% if rolling_stock.has_other_pages %}
       <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center mt-4">
+        <ul class="pagination justify-content-center mt-4 mb-0">
           {% if rolling_stock.has_previous %}
           <li class="page-item">
             <a class="page-link" href="{% url 'consist_pagination' uuid=consist.uuid page=rolling_stock.previous_page_number %}#rolling-stock" tabindex="-1">Previous</a>

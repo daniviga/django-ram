@@ -1,8 +1,11 @@
 import django
 from django.db import models
+from django.urls import reverse
+from django.dispatch.dispatcher import receiver
+from solo.models import SingletonModel
 
 from ram import __version__ as app_version
-from solo.models import SingletonModel
+from ram.utils import slugify
 
 
 class SiteConfiguration(SingletonModel):
@@ -40,3 +43,23 @@ class SiteConfiguration(SingletonModel):
 
     def django_version(self):
         return django.get_version()
+
+
+class Flatpage(models.Model):
+    name = models.CharField(max_length=256, unique=True)
+    path = models.CharField(max_length=256, unique=True)
+    draft = models.BooleanField(default=True)
+    content = models.TextField(blank=True)
+    creation_time = models.DateTimeField(auto_now_add=True)
+    updated_time = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse("flatpage", kwargs={"flatpage": self.path})
+
+
+@receiver(models.signals.pre_save, sender=Flatpage)
+def tag_pre_save(sender, instance, **kwargs):
+    instance.path = slugify(instance.name)

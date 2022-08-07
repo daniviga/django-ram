@@ -47,7 +47,7 @@
       {% block pagination %}
       {% if scale.has_other_pages %}
       <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center mt-4">
+        <ul class="pagination justify-content-center mt-4 mb-0">
           {% if scale.has_previous %}
           <li class="page-item">
             <a class="page-link" href="{% url 'scale_pagination' page=scale.previous_page_number %}#rolling-stock" tabindex="-1">Previous</a>

@@ -57,7 +57,7 @@
       {% block pagination %}
       {% if company.has_other_pages %}
       <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center mt-4">
+        <ul class="pagination justify-content-center mt-4 mb-0">
           {% if company.has_previous %}
           <li class="page-item">
             <a class="page-link" href="{% url 'company_pagination' page=company.previous_page_number %}#rolling-stock" tabindex="-1">Previous</a>
