@@ -133,6 +133,7 @@ class RollingStockDocument(models.Model):
     )
     description = models.CharField(max_length=128, blank=True)
     file = models.FileField(upload_to="files/", null=True, blank=True)
+    private = models.BooleanField(default=False)
 
     class Meta(object):
         unique_together = ("rolling_stock", "file")
