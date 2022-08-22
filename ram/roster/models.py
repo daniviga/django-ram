@@ -146,7 +146,7 @@ class RollingStockDocument(models.Model):
 
     def download(self):
         return mark_safe(
-            "<a href=\"{0}\" target=\"_blank\">Link</a>".format(self.file.url)
+            '<a href="{0}" target="_blank">Link</a>'.format(self.file.url)
         )
 
 
