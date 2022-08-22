@@ -4,6 +4,7 @@ from uuid import uuid4
 from django.db import models
 from django.urls import reverse
 from django.dispatch import receiver
+from django.utils.safestring import mark_safe
 
 # from django.core.files.storage import FileSystemStorage
 
@@ -141,7 +142,12 @@ class RollingStockDocument(models.Model):
         return "{0}".format(os.path.basename(self.file.name))
 
     def filename(self):
-        return os.path.basename(self.file.name)
+        return self.__str__
+
+    def download(self):
+        return mark_safe(
+            "<a href=\"{0}\" target=\"_blank\">Link</a>".format(self.file.url)
+        )
 
 
 class RollingStockImage(models.Model):
