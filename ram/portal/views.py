@@ -8,7 +8,7 @@ from django.shortcuts import render
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator, PageNotAnInteger
 
-from portal.utils import get_site_conf
+from portal.utils import get_site_conf, markdown_uploader
 from portal.models import Flatpage
 from roster.models import RollingStock
 from consist.models import Consist
@@ -248,7 +248,9 @@ class Scales(View):
 class GetFlatpage(View):
     def get(self, request, flatpage):
         try:
-            flatpage = Flatpage.objects.get(path=flatpage)
+            flatpage = Flatpage.objects.get(
+                Q(Q(path=flatpage) & Q(draft=False))
+            )
         except ObjectDoesNotExist:
             raise Http404
 
@@ -257,3 +259,8 @@ class GetFlatpage(View):
             "flatpage.html",
             {"flatpage": flatpage},
         )
+
+
+class MDUploader(View):
+    def post(self, request):
+        return markdown_uploader(request)

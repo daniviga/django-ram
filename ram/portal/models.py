@@ -3,6 +3,7 @@ from django.db import models
 from django.urls import reverse
 from django.dispatch.dispatcher import receiver
 from solo.models import SingletonModel
+from martor.models import MartorField
 
 from ram import __version__ as app_version
 from ram.utils import slugify
@@ -49,7 +50,7 @@ class Flatpage(models.Model):
     name = models.CharField(max_length=256, unique=True)
     path = models.CharField(max_length=256, unique=True)
     draft = models.BooleanField(default=True)
-    content = models.TextField(blank=True)
+    content = MartorField()
     creation_time = models.DateTimeField(auto_now_add=True)
     updated_time = models.DateTimeField(auto_now=True)
 
