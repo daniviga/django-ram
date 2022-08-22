@@ -142,7 +142,7 @@ class RollingStockDocument(models.Model):
         return "{0}".format(os.path.basename(self.file.name))
 
     def filename(self):
-        return self.__str__
+        return self.__str__()
 
     def download(self):
         return mark_safe(
