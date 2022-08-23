@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib import admin
 from solo.admin import SingletonModelAdmin
-from martor.widgets import AdminMartorWidget
 
 from portal.models import SiteConfiguration, Flatpage
 
@@ -13,10 +12,6 @@ class FlatpageAdmin(admin.ModelAdmin):
     readonly_fields = ("path", "creation_time", "updated_time")
     list_display = ("name", "path")
     search_fields = ("name",)
-
-    formfield_overrides = {
-        models.TextField: {'widget': AdminMartorWidget},
-    }
 
     fieldsets = (
         (

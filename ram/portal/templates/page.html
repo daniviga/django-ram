@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-{% load markdown %}
 
         {% block header %}
         <h1 class="fw-light">{{ rolling_stock }}</h1>
@@ -258,7 +257,7 @@
                   </table>
                 </div>
                 <div class="tab-pane fade" id="nav-notes" role="tabpanel" aria-labelledby="nav-notes-tab">
-                  {{ rolling_stock.notes | markdown | safe }}
+                  {{ rolling_stock.notes | safe }}
                 </div>
                 <div class="tab-pane fade" id="nav-documents" role="tabpanel" aria-labelledby="nav-documents-tab">
                   <table class="table table-striped">

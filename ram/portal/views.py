@@ -8,7 +8,7 @@ from django.shortcuts import render
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator, PageNotAnInteger
 
-from portal.utils import get_site_conf, markdown_uploader
+from portal.utils import get_site_conf
 from portal.models import Flatpage
 from roster.models import RollingStock
 from consist.models import Consist
@@ -259,8 +259,3 @@ class GetFlatpage(View):
             "flatpage.html",
             {"flatpage": flatpage},
         )
-
-
-class MDUploader(View):
-    def post(self, request):
-        return markdown_uploader(request)

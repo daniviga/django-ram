@@ -4,7 +4,6 @@ from portal.views import (
     GetHome,
     GetHomeFiltered,
     GetFlatpage,
-    MDUploader,
     GetRollingStock,
     GetConsist,
     Consists,
@@ -14,7 +13,6 @@ from portal.views import (
 
 urlpatterns = [
     path("", GetHome.as_view(), name="index"),
-    path("uploader/", MDUploader.as_view(), name="markdown_uploader"),
     path("<int:page>", GetHome.as_view(), name="index_pagination"),
     path(
         "page/<str:flatpage>",

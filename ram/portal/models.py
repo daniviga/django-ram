@@ -3,7 +3,9 @@ from django.db import models
 from django.urls import reverse
 from django.dispatch.dispatcher import receiver
 from solo.models import SingletonModel
-from martor.models import MartorField
+
+from ckeditor.fields import RichTextField
+from ckeditor_uploader.fields import RichTextUploadingField
 
 from ram import __version__ as app_version
 from ram.utils import slugify
@@ -14,7 +16,7 @@ class SiteConfiguration(SingletonModel):
         max_length=256, default="Railroad Assets Manager"
     )
     site_author = models.CharField(max_length=256, blank=True)
-    about = models.TextField(blank=True)
+    about = RichTextField(blank=True)
     items_per_page = models.CharField(
         max_length=2,
         choices=[(str(x * 3), str(x * 3)) for x in range(2, 11)],
@@ -29,8 +31,8 @@ class SiteConfiguration(SingletonModel):
         ],
         default="type",
     )
-    footer = models.TextField(blank=True)
-    footer_extended = models.TextField(blank=True)
+    footer = RichTextField(blank=True)
+    footer_extended = RichTextField(blank=True)
     show_version = models.BooleanField(default=True)
 
     class Meta:
@@ -50,7 +52,7 @@ class Flatpage(models.Model):
     name = models.CharField(max_length=256, unique=True)
     path = models.CharField(max_length=256, unique=True)
     draft = models.BooleanField(default=True)
-    content = MartorField()
+    content = RichTextUploadingField()
     creation_time = models.DateTimeField(auto_now_add=True)
     updated_time = models.DateTimeField(auto_now=True)
 

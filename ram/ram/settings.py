@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     "adminsortable2",
     "django_countries",
     "solo",
-    "martor",
+    "ckeditor",
+    "ckeditor_uploader",
     "rest_framework",
     "ram",
     "portal",
@@ -141,11 +142,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 MEDIA_URL = "media/"
 MEDIA_ROOT = STORAGE_DIR / "media"
-
-MARTOR_UPLOAD_PATH = "images/uploads/{}".format(time.strftime("%Y/%m/%d/"))
-MARTOR_UPLOAD_URL = "/portal/uploader/"
-
-MAX_IMAGE_UPLOAD_SIZE = 5242880  # 5MB
+CKEDITOR_UPLOAD_PATH = "uploads/"
 
 COUNTRIES_OVERRIDE = {
     "ZZ": "Freelance",

@@ -21,7 +21,7 @@ from django.urls import include, path
 
 urlpatterns = [
     path("", lambda r: redirect("portal/")),
-    path('martor/', include('martor.urls')),
+    path("ckeditor/", include("ckeditor_uploader.urls")),
     path("portal/", include("portal.urls")),
     path("ht/", include("health_check.urls")),
     path("admin/", admin.site.urls),

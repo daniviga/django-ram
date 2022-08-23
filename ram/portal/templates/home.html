@@ -1,9 +1,8 @@
 {% extends "base.html" %}
-{% load markdown %}
 
       {% block header %}
         {% if site_conf.about %}<h1 class="fw-light">About</h1>{% endif %}
-        <p class="lead text-muted">{{ site_conf.about | markdown | safe }}</p>
+        <p class="lead text-muted">{{ site_conf.about | safe }}</p>
       {% endblock %}
 
       {% block pagination %}
