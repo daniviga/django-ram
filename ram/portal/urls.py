@@ -3,6 +3,7 @@ from django.urls import path
 from portal.views import (
     GetHome,
     GetHomeFiltered,
+    GetFlatpage,
     GetRollingStock,
     GetConsist,
     Consists,
@@ -13,6 +14,11 @@ from portal.views import (
 urlpatterns = [
     path("", GetHome.as_view(), name="index"),
     path("<int:page>", GetHome.as_view(), name="index_pagination"),
+    path(
+        "page/<str:flatpage>",
+        GetFlatpage.as_view(),
+        name="flatpage",
+    ),
     path(
         "search",
         GetHomeFiltered.as_view(http_method_names=["post"]),
@@ -32,14 +38,10 @@ urlpatterns = [
     path(
         "companies/<int:page>",
         Companies.as_view(),
-        name="companies_pagination"
+        name="companies_pagination",
     ),
     path("scales", Scales.as_view(), name="scales"),
-    path(
-        "scales/<int:page>",
-        Scales.as_view(),
-        name="scales_pagination"
-    ),
+    path("scales/<int:page>", Scales.as_view(), name="scales_pagination"),
     path(
         "<str:_filter>/<str:search>",
         GetHomeFiltered.as_view(),

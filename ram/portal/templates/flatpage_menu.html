@@ -1,0 +1,12 @@
+                {% if menu %}
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    More ...
+                  </a>
+                  {% for m in menu %}
+                  <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <li><a class="dropdown-item" href="{{ m.get_absolute_url }}">{{ m.name }}</a></li>
+                  </ul>
+                  {% endfor %}
+                </li>
+                {% endif %}

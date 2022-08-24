@@ -7,5 +7,6 @@ django-solo
 django-countries
 django-health-check
 django-admin-sortable2
+django-ckeditor
 # psycopg2-binary
 pySerial

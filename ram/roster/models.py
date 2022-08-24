@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.dispatch import receiver
 from django.utils.safestring import mark_safe
 
-# from django.core.files.storage import FileSystemStorage
+from ckeditor_uploader.fields import RichTextUploadingField
 
 from ram.utils import get_image_preview
 from metadata.models import (
@@ -94,7 +94,7 @@ class RollingStock(models.Model):
     era = models.CharField(max_length=32, blank=True)
     production_year = models.SmallIntegerField(null=True, blank=True)
     purchase_date = models.DateField(null=True, blank=True)
-    notes = models.TextField(blank=True)
+    notes = RichTextUploadingField(blank=True)
     tags = models.ManyToManyField(
         Tag, related_name="rolling_stock", blank=True
     )

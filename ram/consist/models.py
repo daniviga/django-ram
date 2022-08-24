@@ -2,6 +2,8 @@ from uuid import uuid4
 from django.db import models
 from django.urls import reverse
 
+from ckeditor_uploader.fields import RichTextUploadingField
+
 from metadata.models import Company, Tag
 from roster.models import RollingStock
 
@@ -16,7 +18,7 @@ class Consist(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     era = models.CharField(max_length=32, blank=True)
     image = models.ImageField(upload_to="images/", null=True, blank=True)
-    notes = models.TextField(blank=True)
+    notes = RichTextUploadingField(blank=True)
     creation_time = models.DateTimeField(auto_now_add=True)
     updated_time = models.DateTimeField(auto_now=True)
 
