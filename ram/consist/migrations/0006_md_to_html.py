@@ -14,8 +14,8 @@ def md_to_html(apps, schema_editor):
 
         for row in model.objects.all():
             for field in m[1]:
-                field = getattr(row, field)
-                field = markdown.markdown(field)
+                html = markdown.markdown(getattr(row, field))
+                row.__dict__[field] = html
 
             row.save(update_fields=m[1])
 
