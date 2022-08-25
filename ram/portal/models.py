@@ -2,6 +2,7 @@ import django
 from django.db import models
 from django.urls import reverse
 from django.dispatch.dispatcher import receiver
+from django.utils.safestring import mark_safe
 from solo.models import SingletonModel
 
 from ckeditor.fields import RichTextField
@@ -51,7 +52,7 @@ class SiteConfiguration(SingletonModel):
 class Flatpage(models.Model):
     name = models.CharField(max_length=256, unique=True)
     path = models.CharField(max_length=256, unique=True)
-    draft = models.BooleanField(default=True)
+    published = models.BooleanField(default=False)
     content = RichTextUploadingField()
     creation_time = models.DateTimeField(auto_now_add=True)
     updated_time = models.DateTimeField(auto_now=True)
@@ -61,6 +62,14 @@ class Flatpage(models.Model):
 
     def get_absolute_url(self):
         return reverse("flatpage", kwargs={"flatpage": self.path})
+
+    def get_link(self):
+        if self.published:
+            return mark_safe(
+                '<a href="{0}" target="_blank">Link</a>'.format(
+                    self.get_absolute_url()
+                )
+            )
 
 
 @receiver(models.signals.pre_save, sender=Flatpage)

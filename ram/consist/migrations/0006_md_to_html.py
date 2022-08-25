@@ -6,11 +6,11 @@ from django.db import migrations
 
 def md_to_html(apps, schema_editor):
     fields = {
-        'Consist': ['notes'],
+        "Consist": ["notes"],
     }
 
     for m in fields.items():
-        model = apps.get_model('consist', m[0])
+        model = apps.get_model("consist", m[0])
 
         for row in model.objects.all():
             for field in m[1]:

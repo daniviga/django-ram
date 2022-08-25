@@ -6,5 +6,5 @@ register = template.Library()
 
 @register.inclusion_tag('flatpage_menu.html')
 def show_menu():
-    menu = Flatpage.objects.all()
+    menu = Flatpage.objects.filter(published=True).order_by("name")
     return {"menu": menu}

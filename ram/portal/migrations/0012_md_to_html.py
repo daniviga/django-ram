@@ -6,12 +6,12 @@ from django.db import migrations
 
 def md_to_html(apps, schema_editor):
     fields = {
-        'SiteConfiguration': ['about', 'footer', 'footer_extended'],
-        'Flatpage': ['content']
+        "SiteConfiguration": ["about", "footer", "footer_extended"],
+        "Flatpage": ["content"]
     }
 
     for m in fields.items():
-        model = apps.get_model('portal', m[0])
+        model = apps.get_model("portal", m[0])
 
         for row in model.objects.all():
             for field in m[1]:

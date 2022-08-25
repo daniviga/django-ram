@@ -3,10 +3,10 @@
                   <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     More ...
                   </a>
-                  {% for m in menu %}
                   <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                  {% for m in menu %}
                     <li><a class="dropdown-item" href="{{ m.get_absolute_url }}">{{ m.name }}</a></li>
-                  </ul>
                   {% endfor %}
+                  </ul>
                 </li>
                 {% endif %}

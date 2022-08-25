@@ -9,7 +9,8 @@ admin.site.register(SiteConfiguration, SingletonModelAdmin)
 @admin.register(Flatpage)
 class FlatpageAdmin(admin.ModelAdmin):
     readonly_fields = ("path", "creation_time", "updated_time")
-    list_display = ("name", "path")
+    list_display = ("name", "path", "published", "get_link")
+    list_filter = ("published",)
     search_fields = ("name",)
 
     fieldsets = (
@@ -20,7 +21,7 @@ class FlatpageAdmin(admin.ModelAdmin):
                     "name",
                     "path",
                     "content",
-                    "draft",
+                    "published",
                 )
             },
         ),

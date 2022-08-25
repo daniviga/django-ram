@@ -249,7 +249,7 @@ class GetFlatpage(View):
     def get(self, request, flatpage):
         try:
             flatpage = Flatpage.objects.get(
-                Q(Q(path=flatpage) & Q(draft=False))
+                Q(Q(path=flatpage) & Q(published=True))
             )
         except ObjectDoesNotExist:
             raise Http404
