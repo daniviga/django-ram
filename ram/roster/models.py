@@ -191,6 +191,27 @@ class RollingStockProperty(models.Model):
         verbose_name_plural = "Properties"
 
 
+class RollingStockJournal(models.Model):
+    rolling_stock = models.ForeignKey(
+        RollingStock,
+        on_delete=models.CASCADE,
+        related_name="journal",
+        null=False,
+        blank=False,
+    )
+    date = models.DateField()
+    log = RichTextUploadingField()
+    private = models.BooleanField(default=False)
+    creation_time = models.DateTimeField(auto_now_add=True)
+    updated_time = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return "{0} - {1}".format(self.rolling_stock, self.date)
+
+    class Meta:
+        ordering = ["date", "rolling_stock"]
+
+
 # @receiver(models.signals.post_delete, sender=Cab)
 # def post_save_image(sender, instance, *args, **kwargs):
 #     try:

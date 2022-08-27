@@ -6,6 +6,7 @@ from roster.models import (
     RollingStockImage,
     RollingStockDocument,
     RollingStockProperty,
+    RollingStockJournal,
 )
 
 
@@ -31,6 +32,7 @@ class RollingStockDocInline(admin.TabularInline):
     model = RollingStockDocument
     min_num = 0
     extra = 0
+    classes = ["collapse"]
 
 
 class RollingStockImageInline(admin.TabularInline):
@@ -38,12 +40,20 @@ class RollingStockImageInline(admin.TabularInline):
     min_num = 0
     extra = 0
     readonly_fields = ("image_thumbnail",)
+    classes = ["collapse"]
 
 
 class RollingStockPropertyInline(admin.TabularInline):
     model = RollingStockProperty
     min_num = 0
     extra = 0
+
+
+class RollingStockJournalInline(admin.TabularInline):
+    model = RollingStockJournal
+    min_num = 0
+    extra = 0
+    classes = ["collapse"]
 
 
 @admin.register(RollingStockDocument)
@@ -62,12 +72,33 @@ class RollingStockDocumentAdmin(admin.ModelAdmin):
     )
 
 
+@admin.register(RollingStockJournal)
+class RollingJournalDocumentAdmin(admin.ModelAdmin):
+    list_display = (
+        "__str__",
+        "date",
+        "rolling_stock",
+        "private",
+    )
+    list_filter = (
+        "date",
+        "private",
+    )
+    search_fields = (
+        "rolling_stock__rolling_class__identifier",
+        "rolling_stock__road_number",
+        "rolling_stock__sku",
+        "log",
+    )
+
+
 @admin.register(RollingStock)
 class RollingStockAdmin(admin.ModelAdmin):
     inlines = (
         RollingStockPropertyInline,
         RollingStockImageInline,
         RollingStockDocInline,
+        RollingStockJournalInline,
     )
     readonly_fields = ("creation_time", "updated_time")
     list_display = (

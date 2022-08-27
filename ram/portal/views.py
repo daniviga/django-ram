@@ -154,6 +154,12 @@ class GetRollingStock(View):
             else rolling_stock.property.filter(property__private=False)
         )
 
+        rolling_stock_journal = (
+            rolling_stock.journal.all()
+            if request.user.is_authenticated
+            else rolling_stock.journal.filter(private=False)
+        )
+
         return render(
             request,
             "page.html",
@@ -161,6 +167,7 @@ class GetRollingStock(View):
                 "rolling_stock": rolling_stock,
                 "class_properties": class_properties,
                 "rolling_stock_properties": rolling_stock_properties,
+                "rolling_stock_journal": rolling_stock_journal,
             },
         )
 
