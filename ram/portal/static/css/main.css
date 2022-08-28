@@ -23,6 +23,15 @@ a.badge, a.badge:hover {
   padding: .5rem;
 }
 
+#nav-journal ul, #nav-journal ol {
+  margin: 0;
+  padding-left: 1rem;
+}
+
+#nav-journal p {
+  margin: 0;
+}
+
 #footer > p {
   display: inline;
 }
