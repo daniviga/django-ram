@@ -4,8 +4,9 @@ from uuid import uuid4
 from django.db import models
 from django.urls import reverse
 from django.dispatch import receiver
+from django.utils.safestring import mark_safe
 
-# from django.core.files.storage import FileSystemStorage
+from ckeditor_uploader.fields import RichTextUploadingField
 
 from ram.utils import get_image_preview
 from metadata.models import (
@@ -93,7 +94,7 @@ class RollingStock(models.Model):
     era = models.CharField(max_length=32, blank=True)
     production_year = models.SmallIntegerField(null=True, blank=True)
     purchase_date = models.DateField(null=True, blank=True)
-    notes = models.TextField(blank=True)
+    notes = RichTextUploadingField(blank=True)
     tags = models.ManyToManyField(
         Tag, related_name="rolling_stock", blank=True
     )
@@ -142,7 +143,12 @@ class RollingStockDocument(models.Model):
         return "{0}".format(os.path.basename(self.file.name))
 
     def filename(self):
-        return os.path.basename(self.file.name)
+        return self.__str__()
+
+    def download(self):
+        return mark_safe(
+            '<a href="{0}" target="_blank">Link</a>'.format(self.file.url)
+        )
 
 
 class RollingStockImage(models.Model):
@@ -184,6 +190,27 @@ class RollingStockProperty(models.Model):
 
     class Meta:
         verbose_name_plural = "Properties"
+
+
+class RollingStockJournal(models.Model):
+    rolling_stock = models.ForeignKey(
+        RollingStock,
+        on_delete=models.CASCADE,
+        related_name="journal",
+        null=False,
+        blank=False,
+    )
+    date = models.DateField()
+    log = RichTextUploadingField()
+    private = models.BooleanField(default=False)
+    creation_time = models.DateTimeField(auto_now_add=True)
+    updated_time = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return "{0} - {1}".format(self.rolling_stock, self.date)
+
+    class Meta:
+        ordering = ["date", "rolling_stock"]
 
 
 # @receiver(models.signals.post_delete, sender=Cab)

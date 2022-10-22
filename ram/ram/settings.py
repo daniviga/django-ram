@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 import os
+import time
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -45,6 +46,8 @@ INSTALLED_APPS = [
     "adminsortable2",
     "django_countries",
     "solo",
+    "ckeditor",
+    "ckeditor_uploader",
     "rest_framework",
     "ram",
     "portal",
@@ -139,6 +142,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 MEDIA_URL = "media/"
 MEDIA_ROOT = STORAGE_DIR / "media"
+CKEDITOR_UPLOAD_PATH = "uploads/"
 
 COUNTRIES_OVERRIDE = {
     "ZZ": "Freelance",

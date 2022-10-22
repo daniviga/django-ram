@@ -6,9 +6,10 @@ from django.http import Http404
 from django.db.models import Q
 from django.shortcuts import render
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.paginator import Paginator, PageNotAnInteger
 
 from portal.utils import get_site_conf
+from portal.models import Flatpage
 from roster.models import RollingStock
 from consist.models import Consist
 from metadata.models import Company, Scale
@@ -61,6 +62,7 @@ class GetHomeFiltered(View):
                         | Q(rolling_class__description__icontains=s)
                         | Q(rolling_class__type__type__icontains=s)
                         | Q(road_number__icontains=s)
+                        | Q(sku=s)
                         | Q(rolling_class__company__name__icontains=s)
                         | Q(rolling_class__company__country__icontains=s)
                         | Q(manufacturer__name__icontains=s)
@@ -157,6 +159,12 @@ class GetRollingStock(View):
             else rolling_stock.document.filter(private=False)
         )
 
+        rolling_stock_journal = (
+            rolling_stock.journal.all()
+            if request.user.is_authenticated
+            else rolling_stock.journal.filter(private=False)
+        )
+
         return render(
             request,
             "page.html",
@@ -165,6 +173,7 @@ class GetRollingStock(View):
                 "class_properties": class_properties,
                 "rolling_stock_properties": rolling_stock_properties,
                 "rolling_stock_documents": rolling_stock_documents,
+                "rolling_stock_journal": rolling_stock_journal,
             },
         )
 
@@ -246,4 +255,20 @@ class Scales(View):
             request,
             "scales.html",
             {"scale": scale, "page_range": page_range},
+        )
+
+
+class GetFlatpage(View):
+    def get(self, request, flatpage):
+        try:
+            flatpage = Flatpage.objects.get(
+                Q(Q(path=flatpage) & Q(published=True))
+            )
+        except ObjectDoesNotExist:
+            raise Http404
+
+        return render(
+            request,
+            "flatpage.html",
+            {"flatpage": flatpage},
         )

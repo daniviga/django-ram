@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% load markdown %}
 
       {% block header %}
         <h1 class="fw-light">Consists</h1>
@@ -70,7 +69,7 @@
       {% block pagination %}
       {% if consist.has_other_pages %}
       <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center mt-4">
+        <ul class="pagination justify-content-center mt-4 mb-0">
           {% if consist.has_previous %}
           <li class="page-item">
             <a class="page-link" href="{% url 'consists_pagination' page=consist.previous_page_number %}#rolling-stock" tabindex="-1">Previous</a>
