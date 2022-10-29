@@ -14,6 +14,7 @@ from metadata.models import (
 
 @admin.register(Property)
 class PropertyAdmin(admin.ModelAdmin):
+    list_display = ("name", "private")
     search_fields = ("name",)
 
 
