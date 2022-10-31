@@ -102,7 +102,7 @@
                       </tr>
                     </tbody>
                   </table>
-                  {% if rolling_stock.decoder %}
+                  {% if rolling_stock.decoder or rolling_stock.decoder_interface %}
                   <table class="table table-striped">
                     <thead>
                       <tr>
@@ -111,13 +111,19 @@
                     </thead>
                     <tbody>
                       <tr>
-                        <th width="35%" scope="row">Decoder</th>
+                        <th width="35%" scope="row">Interface</th>
+                        <td>{{ rolling_stock.get_decoder_interface_display }}</td>
+                      </tr>
+                      {% if rolling_stock.decoder %}
+                      <tr>
+                        <th scope="row">Decoder</th>
                         <td>{{ rolling_stock.decoder }}</td>
                       </tr>
                       <tr>
                         <th scope="row">Address</th>
                         <td>{{ rolling_stock.address }}</td>
                       </tr>
+                      {% endif %}
                     </tbody>
                   </table>
                   {% endif %}
@@ -231,6 +237,10 @@
                     </thead>
                     <tbody>
                       <tr>
+                        <th scope="row">Interface</th>
+                        <td>{{ rolling_stock.get_decoder_interface_display }}</td>
+                      </tr>
+                      <tr>
                         <th width="35%" scope="row">Address</th>
                         <td>{{ rolling_stock.address }}</td>
                       </tr>
@@ -245,10 +255,6 @@
                       <tr>
                         <th scope="row">Version</th>
                         <td>{{ rolling_stock.decoder.version }}</td>
-                      </tr>
-                      <tr>
-                        <th scope="row">Interface</th>
-                        <td>{{ rolling_stock.decoder.get_interface_display }}</td>
                       </tr>
                       <tr>
                         <th scope="row">Sound</th>

@@ -66,9 +66,6 @@ class Decoder(models.Model):
         limit_choices_to={"category": "model"},
     )
     version = models.CharField(max_length=64, blank=True)
-    interface = models.PositiveSmallIntegerField(
-        choices=settings.DECODER_INTERFACES, null=True, blank=True
-    )
     sound = models.BooleanField(default=False)
     image = models.ImageField(upload_to="images/", null=True, blank=True)
 

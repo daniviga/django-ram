@@ -148,6 +148,7 @@ class RollingStockAdmin(admin.ModelAdmin):
             "DCC",
             {
                 "fields": (
+                    "decoder_interface",
                     "decoder",
                     "address",
                 )
