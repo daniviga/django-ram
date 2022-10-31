@@ -3,6 +3,7 @@ import re
 from uuid import uuid4
 from django.db import models
 from django.urls import reverse
+from django.conf import settings
 from django.dispatch import receiver
 from django.utils.safestring import mark_safe
 
@@ -87,6 +88,9 @@ class RollingStock(models.Model):
     )
     scale = models.ForeignKey(Scale, on_delete=models.CASCADE)
     sku = models.CharField(max_length=32, blank=True)
+    decoder_interface = models.PositiveSmallIntegerField(
+        choices=settings.DECODER_INTERFACES, null=True, blank=True
+    )
     decoder = models.ForeignKey(
         Decoder, on_delete=models.CASCADE, null=True, blank=True
     )
