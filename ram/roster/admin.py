@@ -125,6 +125,7 @@ class RollingStockAdmin(admin.ModelAdmin):
         "address",
         "sku",
     )
+    save_as = True
 
     fieldsets = (
         (
