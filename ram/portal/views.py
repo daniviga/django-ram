@@ -83,7 +83,7 @@ class GetHomeFiltered(View):
             query = Q(tags__slug__iexact=search)
         else:
             raise Http404
-        rolling_stock = RollingStock.objects.filter(query).order_by(
+        rolling_stock = RollingStock.objects.filter(query).distinct().order_by(
             *order_by_fields()
         )
         matches = len(rolling_stock)
