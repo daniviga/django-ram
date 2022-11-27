@@ -9,7 +9,7 @@ from django.utils.safestring import mark_safe
 
 from ckeditor_uploader.fields import RichTextUploadingField
 
-from ram.utils import get_image_preview
+from ram.utils import DeduplicatedStorage, get_image_preview
 from metadata.models import (
     Property,
     Scale,
@@ -19,11 +19,6 @@ from metadata.models import (
     Tag,
     RollingStockType,
 )
-
-# class OverwriteMixin(FileSystemStorage):
-#     def get_available_name(self, name, max_length):
-#         self.delete(name)
-#         return name
 
 
 class RollingClass(models.Model):
@@ -137,7 +132,12 @@ class RollingStockDocument(models.Model):
         RollingStock, on_delete=models.CASCADE, related_name="document"
     )
     description = models.CharField(max_length=128, blank=True)
-    file = models.FileField(upload_to="files/", null=True, blank=True)
+    file = models.FileField(
+        upload_to="files/",
+        storage=DeduplicatedStorage(),
+        null=True,
+        blank=True,
+    )
 
     class Meta(object):
         unique_together = ("rolling_stock", "file")
@@ -158,7 +158,9 @@ class RollingStockImage(models.Model):
     rolling_stock = models.ForeignKey(
         RollingStock, on_delete=models.CASCADE, related_name="image"
     )
-    image = models.ImageField(upload_to="images/", null=True, blank=True)
+    image = models.ImageField(
+        upload_to="images/", storage=DeduplicatedStorage, null=True, blank=True
+    )
     is_thumbnail = models.BooleanField()
 
     def image_thumbnail(self):
