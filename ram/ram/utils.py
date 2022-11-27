@@ -1,8 +1,29 @@
 import os
+import hashlib
 import subprocess
 
 from django.utils.html import format_html
 from django.utils.text import slugify as django_slugify
+from django.core.files.storage import FileSystemStorage
+
+
+class DeduplicatedStorage(FileSystemStorage):
+    """
+    A derived FileSystemStorage class that compares already existing files
+    (with the same name) with new uploaded ones and stores new file only if
+    sha256 hash on is content is different
+    """
+
+    def save(self, name, content, max_length=None):
+        if super().exists(name):
+            new = hashlib.sha256(content.file.getbuffer()).hexdigest()
+            with open(super().path(name), "rb") as file:
+                file_binary = file.read()
+                old = hashlib.sha256(file_binary).hexdigest()
+            if old == new:
+                return name
+
+        return super().save(name, content, max_length)
 
 
 def git_suffix(fname):
