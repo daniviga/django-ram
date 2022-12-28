@@ -34,6 +34,10 @@
       html.dark .d-light-inline { display: none !important; }
       html.dark .d-dark-inline { display: inline !important; }
     </style>
+    {% block extra_head %}
+    {{ site_conf.extra_head | safe }}
+    {% endblock %}
+
   </head>
   <body>
     <header>
