@@ -46,7 +46,11 @@ class GetHome(View):
         return render(
             request,
             "home.html",
-            {"rolling_stock": rolling_stock, "page_range": page_range},
+            {
+                "title": "Home",
+                "rolling_stock": rolling_stock,
+                "page_range": page_range,
+            },
         )
 
 
@@ -83,8 +87,10 @@ class GetHomeFiltered(View):
             query = Q(tags__slug__iexact=search)
         else:
             raise Http404
-        rolling_stock = RollingStock.objects.filter(query).distinct().order_by(
-            *order_by_fields()
+        rolling_stock = (
+            RollingStock.objects.filter(query)
+            .distinct()
+            .order_by(*order_by_fields())
         )
         matches = len(rolling_stock)
 
@@ -105,6 +111,7 @@ class GetHomeFiltered(View):
             request,
             "search.html",
             {
+                "title": "{0}: {1}".format(_filter.capitalize(), search),
                 "search": search,
                 "filter": _filter,
                 "matches": matches,
@@ -125,6 +132,7 @@ class GetHomeFiltered(View):
             request,
             "search.html",
             {
+                "title": "{0}: {1}".format(_filter.capitalize(), search),
                 "search": search,
                 "filter": _filter,
                 "matches": matches,
@@ -164,6 +172,7 @@ class GetRollingStock(View):
             request,
             "page.html",
             {
+                "title": rolling_stock,
                 "rolling_stock": rolling_stock,
                 "class_properties": class_properties,
                 "rolling_stock_properties": rolling_stock_properties,
@@ -186,7 +195,11 @@ class Consists(View):
         return render(
             request,
             "consists.html",
-            {"consist": consist, "page_range": page_range},
+            {
+                "title": "Consists",
+                "consist": consist,
+                "page_range": page_range,
+            },
         )
 
 
@@ -209,6 +222,7 @@ class GetConsist(View):
             request,
             "consist.html",
             {
+                "title": consist,
                 "consist": consist,
                 "rolling_stock": rolling_stock,
                 "page_range": page_range,
@@ -230,7 +244,11 @@ class Companies(View):
         return render(
             request,
             "companies.html",
-            {"company": company, "page_range": page_range},
+            {
+                "title": "Companies",
+                "company": company,
+                "page_range": page_range,
+            },
         )
 
 
@@ -248,7 +266,7 @@ class Scales(View):
         return render(
             request,
             "scales.html",
-            {"scale": scale, "page_range": page_range},
+            {"title": "Scales", "scale": scale, "page_range": page_range},
         )
 
 
@@ -264,5 +282,5 @@ class GetFlatpage(View):
         return render(
             request,
             "flatpage.html",
-            {"flatpage": flatpage},
+            {"title": flatpage.name, "flatpage": flatpage},
         )

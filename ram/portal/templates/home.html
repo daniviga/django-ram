@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 
       {% block header %}
-        {% if site_conf.about %}<h1 class="fw-light">About</h1>{% endif %}
         <p class="lead text-muted">{{ site_conf.about | safe }}</p>
       {% endblock %}
 

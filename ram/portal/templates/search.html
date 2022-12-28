@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 
       {% block header %}
-        <h1 class="fw-light">{{ filter | default_if_none:"Search" | title }}: {{ search }}</h1>
         <p class="lead text-muted">Results found: {{ matches }}</p>
       {% endblock %}
       {% block pagination %}

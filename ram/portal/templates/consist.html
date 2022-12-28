@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 
       {% block header %}
-      <h1 class="fw-light">{{ consist }}</h1>
       {% if consist.tags.all %}
       <p><small>Tags:</small>
         {% for t in consist.tags.all %}<a href="{% url 'filtered' _filter="tag" search=t.slug %}" class="badge rounded-pill bg-primary">

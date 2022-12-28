@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 
         {% block header %}
-        <h1 class="fw-light">{{ rolling_stock }}</h1>
         {% if rolling_stock.tags.all %}
         <p><small>Tags:</small>
           {% for t in rolling_stock.tags.all %}<a href="{% url 'filtered' _filter="tag" search=t.slug %}" class="badge rounded-pill bg-primary">
