@@ -178,6 +178,9 @@ class RollingStockImage(models.Model):
             ).update(is_thumbnail=False)
         super().save(**kwargs)
 
+    class Meta:
+        ordering = ["-is_thumbnail"]
+
 
 class RollingStockProperty(models.Model):
     rolling_stock = models.ForeignKey(
