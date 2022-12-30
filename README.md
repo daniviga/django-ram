@@ -21,7 +21,7 @@ it has been developed with a commitment of few minutes a day;
 it lacks any kind of documentation, code review, architectural review,
 security assesment, pentest, ISO certification, etc.
 
-This project probably doesn't match you needs nor expectations. Be aware.
+This project probably doesn't match your needs nor expectations. Be aware.
 
 Your model train may also catch fire while using this software.
 
