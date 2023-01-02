@@ -10,7 +10,7 @@
           {% else %}
             {% with c.consist_item.first.rolling_stock as r %}
             {% for i in r.image.all %}
-              {% if i.is_thumbnail %}<img src="{{ i.image.url }}" alt="Card image cap">{% endif %}
+              {% if forloop.first %}<img src="{{ i.image.url }}" alt="Card image cap">{% endif %}
             {% endfor %}
             {% endwith %}
           {% endif %}
