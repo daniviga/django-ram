@@ -49,7 +49,7 @@ It has been developed with:
 
 ## Requirements
 
-- Python 3.8+
+- Python 3.9+
 - A USB port when running Arduino hardware (and adaptors if you have a Mac)
 
 ## Web portal installation
