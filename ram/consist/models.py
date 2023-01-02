@@ -32,7 +32,7 @@ class Consist(models.Model):
         return reverse("consist", kwargs={"uuid": self.uuid})
 
     class Meta:
-        ordering = ["creation_time"]
+        ordering = ["company", "-creation_time"]
 
 
 class ConsistItem(models.Model):

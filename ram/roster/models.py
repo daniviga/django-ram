@@ -155,13 +155,13 @@ class RollingStockDocument(models.Model):
 
 
 class RollingStockImage(models.Model):
+    order = models.PositiveIntegerField(default=0, blank=False, null=False)
     rolling_stock = models.ForeignKey(
         RollingStock, on_delete=models.CASCADE, related_name="image"
     )
     image = models.ImageField(
         upload_to="images/", storage=DeduplicatedStorage, null=True, blank=True
     )
-    is_thumbnail = models.BooleanField()
 
     def image_thumbnail(self):
         return get_image_preview(self.image.url)
@@ -171,15 +171,8 @@ class RollingStockImage(models.Model):
     def __str__(self):
         return "{0}".format(os.path.basename(self.image.name))
 
-    def save(self, **kwargs):
-        if self.is_thumbnail:
-            RollingStockImage.objects.filter(
-                rolling_stock=self.rolling_stock
-            ).update(is_thumbnail=False)
-        super().save(**kwargs)
-
     class Meta:
-        ordering = ["-is_thumbnail"]
+        ordering = ["order"]
 
 
 class RollingStockProperty(models.Model):

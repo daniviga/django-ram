@@ -15,7 +15,7 @@
       <div class="col">
         <div class="card shadow-sm">
           {% for i in r.rolling_stock.image.all %}
-          {% if i.is_thumbnail %}<a href="{{r.rolling_stock.get_absolute_url}}"><img src="{{ i.image.url }}" alt="Card image cap"></a>{% endif %}
+          {% if forloop.first %}<a href="{{r.rolling_stock.get_absolute_url}}"><img src="{{ i.image.url }}" alt="Card image cap"></a>{% endif %}
           {% endfor %}
           <div class="card-body">
             <p class="card-text" style="position: relative;">
