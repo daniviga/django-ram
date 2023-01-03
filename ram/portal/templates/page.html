@@ -10,29 +10,32 @@
         {% endif %}
         <small class="text-muted">Updated {{ rolling_stock.updated_time | date:"M d, Y H:i" }}</small>
         {% endblock %}
-        {% block cards %}
-        {% for t in rolling_stock.image.all %}
-        <div class="col">
-            <a href="" data-bs-toggle="modal" data-bs-target="#pictureModal{{ forloop.counter }}"><img class="img-thumbnail" src="{{ t.image.url }}" alt="Rolling stock image"></a>
-        </div>
-        <!-- Modal -->
-        <div class="modal fade" id="pictureModal{{ forloop.counter }}" tabindex="-1" aria-labelledby="pictureModalLabel{{ forloop.counter }}" aria-hidden="true">
-          <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="pictureModalLabel{{ forloop.counter }}">{{ rolling_stock }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body text-center">
-                  <img class="rounded img-fluid" src="{{ t.image.url }}" alt="Rolling stock image">
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              </div>
+        {% block carousel %}
+        <div id="carouselControls" class="carousel carousel-dark slide" data-bs-ride="carousel">
+          <div class="carousel-inner">
+            {% for t in rolling_stock.image.all %}
+            {% if forloop.first %}
+            <div class="carousel-item active">
+        	{% else %}
+            <div class="carousel-item">
+            {% endif %}
+              <img src="{{ t.image.url }}" class="d-block w-100 rounded img-thumbnail" alt="...">
             </div>
+            {% endfor %}
           </div>
+          {% if rolling_stock.image.count > 1 %}
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselControls" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselControls" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+          {% endif %}
         </div>
-        {% endfor %}
+        {% endblock %}
+        {% block cards %}
         {% endblock %}
         {% block extra_content %}
         <section class="py-4 text-start container">
