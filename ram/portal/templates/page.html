@@ -266,7 +266,18 @@
                   </table>
                 </div>
                 <div class="tab-pane fade" id="nav-notes" role="tabpanel" aria-labelledby="nav-notes-tab">
-                  {{ rolling_stock.notes | safe }}
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="row">Notes</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>{{ rolling_stock.notes | safe }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
                 <div class="tab-pane fade" id="nav-documents" role="tabpanel" aria-labelledby="nav-documents-tab">
                   <table class="table table-striped">
