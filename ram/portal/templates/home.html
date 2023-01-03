@@ -1,9 +1,8 @@
-{% extends "base.html" %}
+{% extends "cards.html" %}
 
       {% block header %}
         <p class="lead text-muted">{{ site_conf.about | safe }}</p>
       {% endblock %}
-
       {% block pagination %}
       {% if rolling_stock.has_other_pages %}
       <nav aria-label="Page navigation example">

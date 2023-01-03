@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "cards.html" %}
 
       {% block header %}
       {% if consist.tags.all %}
@@ -141,6 +141,51 @@
       <section class="py-4 text-start container">
         <div class="row">
           <div class="mx-auto">
+            <nav>
+              <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                <button class="nav-link active" id="nav-summary-tab" data-bs-toggle="tab" data-bs-target="#nav-summary" type="button" role="tab" aria-controls="nav-summary" aria-selected="true">Summary</button>
+                {% if consist.notes %}<button class="nav-link" id="nav-notes-tab" data-bs-toggle="tab" data-bs-target="#nav-notes" type="button" role="tab" aria-controls="nav-notes" aria-selected="false">Notes</button>{% endif %}
+               </div>
+            </nav>
+            <div class="tab-content" id="nav-tabContent">
+              <div class="tab-pane fade show active" id="nav-summary" role="tabpanel" aria-labelledby="nav-summary-tab">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th colspan="2" scope="row">Data</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th width="35%" scope="row">Company</th>
+                      <td><abbr title="{{ consist.company.extended_name }}">{{ consist.company }}</abbr></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Era</th>
+                      <td>{{ consist.era }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Length</th>
+                      <td>{{ rolling_stock | length }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="tab-pane fade" id="nav-notes" role="tabpanel" aria-labelledby="nav-notes-tab">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="row">Notes</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{{ consist.notes | safe }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
               {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% url 'admin:consist_consist_change' consist.pk %}">Edit</a>{% endif %}
             </div>
