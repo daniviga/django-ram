@@ -69,7 +69,9 @@
                       </tr>
                       <tr>
                         <th scope="row">Company</th>
-                        <td><abbr title="{{ rolling_stock.rolling_class.company.extended_name }}">{{ rolling_stock.rolling_class.company }}</abbr></td>
+                        <td>
+                            <a href="{% url 'filtered' _filter="company" search=rolling_stock.rolling_class.company %}"><abbr title="{{ rolling_stock.rolling_class.company.extended_name }}">{{ rolling_stock.rolling_class.company }}</abbr></a>
+                        </td>
                       </tr>
                       <tr>
                         <th scope="row">Class</th>
@@ -94,7 +96,7 @@
                     <tbody>
                       <tr>
                         <th width="35%" scope="row">Manufacturer</th>
-                        <td>{% if rolling_stock.manufacturer.website %}<a href="{{ rolling_stock.manufacturer.website }}">{% endif %}{{ rolling_stock.manufacturer|default_if_none:"" }}{% if rolling_stock.manufacturer.website %}</a>{% endif %}</th>
+                        <td>{{ rolling_stock.manufacturer|default_if_none:"" }}{% if rolling_stock.manufacturer.website %} <a href="{{ rolling_stock.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}</td>
                       </tr>
                       <tr>
                         <th scope="row">Scale</th>
@@ -142,7 +144,7 @@
                     <tbody>
                       <tr>
                         <th width="35%" scope="row">Manufacturer</th>
-                        <td>{% if rolling_stock.manufacturer.website %}<a href="{{ rolling_stock.manufacturer.website }}">{% endif %}{{ rolling_stock.manufacturer|default_if_none:"" }}{% if rolling_stock.manufacturer.website %}</a>{% endif %}</th>
+                        <td>{{ rolling_stock.manufacturer|default_if_none:"" }}{% if rolling_stock.manufacturer.website %} <a href="{{ rolling_stock.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}</td>
                       </tr>
                       <tr>
                         <th scope="row">Scale</th>
@@ -292,7 +294,7 @@
                     {% for d in rolling_stock.document.all %}
                       <tr>
                         <td>{{ d.description }}</td>
-                        <td><a href="{{ d.file.url }}">{{ d.filename }}</a></td>
+                        <td><a href="{{ d.file.url }}" target="_blank">{{ d.filename }}</a></td>
                         <td class="text-end">{{ d.file.size | filesizeformat }}</td>
                       </tr>
                     {% endfor %}
