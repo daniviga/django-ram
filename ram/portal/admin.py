@@ -26,6 +26,7 @@ class SiteConfigurationAdmin(SingletonModelAdmin):
                 "classes": ("collapse",),
                 "fields": (
                     "show_version",
+                    "use_cdn",
                     "extra_head",
                 ),
             },
