@@ -10,6 +10,19 @@
       <small class="text-muted">Updated {{ consist.updated_time | date:"M d, Y H:i" }}</small>
       {% endif %}
       {% endblock %}
+      {% block carousel %}
+      {% if consist.image %}
+      <div class="row pb-4">
+        <div id="carouselControls" class="carousel carousel-dark slide" data-bs-ride="carousel">
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <img src="{{ consist.image.url }}" class="d-block w-100 rounded img-thumbnail" alt="...">
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+      {% endblock %}
       {% block cards %}
       {% for r in rolling_stock %}
       <div class="col">

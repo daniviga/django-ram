@@ -35,6 +35,7 @@ class SiteConfiguration(SingletonModel):
     footer = RichTextField(blank=True)
     footer_extended = RichTextField(blank=True)
     show_version = models.BooleanField(default=True)
+    use_cdn = models.BooleanField(default=True)
     extra_head = models.TextField(blank=True)
 
     class Meta:
