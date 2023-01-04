@@ -170,7 +170,7 @@ class GetRollingStock(View):
 
         return render(
             request,
-            "page.html",
+            "rollingstock.html",
             {
                 "title": rolling_stock,
                 "rolling_stock": rolling_stock,

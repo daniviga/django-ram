@@ -11,7 +11,7 @@
         <small class="text-muted">Updated {{ rolling_stock.updated_time | date:"M d, Y H:i" }}</small>
         {% endblock %}
         {% block carousel %}
-        <div id="carouselControls" class="carousel carousel-dark slide" data-bs-ride="carousel">
+        <div id="carouselControls" class="carousel carousel-dark slide" data-bs-ride="carousel" data-bs-interval="10000">
           <div class="carousel-inner">
             {% for t in rolling_stock.image.all %}
             {% if forloop.first %}

@@ -11,10 +11,6 @@ a.badge, a.badge:hover {
   color: #fff;
 }
 
-.tab-pane {
-  min-height: 300px;
-}
-
 .img-thumbnail {
   padding: 0;
 }
