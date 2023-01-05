@@ -55,7 +55,9 @@
                 </tr>
                 <tr>
                   <th scope="row">Company</th>
-                  <td><abbr title="{{ r.rolling_stock.rolling_class.company.extended_name }}">{{ r.rolling_stock.rolling_class.company }}</abbr></td>
+                  <td>
+                    <a href="{% url 'filtered' _filter="company" search=r.rolling_stock.rolling_class.company %}"><abbr title="{{ r.rolling_stock.rolling_class.company.extended_name }}">{{ r.rolling_stock.rolling_class.company }}</abbr></a>
+                  </td>
                 </tr>
                 <tr>
                   <th scope="row">Class</th>
@@ -71,7 +73,7 @@
                 </tr>
                 <tr>
                   <th width="35%" scope="row">Manufacturer</th>
-                  <td>{% if r.rolling_stock.manufacturer.website %}<a href="{{ r.rolling_stock.manufacturer.website }}">{% endif %}{{ r.rolling_stock.manufacturer }}{% if r.rolling_stock.manufacturer.website %}</a>{% endif %}</th>
+                  <td>{{ r.rolling_stock.manufacturer|default_if_none:"" }}{% if r.rolling_stock.manufacturer.website %} <a href="{{ r.rolling_stock.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}</td>
                 </tr>
                 <tr>
                   <th scope="row">Scale</th>
