@@ -1,3 +1,8 @@
+/* Switch SVG logo to white on dark mode */
+html.dark .navbar-light svg {
+  fill: #fff;
+}
+
 .card > a > img {
   width: 100%;
 }
