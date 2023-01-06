@@ -1,5 +1,6 @@
 import operator
 from functools import reduce
+from urllib.parse import quote_plus, unquote_plus
 
 from django.views import View
 from django.http import Http404
@@ -12,7 +13,7 @@ from portal.utils import get_site_conf
 from portal.models import Flatpage
 from roster.models import RollingStock
 from consist.models import Consist
-from metadata.models import Company, Scale
+from metadata.models import Company, Manufacturer, Scale
 
 
 def order_by_fields():
@@ -81,6 +82,11 @@ class GetHomeFiltered(View):
                 Q(rolling_class__company__name__icontains=search)
                 | Q(rolling_class__company__extended_name__icontains=search)
             )
+        elif _filter == "manufacturer":
+            query = Q(
+                Q(manufacturer__name__iexact=search)
+                | Q(rolling_class__manufacturer__name__icontains=search)
+            )
         elif _filter == "scale":
             query = Q(scale__scale__iexact=search)
         elif _filter == "tag":
@@ -103,16 +109,19 @@ class GetHomeFiltered(View):
         return rolling_stock, matches, page_range
 
     def get(self, request, search, _filter="search", page=1):
+        search_unsafe = unquote_plus(search)  # expected to be encoded
         rolling_stock, matches, page_range = self.run_search(
-            request, search, _filter, page
+            request, search_unsafe, _filter, page
         )
 
         return render(
             request,
             "search.html",
             {
-                "title": "{0}: {1}".format(_filter.capitalize(), search),
+                "title": "{0}: {1}".format(
+                    _filter.capitalize(), search_unsafe),
                 "search": search,
+                "search_unsafe": search_unsafe,
                 "filter": _filter,
                 "matches": matches,
                 "rolling_stock": rolling_stock,
@@ -122,6 +131,8 @@ class GetHomeFiltered(View):
 
     def post(self, request, _filter="search", page=1):
         search = request.POST.get("search")
+        # search = quote_plus(request.POST.get("search"), safe="&")
+        # search_unsafe = unquote_plus(search)
         if not search:
             raise Http404
         rolling_stock, matches, page_range = self.run_search(
@@ -134,6 +145,7 @@ class GetHomeFiltered(View):
             {
                 "title": "{0}: {1}".format(_filter.capitalize(), search),
                 "search": search,
+                # "search_unsafe": search_unsafe,
                 "filter": _filter,
                 "matches": matches,
                 "rolling_stock": rolling_stock,
@@ -225,6 +237,31 @@ class GetConsist(View):
                 "title": consist,
                 "consist": consist,
                 "rolling_stock": rolling_stock,
+                "page_range": page_range,
+            },
+        )
+
+
+class Manufacturers(View):
+    def get(self, request, category, page=1):
+        site_conf = get_site_conf()
+        if category not in ("real", "model"):
+            raise Http404
+        manufacturers = Manufacturer.objects.filter(category=category)
+
+        paginator = Paginator(manufacturers, site_conf.items_per_page)
+        manufacturers = paginator.get_page(page)
+        page_range = paginator.get_elided_page_range(
+            manufacturers.number, on_each_side=2, on_ends=1
+        )
+
+        return render(
+            request,
+            "manufacturers.html",
+            {
+                "title": "Manufacturers",
+                "category": category,
+                "manufacturers": manufacturers,
                 "page_range": page_range,
             },
         )

@@ -1,3 +1,5 @@
+from urllib.parse import quote_plus
+
 from django.db import models
 from django.conf import settings
 from django.dispatch.dispatcher import receiver
@@ -34,6 +36,9 @@ class Manufacturer(models.Model):
     def __str__(self):
         return self.name
 
+    def safe_name(self):
+        return quote_plus(self.name, safe="&")
+
     def logo_thumbnail(self):
         return get_image_preview(self.logo.url)
 
@@ -55,6 +60,9 @@ class Company(models.Model):
 
     def __str__(self):
         return self.name
+
+    def safe_name(self):
+        return quote_plus(self.name, safe="&")
 
     def logo_thumbnail(self):
         return get_image_preview(self.logo.url)

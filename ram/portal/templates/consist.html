@@ -73,7 +73,9 @@
                 </tr>
                 <tr>
                   <th width="35%" scope="row">Manufacturer</th>
-                  <td>{{ r.rolling_stock.manufacturer|default_if_none:"" }}{% if r.rolling_stock.manufacturer.website %} <a href="{{ r.rolling_stock.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}</td>
+                  <td>{%if r.rolling_stock.manufacturer %}
+                    <a href="{% url 'filtered' _filter="manufacturer" search=r.rolling_stock.manufacturer.safe_name %}">{{ r.rolling_stock.manufacturer }}{% if r.rolling_stock.manufacturer.website %}</a> <a href="{{ r.rolling_stock.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
+                  {% endif %}</td>
                 </tr>
                 <tr>
                   <th scope="row">Scale</th>

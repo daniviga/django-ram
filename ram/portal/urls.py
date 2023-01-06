@@ -8,6 +8,7 @@ from portal.views import (
     GetConsist,
     Consists,
     Companies,
+    Manufacturers,
     Scales,
 )
 
@@ -39,6 +40,16 @@ urlpatterns = [
         "companies/<int:page>",
         Companies.as_view(),
         name="companies_pagination",
+    ),
+    path(
+        "manufacturers/<str:category>",
+        Manufacturers.as_view(),
+        name="manufacturers"
+    ),
+    path(
+        "manufacturers/<str:category>/<int:page>",
+        Manufacturers.as_view(),
+        name="manufacturers_pagination",
     ),
     path("scales", Scales.as_view(), name="scales"),
     path("scales/<int:page>", Scales.as_view(), name="scales_pagination"),

@@ -35,7 +35,7 @@
                   <tr>
                     <th scope="row">Company</th>
                     <td>
-                      <a href="{% url 'filtered' _filter="company" search=r.rolling_class.company %}"><abbr title="{{ r.rolling_class.company.extended_name }}">{{ r.rolling_class.company }}</abbr></a>
+                      <a href="{% url 'filtered' _filter="company" search=r.rolling_class.company.safe_name %}"><abbr title="{{ r.rolling_class.company.extended_name }}">{{ r.rolling_class.company }}</abbr></a>
                     </td>
                   </tr>
                   <tr>
@@ -52,7 +52,9 @@
                   </tr>
                   <tr>
                     <th width="35%" scope="row">Manufacturer</th>
-                    <td>{{ r.manufacturer|default_if_none:"" }}{% if r.manufacturer.website %} <a href="{{ r.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}</td>
+                    <td>{%if r.manufacturer %}
+                      <a href="{% url 'filtered' _filter="manufacturer" search=r.manufacturer.safe_name %}">{{ r.manufacturer }}{% if r.manufacturer.website %}</a> <a href="{{ r.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
+                    {% endif %}</td>
                   </tr>
                   <tr>
                     <th scope="row">Scale</th>
