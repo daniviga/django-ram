@@ -1,12 +1,12 @@
 {% extends "cards.html" %}
 
       {% block cards %}
-      {% for c in company %}
+      {% for d in data  %}
       <div class="col">
         <div class="card shadow-sm">
           <div class="card-body">
             <p class="card-text" style="position: relative;">
-              <strong>{{ c.name }}</strong>
+              <strong>{{ d.name }}</strong>
             </p>
             <table class="table table-striped">
               <thead>
@@ -15,25 +15,25 @@
                 </tr>
               </thead>
               <tbody>
-                {% if c.logo %}
+                {% if d.logo %}
                 <tr>
                   <th width="35%" scope="row">Logo</th>
-                  <td><img style="max-height: 48px" src="{{ c.logo.url }}" /></td>
+                  <td><img style="max-height: 48px" src="{{ d.logo.url }}" /></td>
                 </tr>
                 {% endif %}
                 <tr>
                   <th width="35%" scope="row">Name</th>
-                  <td>{{ c.extended_name }}</td>
+                  <td>{{ d.extended_name }}</td>
                 </tr>
                 <tr>
                   <th width="35%" scope="row">Abbreviation</th>
-                  <td>{{ c }}</td>
+                  <td>{{ d.name }}</td>
                 </tr>
                 <tr>
                   <th width="35%" scope="row">Country</th>
-                  <td>{{ c.country.name }} <img src="{{ c.country.flag }}" alt="{{ c.country }}" />
+                  <td>{{ d.country.name }} <img src="{{ d.country.flag }}" alt="{{ d.country }}" />
                 </tr>
-               {% if c.freelance %}
+               {% if d.freelance %}
                <tr>
                   <th width="35%" scope="row">Notes</th>
                   <td>A <em>freelance</em> company</td>
@@ -42,8 +42,8 @@
               </tbody>
             </table>
             <div class="d-grid gap-2 mb-1 d-md-block">
-              <a class="btn btn-sm btn-outline-primary" href="{% url 'filtered' _filter="company" search=c %}">Show all rolling stock</a>
-              {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% url 'admin:metadata_company_change' c.pk %}">Edit</a>{% endif %}
+              <a class="btn btn-sm btn-outline-primary" href="{% url 'filtered' _filter="company" search=d %}">Show all rolling stock</a>
+              {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% url 'admin:metadata_company_change' d.pk %}">Edit</a>{% endif %}
             </div>
           </div>
         </div>
@@ -51,12 +51,12 @@
       {% endfor %}
       {% endblock %}
       {% block pagination %}
-      {% if company.has_other_pages %}
+      {% if data.has_other_pages %}
       <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center mt-4 mb-0">
-          {% if company.has_previous %}
+          {% if data.has_previous %}
           <li class="page-item">
-            <a class="page-link" href="{% url 'companies_pagination' page=company.previous_page_number %}#rolling-stock" tabindex="-1">Previous</a>
+            <a class="page-link" href="{% url 'companies_pagination' page=data.previous_page_number %}#rolling-stock" tabindex="-1">Previous</a>
           </li>
           {% else %}
           <li class="page-item disabled">
@@ -64,21 +64,21 @@
           </li>
           {% endif %}
           {% for i in page_range %}
-            {% if company.number == i %}
+            {% if data.number == i %}
             <li class="page-item active">
               <span class="page-link">{{ i }}</span></span>
             </li>
             {% else %}
-              {% if i == company.paginator.ELLIPSIS %}
+              {% if i == data.paginator.ELLIPSIS %}
               <li class="page-item"><span class="page-link">{{ i }}</span></li>
               {% else %}
               <li class="page-item"><a class="page-link" href="{% url 'companies_pagination' page=i %}#rolling-stock">{{ i }}</a></li>
               {% endif %}
             {% endif %}
           {% endfor %}
-          {% if company.has_next %}
+          {% if data.has_next %}
           <li class="page-item">
-            <a class="page-link" href="{% url 'companies_pagination' page=company.next_page_number %}#rolling-stock" tabindex="-1">Next</a>
+            <a class="page-link" href="{% url 'companies_pagination' page=data.next_page_number %}#rolling-stock" tabindex="-1">Next</a>
           </li>
           {% else %}
           <li class="page-item disabled">

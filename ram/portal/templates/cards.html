@@ -1,22 +1,25 @@
 {% extends "base.html" %}
 
+      {% block header %}
+        <p class="lead text-muted">Results found: {{ matches }}</p>
+      {% endblock %}
       {% block cards_layout %}
       <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
       {% block cards %}
-        {% for r in rolling_stock %}
+        {% for d in data %}
         <div class="col">
           <div class="card shadow-sm">
-            {% for i in r.image.all %}
-            {% if forloop.first %}<a href="{{r.get_absolute_url}}"><img src="{{ i.image.url }}" alt="Card image cap"></a>{% endif %}
+            {% for i in d.image.all %}
+            {% if forloop.first %}<a href="{{d.get_absolute_url}}"><img src="{{ i.image.url }}" alt="Card image cap"></a>{% endif %}
             {% endfor %}
             <div class="card-body">
               <p class="card-text" style="position: relative;">
-                <strong>{{ r }}</strong>
-                <a class="stretched-link" href="{{ r.get_absolute_url }}"></a>
+                <strong>{{ d }}</strong>
+                <a class="stretched-link" href="{{ d.get_absolute_url }}"></a>
               </p>
-              {% if r.tags.all %}
+              {% if d.tags.all %}
               <p class="card-text"><small>Tags:</small>
-                {% for t in r.tags.all %}<a href="{% url 'filtered' _filter="tag" search=t.slug %}" class="badge rounded-pill bg-primary">
+                {% for t in d.tags.all %}<a href="{% url 'filtered' _filter="tag" search=t.slug %}" class="badge rounded-pill bg-primary">
                 {{ t.name }}</a>{# new line is required #}
                 {% endfor %}
               </p>
@@ -30,43 +33,43 @@
                 <tbody>
                   <tr>
                     <th width="35%" scope="row">Type</th>
-                    <td>{{ r.rolling_class.type }}</td>
+                    <td>{{ d.rolling_class.type }}</td>
                   </tr>
                   <tr>
                     <th scope="row">Company</th>
                     <td>
-                      <a href="{% url 'filtered' _filter="company" search=r.rolling_class.company.safe_name %}"><abbr title="{{ r.rolling_class.company.extended_name }}">{{ r.rolling_class.company }}</abbr></a>
+                      <a href="{% url 'filtered' _filter="company" search=d.rolling_class.company.safe_name %}"><abbr title="{{ d.rolling_class.company.extended_name }}">{{ d.rolling_class.company }}</abbr></a>
                     </td>
                   </tr>
                   <tr>
                     <th scope="row">Class</th>
-                    <td>{{ r.rolling_class.identifier }}</td>
+                    <td>{{ d.rolling_class.identifier }}</td>
                   </tr>
                   <tr>
                     <th scope="row">Road number</th>
-                    <td>{{ r.road_number }}</td>
+                    <td>{{ d.road_number }}</td>
                   </tr>
                   <tr>
                     <th scope="row">Era</th>
-                    <td>{{ r.era }}</td>
+                    <td>{{ d.era }}</td>
                   </tr>
                   <tr>
                     <th width="35%" scope="row">Manufacturer</th>
-                    <td>{%if r.manufacturer %}
-                      <a href="{% url 'filtered' _filter="manufacturer" search=r.manufacturer.safe_name %}">{{ r.manufacturer }}{% if r.manufacturer.website %}</a> <a href="{{ r.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
+                    <td>{%if d.manufacturer %}
+                      <a href="{% url 'filtered' _filter="manufacturer" search=d.manufacturer.safe_name %}">{{ d.manufacturer }}{% if d.manufactured.website %}</a> <a href="{{ d.manufactured.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
                     {% endif %}</td>
                   </tr>
                   <tr>
                     <th scope="row">Scale</th>
-                    <td><a href="{% url 'filtered' _filter="scale" search=r.scale %}"><abbr title="{{ r.scale.ratio }} - {{ r.scale.tracks }}">{{ r.scale }}</abbr></a></td>
+                    <td><a href="{% url 'filtered' _filter="scale" search=d.scale %}"><abbr title="{{ d.scale.ratio }} - {{ d.scale.tracks }}">{{ d.scale }}</abbr></a></td>
                   </tr>
                   <tr>
                     <th scope="row">SKU</th>
-                    <td>{{ r.sku }}</td>
+                    <td>{{ d.sku }}</td>
                   </tr>
                 </tbody>
               </table>
-              {% if r.decoder %}
+              {% if d.decoder %}
               <table class="table table-striped">
                 <thead>
                   <tr>
@@ -76,18 +79,18 @@
                 <tbody>
                   <tr>
                     <th width="35%" scope="row">Decoder</th>
-                    <td>{{ r.decoder }}</td>
+                    <td>{{ d.decoder }}</td>
                   </tr>
                   <tr>
                     <th scope="row">Address</th>
-                    <td>{{ r.address }}</td>
+                    <td>{{ d.address }}</td>
                   </tr>
                 </tbody>
               </table>
               {% endif %}
               <div class="d-grid gap-2 mb-1 d-md-block">
-               <a class="btn btn-sm btn-outline-primary" href="{{r.get_absolute_url}}">Show all data</a>
-                {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% url 'admin:roster_rollingstock_change' r.pk %}">Edit</a>{% endif %}
+               <a class="btn btn-sm btn-outline-primary" href="{{d.get_absolute_url}}">Show all data</a>
+                {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% url 'admin:roster_rollingstock_change' d.pk %}">Edit</a>{% endif %}
               </div>
             </div>
           </div>
