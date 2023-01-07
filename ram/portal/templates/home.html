@@ -1,44 +1,5 @@
-{% extends "cards.html" %}
+{% extends "roster.html" %}
 
       {% block header %}
         <p class="lead text-muted">{{ site_conf.about | safe }}</p>
-      {% endblock %}
-      {% block pagination %}
-      {% if rolling_stock.has_other_pages %}
-      <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center mt-4 mb-0">
-          {% if rolling_stock.has_previous %}
-          <li class="page-item">
-            <a class="page-link" href="{% url 'index_pagination' page=rolling_stock.previous_page_number %}#rolling-stock" tabindex="-1">Previous</a>
-          </li>
-          {% else %}
-          <li class="page-item disabled">
-            <span class="page-link">Previous</span>
-          </li>
-          {% endif %}
-          {% for i in page_range %}
-            {% if rolling_stock.number == i %}
-            <li class="page-item active">
-              <span class="page-link">{{ i }}</span></span>
-            </li>
-            {% else %}
-              {% if i == rolling_stock.paginator.ELLIPSIS %}
-              <li class="page-item"><span class="page-link">{{ i }}</span></li>
-              {% else %}
-              <li class="page-item"><a class="page-link" href="{% url 'index_pagination' page=i %}#rolling-stock">{{ i }}</a></li>
-              {% endif %}
-            {% endif %}
-          {% endfor %}
-          {% if rolling_stock.has_next %}
-          <li class="page-item">
-            <a class="page-link" href="{% url 'index_pagination' page=rolling_stock.next_page_number %}#rolling-stock" tabindex="-1">Next</a>
-          </li>
-          {% else %}
-          <li class="page-item disabled">
-            <span class="page-link">Next</span>
-          </li>
-          {% endif %}
-        </ul>
-      </nav>
-      {% endif %}
       {% endblock %}

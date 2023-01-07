@@ -1,14 +1,14 @@
 {% extends "cards.html" %}
 
       {% block cards %}
-      {% for c in consist %}
+      {% for d in data %}
       <div class="col">
         <div class="card shadow-sm">
-          <a href="{{ c.get_absolute_url }}">
-          {% if c.image %}
-            <img src="{{ c.image.url }}" alt="Card image cap">
+          <a href="{{ d.get_absolute_url }}">
+          {% if d.image %}
+            <img src="{{ d.image.url }}" alt="Card image cap">
           {% else %}
-            {% with c.consist_item.first.rolling_stock as r %}
+            {% with d.consist_item.first.rolling_stock as r %}
             {% for i in r.image.all %}
               {% if forloop.first %}<img src="{{ i.image.url }}" alt="Card image cap">{% endif %}
             {% endfor %}
@@ -17,12 +17,12 @@
           </a>
           <div class="card-body">
             <p class="card-text" style="position: relative;">
-              <strong>{{ c }}</strong>
-              <a class="stretched-link" href="{{ c.get_absolute_url }}"></a>
+              <strong>{{ d }}</strong>
+              <a class="stretched-link" href="{{ d.get_absolute_url }}"></a>
             </p>
-            {% if c.tags.all %}
+            {% if d.tags.all %}
             <p class="card-text"><small>Tags:</small>
-              {% for t in c.tags.all %}<a href="{% url 'filtered' _filter="tag" search=t.slug %}" class="badge rounded-pill bg-primary">
+              {% for t in d.tags.all %}<a href="{% url 'filtered' _filter="tag" search=t.slug %}" class="badge rounded-pill bg-primary">
               {{ t.name }}</a>{# new line is required #}
               {% endfor %}
             </p>
@@ -34,29 +34,29 @@
                 </tr>
               </thead>
               <tbody>
-                {% if c.address %}
+                {% if d.address %}
                 <tr>
                   <th width="35%" scope="row">Address</th>
-                  <td>{{ c.address }}</td>
+                  <td>{{ d.address }}</td>
                 </tr>
                 {% endif %}
                 <tr>
                   <th width="35%" scope="row">Company</th>
-                  <td><abbr title="{{ c.company.extended_name }}">{{ c.company }}</abbr></td>
+                  <td><abbr title="{{ d.company.extended_name }}">{{ d.company }}</abbr></td>
                 </tr>
                 <tr>
                   <th scope="row">Era</th>
-                  <td>{{ c.era }}</td>
+                  <td>{{ d.era }}</td>
                 </tr>
                 <tr>
                   <th scope="row">Length</th>
-                  <td>{{ c.consist_item.all | length }}</td>
+                  <td>{{ d.consist_item.all | length }}</td>
                 </tr>
               </tbody>
             </table>
             <div class="d-grid gap-2 mb-1 d-md-block">
-             <a class="btn btn-sm btn-outline-primary" href="{{ c.get_absolute_url }}">Show all data</a>
-              {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% url 'admin:consist_consist_change' c.pk %}">Edit</a>{% endif %}
+             <a class="btn btn-sm btn-outline-primary" href="{{ d.get_absolute_url }}">Show all data</a>
+              {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% url 'admin:consist_consist_change' d.pk %}">Edit</a>{% endif %}
             </div>
           </div>
         </div>

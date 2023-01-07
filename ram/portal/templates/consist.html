@@ -23,103 +23,13 @@
       </div>
       {% endif %}
       {% endblock %}
-      {% block cards %}
-      {% for r in rolling_stock %}
-      <div class="col">
-        <div class="card shadow-sm">
-          {% for i in r.rolling_stock.image.all %}
-          {% if forloop.first %}<a href="{{r.rolling_stock.get_absolute_url}}"><img src="{{ i.image.url }}" alt="Card image cap"></a>{% endif %}
-          {% endfor %}
-          <div class="card-body">
-            <p class="card-text" style="position: relative;">
-              <strong>{{ r }}</strong>
-              <a class="stretched-link" href="{{ r.rolling_stock.get_absolute_url }}"></a>
-            </p>
-            {% if r.rolling_stock.tags.all %}
-            <p class="card-text"><small>Tags:</small>
-              {% for t in r.rolling_stock.tags.all %}<a href="{% url 'filtered' _filter="tag" search=t.slug %}" class="badge rounded-pill bg-primary">
-              {{ t.name }}</a>{# new line is required #}
-              {% endfor %}
-            </p>
-            {% endif %}
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th colspan="2" scope="row">Data</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th width="35%" scope="row">Type</th>
-                  <td>{{ r.rolling_stock.rolling_class.type }}</td>
-                </tr>
-                <tr>
-                  <th scope="row">Company</th>
-                  <td>
-                    <a href="{% url 'filtered' _filter="company" search=r.rolling_stock.rolling_class.company %}"><abbr title="{{ r.rolling_stock.rolling_class.company.extended_name }}">{{ r.rolling_stock.rolling_class.company }}</abbr></a>
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row">Class</th>
-                  <td>{{ r.rolling_stock.rolling_class.identifier }}</td>
-                </tr>
-                <tr>
-                  <th scope="row">Road number</th>
-                  <td>{{ r.rolling_stock.road_number }}</td>
-                </tr>
-                <tr>
-                  <th scope="row">Era</th>
-                  <td>{{ r.rolling_stock.era }}</td>
-                </tr>
-                <tr>
-                  <th width="35%" scope="row">Manufacturer</th>
-                  <td>{{ r.rolling_stock.manufacturer|default_if_none:"" }}{% if r.rolling_stock.manufacturer.website %} <a href="{{ r.rolling_stock.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}</td>
-                </tr>
-                <tr>
-                  <th scope="row">Scale</th>
-                  <td><a href="{% url 'filtered' _filter="scale" search=r.rolling_stock.scale %}"><abbr title="{{ r.rolling_stock.scale.ratio }} - {{ r.rolling_stock.scale.tracks }}">{{ r.rolling_stock.scale }}</abbr></a></td>
-                </tr>
-                <tr>
-                  <th scope="row">SKU</th>
-                  <td>{{ r.rolling_stock.sku }}</td>
-                </tr>
-                </tbody>
-              </table>
-            {% if r.rolling_stock.decoder %}
-              <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th colspan="2" scope="row">DCC data</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <th width="35%" scope="row">Decoder</th>
-                    <td>{{ r.rolling_stock.decoder }}</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">Address</th>
-                    <td>{{ r.rolling_stock.address }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            {% endif %}
-            <div class="d-grid gap-2 mb-1 d-md-block">
-             <a class="btn btn-sm btn-outline-primary" href="{{r.rolling_stock.get_absolute_url}}">Show all data</a>
-              {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% url 'admin:roster_rollingstock_change' r.rolling_stock.pk %}">Edit</a>{% endif %}
-            </div>
-          </div>
-        </div>
-      </div>
-      {% endfor %}
-      {% endblock %}
       {% block pagination %}
-      {% if rolling_stock.has_other_pages %}
+      {% if data.has_other_pages %}
       <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center mt-4 mb-0">
-          {% if rolling_stock.has_previous %}
+          {% if data.has_previous %}
           <li class="page-item">
-            <a class="page-link" href="{% url 'consist_pagination' uuid=consist.uuid page=rolling_stock.previous_page_number %}#rolling-stock" tabindex="-1">Previous</a>
+            <a class="page-link" href="{% url 'consist_pagination' uuid=consist.uuid page=data.previous_page_number %}#rolling-stock" tabindex="-1">Previous</a>
           </li>
           {% else %}
           <li class="page-item disabled">
@@ -127,21 +37,21 @@
           </li>
           {% endif %}
           {% for i in page_range %}
-            {% if rolling_stock.number == i %}
+            {% if data.number == i %}
             <li class="page-item active">
               <span class="page-link">{{ i }}</span></span>
             </li>
             {% else %}
-              {% if i == rolling_stock.paginator.ELLIPSIS %}
+              {% if i == data.paginator.ELLIPSIS %}
               <li class="page-item"><span class="page-link">{{ i }}</span></li>
               {% else %}
               <li class="page-item"><a class="page-link" href="{% url 'consist_pagination' uuid=consist.uuid page=i %}#rolling-stock">{{ i }}</a></li>
               {% endif %}
             {% endif %}
           {% endfor %}
-          {% if rolling_stock.has_next %}
+          {% if data.has_next %}
           <li class="page-item">
-            <a class="page-link" href="{% url 'consist_pagination' uuid=consist.uuid page=rolling_stock.next_page_number %}#rolling-stock" tabindex="-1">Next</a>
+            <a class="page-link" href="{% url 'consist_pagination' uuid=consist.uuid page=data.next_page_number %}#rolling-stock" tabindex="-1">Next</a>
           </li>
           {% else %}
           <li class="page-item disabled">
@@ -181,7 +91,7 @@
                     </tr>
                     <tr>
                       <th scope="row">Length</th>
-                      <td>{{ rolling_stock | length }}</td>
+                      <td>{{ data | length }}</td>
                     </tr>
                   </tbody>
                 </table>

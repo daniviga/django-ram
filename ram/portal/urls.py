@@ -1,19 +1,22 @@
 from django.urls import path
 
 from portal.views import (
-    GetHome,
-    GetHomeFiltered,
+    GetData,
+    GetRoster,
+    GetRosterFiltered,
     GetFlatpage,
     GetRollingStock,
     GetConsist,
     Consists,
     Companies,
+    Manufacturers,
     Scales,
 )
 
 urlpatterns = [
-    path("", GetHome.as_view(), name="index"),
-    path("<int:page>", GetHome.as_view(), name="index_pagination"),
+    path("", GetData.as_view(), name="index"),
+    path("roster", GetRoster.as_view(), name="roster"),
+    path("roster/<int:page>", GetRoster.as_view(), name="roster_pagination"),
     path(
         "page/<str:flatpage>",
         GetFlatpage.as_view(),
@@ -21,7 +24,7 @@ urlpatterns = [
     ),
     path(
         "search",
-        GetHomeFiltered.as_view(http_method_names=["post"]),
+        GetRosterFiltered.as_view(http_method_names=["post"]),
         name="search",
     ),
     path("consists", Consists.as_view(), name="consists"),
@@ -40,16 +43,26 @@ urlpatterns = [
         Companies.as_view(),
         name="companies_pagination",
     ),
+    path(
+        "manufacturers/<str:category>",
+        Manufacturers.as_view(),
+        name="manufacturers"
+    ),
+    path(
+        "manufacturers/<str:category>/<int:page>",
+        Manufacturers.as_view(),
+        name="manufacturers_pagination",
+    ),
     path("scales", Scales.as_view(), name="scales"),
     path("scales/<int:page>", Scales.as_view(), name="scales_pagination"),
     path(
         "<str:_filter>/<str:search>",
-        GetHomeFiltered.as_view(),
+        GetRosterFiltered.as_view(),
         name="filtered",
     ),
     path(
         "<str:_filter>/<str:search>/<int:page>",
-        GetHomeFiltered.as_view(),
+        GetRosterFiltered.as_view(),
         name="filtered_pagination",
     ),
     path("<uuid:uuid>", GetRollingStock.as_view(), name="rolling_stock"),

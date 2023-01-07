@@ -70,7 +70,7 @@
                       <tr>
                         <th scope="row">Company</th>
                         <td>
-                            <a href="{% url 'filtered' _filter="company" search=rolling_stock.rolling_class.company %}"><abbr title="{{ rolling_stock.rolling_class.company.extended_name }}">{{ rolling_stock.rolling_class.company }}</abbr></a>
+                            <a href="{% url 'filtered' _filter="company" search=rolling_stock.rolling_class.company.safe_name %}"><abbr title="{{ rolling_stock.rolling_class.company.extended_name }}">{{ rolling_stock.rolling_class.company }}</abbr></a>
                         </td>
                       </tr>
                       <tr>
@@ -96,7 +96,9 @@
                     <tbody>
                       <tr>
                         <th width="35%" scope="row">Manufacturer</th>
-                        <td>{{ rolling_stock.manufacturer|default_if_none:"" }}{% if rolling_stock.manufacturer.website %} <a href="{{ rolling_stock.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}</td>
+                        <td>{%if rolling_stock.manufacturer %}
+                          <a href="{% url 'filtered' _filter="manufacturer" search=rolling_stock.manufacturer.safe_name %}">{{ rolling_stock.manufacturer }}{% if rolling_stock.manufacturer.website %}</a> <a href="{{ rolling_stock.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
+                        {% endif %}</td>
                       </tr>
                       <tr>
                         <th scope="row">Scale</th>
@@ -144,11 +146,13 @@
                     <tbody>
                       <tr>
                         <th width="35%" scope="row">Manufacturer</th>
-                        <td>{{ rolling_stock.manufacturer|default_if_none:"" }}{% if rolling_stock.manufacturer.website %} <a href="{{ rolling_stock.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}</td>
+                        <td>{%if rolling_stock.manufacturer %}
+                          <a href="{% url 'filtered' _filter="manufacturer" search=rolling_stock.manufacturer.safe_name %}">{{ rolling_stock.manufacturer }}{% if rolling_stock.manufacturer.website %}</a> <a href="{{ rolling_stock.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
+                        {% endif %}</td>
                       </tr>
                       <tr>
                         <th scope="row">Scale</th>
-                        <td><abbr title="{{ rolling_stock.scale.ratio }} - {{ rolling_stock.scale.tracks }}">{{ rolling_stock.scale }}</abbr></td>
+                        <td><a href="{% url 'filtered' _filter="scale" search=rolling_stock.scale %}"><abbr title="{{ rolling_stock.scale.ratio }} - {{ rolling_stock.scale.tracks }}">{{ rolling_stock.scale }}</abbr></a></td>
                       </tr>
                       <tr>
                         <th scope="row">SKU</th>
@@ -204,7 +208,9 @@
                       </tr>
                       <tr>
                         <th scope="row">Company</th>
-                        <td>{{ rolling_stock.rolling_class.company }} ({{ rolling_stock.rolling_class.company.extended_name }})</td>
+                        <td>
+                            <a href="{% url 'filtered' _filter="company" search=rolling_stock.rolling_class.company.safe_name %}">{{ rolling_stock.rolling_class.company }}</a> ({{ rolling_stock.rolling_class.company.extended_name }})
+                        </td>
                       </tr>
                       <tr>
                         <th scope="row">Country</th>
@@ -212,7 +218,9 @@
                       </tr>
                       <tr>
                         <th scope="row">Manufacturer</th>
-                        <td>{{ rolling_stock.rolling_class.manufacturer|default_if_none:"" }}</td>
+                        <td>{%if rolling_stock.rolling_class.manufacturer %}
+                          <a href="{% url 'filtered' _filter="manufacturer" search=rolling_stock.rolling_class.manufacturer.safe_name %}">{{ rolling_stock.rolling_class.manufacturer }}{% if rolling_stock.rolling_class.manufacturer.website %}</a> <a href="{{ rolling_stock.rolling_class.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
+                        {% endif %}</td>
                       </tr>
                     </tbody>
                   </table>

@@ -156,7 +156,12 @@ DECODER_INTERFACES = [
     (5, "Next18/Next18S"),
 ]
 
-MANUFACTURER_TYPES = [("model", "Model"), ("real", "Real")]
+MANUFACTURER_TYPES = [
+    ("model", "Model"),
+    ("real", "Real"),
+    ("accessory", "Accessory"),
+    ("other", "Other")
+]
 
 ROLLING_STOCK_TYPES = [
     ("engine", "Engine"),
