@@ -32,7 +32,7 @@
               </tbody>
             </table>
             <div class="d-grid gap-2 mb-1 d-md-block">
-              <a class="btn btn-sm btn-outline-primary" href="{% url 'filtered' _filter="scale" search=d.pk %}">Show all rolling stock</a>
+              <a class="btn btn-sm btn-outline-primary" href="{% url 'filtered' _filter="scale" search=d.safe_name %}">Show all rolling stock</a>
               {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% url 'admin:metadata_scale_change' d.pk %}">Edit</a>{% endif %}
             </div>
           </div>

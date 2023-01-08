@@ -38,7 +38,7 @@
                   <tr>
                     <th scope="row">Company</th>
                     <td>
-                      <a href="{% url 'filtered' _filter="company" search=d.rolling_class.company.pk %}"><abbr title="{{ d.rolling_class.company.extended_name }}">{{ d.rolling_class.company }}</abbr></a>
+                      <a href="{% url 'filtered' _filter="company" search=d.rolling_class.company.safe_name %}"><abbr title="{{ d.rolling_class.company.extended_name }}">{{ d.rolling_class.company }}</abbr></a>
                     </td>
                   </tr>
                   <tr>
@@ -56,12 +56,12 @@
                   <tr>
                     <th width="35%" scope="row">Manufacturer</th>
                     <td>{%if d.manufacturer %}
-                      <a href="{% url 'filtered' _filter="manufacturer" search=d.manufacturer.pk %}">{{ d.manufacturer }}{% if d.manufacturer.website %}</a> <a href="{{ d.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
+                      <a href="{% url 'filtered' _filter="manufacturer" search=d.manufacturer.safe_name %}">{{ d.manufacturer }}{% if d.manufacturer.website %}</a> <a href="{{ d.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
                     {% endif %}</td>
                   </tr>
                   <tr>
                     <th scope="row">Scale</th>
-                    <td><a href="{% url 'filtered' _filter="scale" search=d.scale.pk %}"><abbr title="{{ d.scale.ratio }} - {{ d.scale.tracks }}">{{ d.scale }}</abbr></a></td>
+                    <td><a href="{% url 'filtered' _filter="scale" search=d.scale.safe_name %}"><abbr title="{{ d.scale.ratio }} - {{ d.scale.tracks }}">{{ d.scale }}</abbr></a></td>
                   </tr>
                   <tr>
                     <th scope="row">SKU</th>

@@ -1,7 +1,7 @@
 import base64
 import operator
 from functools import reduce
-from urllib.parse import unquote_plus
+from urllib.parse import unquote
 
 from django.views import View
 from django.http import Http404, HttpResponseBadRequest
@@ -174,20 +174,31 @@ class GetRosterFiltered(View):
     def run_filter(self, request, search, _filter, page=1):
         site_conf = get_site_conf()
         if _filter == "type":
-            title = get_object_or_404(RollingStockType, pk=search)
-            query = Q(rolling_class__type__pk=search)
-        elif _filter == "company":
-            title = get_object_or_404(Company, pk=search)
-            query = Q(rolling_class__company__pk=search)
-        elif _filter == "manufacturer":
-            title = Manufacturer.objects.get(pk=search)
+            type_ = " ".join(search.split()[:-1])
+            category = search.split()[-1]
+            try:
+                title = (
+                    RollingStockType.objects.filter(type__iexact=type_)
+                    .get(category__iexact=category)
+                )
+            except ObjectDoesNotExist:
+                raise Http404
             query = Q(
-                Q(rolling_class__manufacturer__pk=search)
-                | Q(manufacturer__pk=search)
+                Q(rolling_class__type__type__iexact=type_)
+                & Q(rolling_class__type__category__iexact=category)
+            )
+        elif _filter == "company":
+            title = get_object_or_404(Company, name__iexact=search)
+            query = Q(rolling_class__company__name__iexact=search)
+        elif _filter == "manufacturer":
+            title = get_object_or_404(Manufacturer, name__iexact=search)
+            query = Q(
+                Q(rolling_class__manufacturer__name__iexact=search)
+                | Q(manufacturer__name__iexact=search)
             )
         elif _filter == "scale":
-            title = get_object_or_404(Scale, pk=search)
-            query = Q(scale__pk=search)
+            title = get_object_or_404(Scale, scale__iexact=search)
+            query = Q(scale__scale__iexact=search)
         elif _filter == "tag":
             title = get_object_or_404(Tag, slug=search)
             query = Q(tags__slug__iexact=search)
@@ -211,7 +222,7 @@ class GetRosterFiltered(View):
 
     def get(self, request, search, _filter, page=1):
         data, title, matches, page_range = self.run_filter(
-            request, search, _filter, page
+            request, unquote(search), _filter, page
         )
 
         return render(
