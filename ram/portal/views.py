@@ -1,19 +1,20 @@
+import base64
 import operator
 from functools import reduce
-from urllib.parse import quote_plus, unquote_plus
+from urllib.parse import unquote_plus
 
 from django.views import View
-from django.http import Http404
+from django.http import Http404, HttpResponseBadRequest
 from django.db.models import Q
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.paginator import Paginator, PageNotAnInteger
+from django.core.paginator import Paginator
 
 from portal.utils import get_site_conf
 from portal.models import Flatpage
 from roster.models import RollingStock
 from consist.models import Consist
-from metadata.models import Company, Manufacturer, Scale
+from metadata.models import Company, Manufacturer, Scale, RollingStockType, Tag
 
 
 def order_by_fields():
@@ -62,15 +63,15 @@ class GetData(View):
 
 class GetRoster(GetData):
     def __init__(self):
-        self.title = "Roster"
+        self.title = "Rolling stock"
         self.template = "roster.html"
         self.data = RollingStock.objects.order_by(*order_by_fields())
 
 
-class GetRosterFiltered(View):
+class SearchRoster(View):
     def run_search(self, request, search, _filter, page=1):
         site_conf = get_site_conf()
-        if _filter == "search":
+        if _filter is None:
             query = reduce(
                 operator.or_,
                 (
@@ -89,6 +90,11 @@ class GetRosterFiltered(View):
                     for s in search.split()
                 ),
             )
+        elif _filter == "type":
+            query = Q(
+                Q(rolling_class__type__type__icontains=search)
+                | Q(rolling_class__type__category__icontains=search)
+            )
         elif _filter == "company":
             query = Q(
                 Q(rolling_class__company__name__icontains=search)
@@ -96,13 +102,11 @@ class GetRosterFiltered(View):
             )
         elif _filter == "manufacturer":
             query = Q(
-                Q(manufacturer__name__iexact=search)
+                Q(manufacturer__name__icontains=search)
                 | Q(rolling_class__manufacturer__name__icontains=search)
             )
         elif _filter == "scale":
-            query = Q(scale__scale__iexact=search)
-        elif _filter == "tag":
-            query = Q(tags__slug__iexact=search)
+            query = Q(scale__scale__icontains=search)
         else:
             raise Http404
 
@@ -121,47 +125,105 @@ class GetRosterFiltered(View):
 
         return rolling_stock, matches, page_range
 
-    def get(self, request, search, _filter="search", page=1):
-        search_unsafe = unquote_plus(search)  # expected to be encoded
+    def split_search(self, search):
+        search = search.strip().split(":")
+        if not search:
+            raise Http404
+        elif len(search) == 1:  # no filter
+            _filter = None
+            search = search[0].strip()
+        elif len(search) == 2:  # filter: search
+            _filter = search[0].strip().lower()
+            search = search[1].strip()
+        else:
+            return HttpResponseBadRequest
+
+        return _filter, search
+
+    def get(self, request, search, page=1):
+        try:
+            encoded_search = search
+            search = base64.b64decode(search.encode()).decode()
+        except Exception:
+            encoded_search = base64.b64encode(
+                search.encode()).decode()
+        _filter, keyword = self.split_search(search)
         rolling_stock, matches, page_range = self.run_search(
-            request, search_unsafe, _filter, page
+            request, keyword, _filter, page
         )
 
         return render(
             request,
             "search.html",
             {
-                "title": "{0}: {1}".format(
-                    _filter.capitalize(), search_unsafe),
+                "title": "Search: \"{}\"".format(search),
                 "search": search,
-                "search_unsafe": search_unsafe,
-                "filter": _filter,
+                "encoded_search": encoded_search,
                 "matches": matches,
                 "data": rolling_stock,
                 "page_range": page_range,
             },
         )
 
-    def post(self, request, _filter="search", page=1):
+    def post(self, request, page=1):
         search = request.POST.get("search")
-        # search = quote_plus(request.POST.get("search"), safe="&")
-        # search_unsafe = unquote_plus(search)
-        if not search:
+        return self.get(request, search, page)
+
+
+class GetRosterFiltered(View):
+    def run_filter(self, request, search, _filter, page=1):
+        site_conf = get_site_conf()
+        if _filter == "type":
+            title = get_object_or_404(RollingStockType, pk=search)
+            query = Q(rolling_class__type__pk=search)
+        elif _filter == "company":
+            title = get_object_or_404(Company, pk=search)
+            query = Q(rolling_class__company__pk=search)
+        elif _filter == "manufacturer":
+            title = Manufacturer.objects.get(pk=search)
+            query = Q(
+                Q(rolling_class__manufacturer__pk=search)
+                | Q(manufacturer__pk=search)
+            )
+        elif _filter == "scale":
+            title = get_object_or_404(Scale, pk=search)
+            query = Q(scale__pk=search)
+        elif _filter == "tag":
+            title = get_object_or_404(Tag, slug=search)
+            query = Q(tags__slug__iexact=search)
+        else:
             raise Http404
-        rolling_stock, matches, page_range = self.run_search(
+
+        rolling_stock = (
+            RollingStock.objects.filter(query)
+            .distinct()
+            .order_by(*order_by_fields())
+        )
+        matches = rolling_stock.count()
+
+        paginator = Paginator(rolling_stock, site_conf.items_per_page)
+        rolling_stock = paginator.get_page(page)
+        page_range = paginator.get_elided_page_range(
+            rolling_stock.number, on_each_side=2, on_ends=1
+        )
+
+        return rolling_stock, title, matches, page_range
+
+    def get(self, request, search, _filter, page=1):
+        data, title, matches, page_range = self.run_filter(
             request, search, _filter, page
         )
 
         return render(
             request,
-            "search.html",
+            "filter.html",
             {
-                "title": "{0}: {1}".format(_filter.capitalize(), search),
+                "title": "{0}: {1}".format(
+                    _filter.capitalize(), title),
                 "search": search,
-                # "search_unsafe": search_unsafe,
                 "filter": _filter,
                 "matches": matches,
-                "data": rolling_stock,
+                "data": data,
                 "page_range": page_range,
             },
         )
@@ -269,6 +331,13 @@ class Scales(GetData):
         self.title = "Scales"
         self.template = "scales.html"
         self.data = Scale.objects.all()
+
+
+class Types(GetData):
+    def __init__(self):
+        self.title = "Types"
+        self.template = "types.html"
+        self.data = RollingStockType.objects.all()
 
 
 class GetFlatpage(View):

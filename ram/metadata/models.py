@@ -114,7 +114,7 @@ class Tag(models.Model):
 
 
 @receiver(models.signals.pre_save, sender=Tag)
-def tag_pre_save(sender, instance, **kwargs):
+def slug_pre_save(sender, instance, **kwargs):
     instance.slug = slugify(instance.name)
 
 
