@@ -1,6 +1,12 @@
           <form class="d-flex needs-validation" action="{% url 'search' %}" method="post" novalidate>
             <div class="input-group has-validation">
-              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search" id="searchValidation" required>
+              <input class="form-control me-2" type="search" list="datalistOptions" placeholder="Search" aria-label="Search" name="search" id="searchValidation" required>
+              <datalist id="datalistOptions">
+                <option value="company: ">
+                <option value="manufacturer: ">
+                <option value="scale: ">
+                <option value="type: ">
+              </datalist>
               <button class="btn btn-outline-primary" type="submit">Search</button>
             </div>
           </form>

@@ -11,6 +11,8 @@ from portal.views import (
     Companies,
     Manufacturers,
     Scales,
+    Types,
+    SearchRoster,
 )
 
 urlpatterns = [
@@ -21,11 +23,6 @@ urlpatterns = [
         "page/<str:flatpage>",
         GetFlatpage.as_view(),
         name="flatpage",
-    ),
-    path(
-        "search",
-        GetRosterFiltered.as_view(http_method_names=["post"]),
-        name="search",
     ),
     path("consists", Consists.as_view(), name="consists"),
     path(
@@ -54,7 +51,19 @@ urlpatterns = [
         name="manufacturers_pagination",
     ),
     path("scales", Scales.as_view(), name="scales"),
-    path("scales/<int:page>", Scales.as_view(), name="scales_pagination"),
+    path("scales/<int:page>", Types.as_view(), name="scales_pagination"),
+    path("types", Types.as_view(), name="types"),
+    path("types/<int:page>", Types.as_view(), name="types_pagination"),
+    path(
+        "search",
+        SearchRoster.as_view(http_method_names=["post"]),
+        name="search",
+    ),
+    path(
+        "search/<str:search>/<int:page>",
+        SearchRoster.as_view(),
+        name="search_pagination",
+    ),
     path(
         "<str:_filter>/<str:search>",
         GetRosterFiltered.as_view(),

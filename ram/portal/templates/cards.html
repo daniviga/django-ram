@@ -61,7 +61,7 @@
                   </tr>
                   <tr>
                     <th scope="row">Scale</th>
-                    <td><a href="{% url 'filtered' _filter="scale" search=d.scale %}"><abbr title="{{ d.scale.ratio }} - {{ d.scale.tracks }}">{{ d.scale }}</abbr></a></td>
+                    <td><a href="{% url 'filtered' _filter="scale" search=d.scale.safe_name %}"><abbr title="{{ d.scale.ratio }} - {{ d.scale.tracks }}">{{ d.scale }}</abbr></a></td>
                   </tr>
                   <tr>
                     <th scope="row">SKU</th>

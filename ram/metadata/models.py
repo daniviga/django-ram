@@ -1,4 +1,4 @@
-from urllib.parse import quote_plus
+from urllib.parse import quote
 
 from django.db import models
 from django.conf import settings
@@ -37,7 +37,7 @@ class Manufacturer(models.Model):
         return self.name
 
     def safe_name(self):
-        return quote_plus(self.name, safe="&")
+        return quote(self.__str__().lower(), safe="& ")
 
     def logo_thumbnail(self):
         return get_image_preview(self.logo.url)
@@ -62,7 +62,7 @@ class Company(models.Model):
         return self.name
 
     def safe_name(self):
-        return quote_plus(self.name, safe="&")
+        return quote(self.__str__().lower(), safe="& ")
 
     def logo_thumbnail(self):
         return get_image_preview(self.logo.url)
@@ -104,6 +104,9 @@ class Scale(models.Model):
     def __str__(self):
         return str(self.scale)
 
+    def safe_name(self):
+        return quote(self.__str__(), safe="& ")
+
 
 class Tag(models.Model):
     name = models.CharField(max_length=128, unique=True)
@@ -112,9 +115,12 @@ class Tag(models.Model):
     def __str__(self):
         return self.name
 
+    def safe_name(self):
+        return self.slug
+
 
 @receiver(models.signals.pre_save, sender=Tag)
-def tag_pre_save(sender, instance, **kwargs):
+def slug_pre_save(sender, instance, **kwargs):
     instance.slug = slugify(instance.name)
 
 
@@ -131,3 +137,6 @@ class RollingStockType(models.Model):
 
     def __str__(self):
         return "{0} {1}".format(self.type, self.category)
+
+    def safe_name(self):
+        return quote(self.__str__().lower(), safe="& ")
