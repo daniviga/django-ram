@@ -43,12 +43,13 @@
       {% endfor %}
       {% endblock %}
       {% block pagination %}
-      {% if manufacturers.has_other_pages %}
+      {% if data.has_other_pages %}
+      {% with data.0.category as c %}
       <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center mt-4 mb-0">
-          {% if manufacturers.has_previous %}
+          {% if data.has_previous %}
           <li class="page-item">
-            <a class="page-link" href="{% url 'manufacturers_pagination' category=category page=manufacturers.previous_page_number %}#rolling-stock" tabindex="-1">Previous</a>
+            <a class="page-link" href="{% url 'manufacturers_pagination' category=c page=data.previous_page_number %}#rolling-stock" tabindex="-1">Previous</a>
           </li>
           {% else %}
           <li class="page-item disabled">
@@ -56,21 +57,21 @@
           </li>
           {% endif %}
           {% for i in page_range %}
-            {% if manufacturers.number == i %}
+            {% if data.number == i %}
             <li class="page-item active">
               <span class="page-link">{{ i }}</span></span>
             </li>
             {% else %}
-              {% if i == manufacturers.paginator.ELLIPSIS %}
+              {% if i == data.paginator.ELLIPSIS %}
               <li class="page-item"><span class="page-link">{{ i }}</span></li>
               {% else %}
-              <li class="page-item"><a class="page-link" href="{% url 'manufacturers_pagination' category=category page=i %}#rolling-stock">{{ i }}</a></li>
+              <li class="page-item"><a class="page-link" href="{% url 'manufacturers_pagination' category=c page=i %}#rolling-stock">{{ i }}</a></li>
               {% endif %}
             {% endif %}
           {% endfor %}
-          {% if manufacturers.has_next %}
+          {% if data.has_next %}
           <li class="page-item">
-            <a class="page-link" href="{% url 'manufacturers_pagination' category=category page=manufacturers.next_page_number %}#rolling-stock" tabindex="-1">Next</a>
+            <a class="page-link" href="{% url 'manufacturers_pagination' category=c page=data.next_page_number %}#rolling-stock" tabindex="-1">Next</a>
           </li>
           {% else %}
           <li class="page-item disabled">
@@ -79,5 +80,6 @@
           {% endif %}
         </ul>
       </nav>
+      {% endwith %}
       {% endif %}
       {% endblock %}
