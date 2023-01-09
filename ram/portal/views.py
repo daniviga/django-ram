@@ -174,33 +174,22 @@ class GetRosterFiltered(View):
     def run_filter(self, request, search, _filter, page=1):
         site_conf = get_site_conf()
         if _filter == "type":
-            type_ = " ".join(search.split()[:-1])
-            category = search.split()[-1]
-            try:
-                title = (
-                    RollingStockType.objects.filter(type__iexact=type_)
-                    .get(category__iexact=category)
-                )
-            except ObjectDoesNotExist:
-                raise Http404
-            query = Q(
-                Q(rolling_class__type__type__iexact=type_)
-                & Q(rolling_class__type__category__iexact=category)
-            )
+            title = RollingStockType.objects.get(slug__iexact=search)
+            query = Q(rolling_class__type__slug__iexact=search)
         elif _filter == "company":
-            title = get_object_or_404(Company, name__iexact=search)
-            query = Q(rolling_class__company__name__iexact=search)
+            title = get_object_or_404(Company, slug__iexact=search)
+            query = Q(rolling_class__company__slug__iexact=search)
         elif _filter == "manufacturer":
-            title = get_object_or_404(Manufacturer, name__iexact=search)
+            title = get_object_or_404(Manufacturer, slug__iexact=search)
             query = Q(
-                Q(rolling_class__manufacturer__name__iexact=search)
-                | Q(manufacturer__name__iexact=search)
+                Q(rolling_class__manufacturer__slug__iexact=search)
+                | Q(manufacturer__slug__iexact=search)
             )
         elif _filter == "scale":
-            title = get_object_or_404(Scale, scale__iexact=search)
-            query = Q(scale__scale__iexact=search)
+            title = get_object_or_404(Scale, slug__iexact=search)
+            query = Q(scale__slug__iexact=search)
         elif _filter == "tag":
-            title = get_object_or_404(Tag, slug=search)
+            title = get_object_or_404(Tag, slug__iexact=search)
             query = Q(tags__slug__iexact=search)
         else:
             raise Http404
