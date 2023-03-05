@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import re
-import time
 import logging
 import serial
 import asyncio
@@ -68,7 +67,7 @@ class SerialDaemon:
         while "DCC-EX" not in line:
             line = self.__read_serial().decode()
         board = re.findall(r"<iDCC-EX.*>", line)[0]
-        return(board)
+        return board
 
 
 async def main():
@@ -83,14 +82,14 @@ async def main():
         config["Daemon"]["ListeningIP"],
         config["Daemon"]["ListeningPort"])
     addr = server.sockets[0].getsockname()
-    logging.warning("Serving on {} port {}".format(addr[0], addr[1]))
-    logging.warning(
+    logging.info("Serving on {} port {}".format(addr[0], addr[1]))
+    logging.info(
         "Proxying to {} (Baudrate: {}, Timeout: {})".format(
             config["Serial"]["Port"],
             config["Serial"]["Baudrate"],
             config["Serial"]["Timeout"]))
-    logging.warning("Initializing board")
-    logging.warning("Board {} ready".format(
+    logging.info("Initializing board")
+    logging.info("Board {} ready".format(
         await sd.return_board()))
 
     async with server:
