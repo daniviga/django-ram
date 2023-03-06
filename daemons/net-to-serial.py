@@ -9,11 +9,15 @@ from pathlib import Path
 
 
 class SerialDaemon:
+    connected_clients = set()
+
     def __init__(self, config):
         self.ser = serial.Serial(
             config["Serial"]["Port"],
-            timeout=int(config["Serial"]["Timeout"])/1000)
+            timeout=int(config["Serial"]["Timeout"]) / 1000,
+        )
         self.ser.baudrate = config["Serial"]["Baudrate"]
+        self.max_clients = int(config["Daemon"]["MaxClients"])
 
     def __del__(self):
         try:
@@ -42,19 +46,32 @@ class SerialDaemon:
 
     async def handle_echo(self, reader, writer):
         """Process a request from socket and return the response"""
-        while 1:  # keep connection to client open
-            data = await reader.read(100)
-            if not data:  # client has disconnected
-                break
+        logging.info(
+            "Clients already connected: {} (max: {})".format(
+                len(self.connected_clients),
+                self.max_clients,
+            )
+        )
 
-            addr = writer.get_extra_info('peername')
-            logging.info("Received {} from {}".format(data, addr[0]))
-
-            self.__write_serial(data)
-            response = self.__read_serial()
-            writer.write(response)
-            await writer.drain()
-            logging.info("Sent: {}".format(response))
+        addr = writer.get_extra_info("peername")[0]
+        if len(self.connected_clients) < self.max_clients:
+            self.connected_clients.add(writer)
+            while True:  # keep connection to client open
+                data = await reader.read(100)
+                if not data:  # client has disconnected
+                    break
+                logging.info("Received {} from {}".format(data, addr))
+                self.__write_serial(data)
+                response = self.__read_serial()
+                for client in self.connected_clients:
+                    client.write(response)
+                    await client.drain()
+                logging.info("Sent: {}".format(response))
+            self.connected_clients.remove(writer)
+        else:
+            logging.warning(
+                "TooManyClients: client {} disconnected".format(addr)
+            )
 
         writer.close()
         await writer.wait_closed()
@@ -73,27 +90,31 @@ class SerialDaemon:
 async def main():
     config = configparser.ConfigParser()
     config.read(
-        Path(__file__).resolve().parent / "config.ini")  # mimick os.path.join
+        Path(__file__).resolve().parent / "config.ini"
+    )  # mimick os.path.join
     logging.basicConfig(level=config["Daemon"]["LogLevel"].upper())
 
     sd = SerialDaemon(config)
     server = await asyncio.start_server(
         sd.handle_echo,
         config["Daemon"]["ListeningIP"],
-        config["Daemon"]["ListeningPort"])
+        config["Daemon"]["ListeningPort"],
+    )
     addr = server.sockets[0].getsockname()
     logging.info("Serving on {} port {}".format(addr[0], addr[1]))
     logging.info(
         "Proxying to {} (Baudrate: {}, Timeout: {})".format(
             config["Serial"]["Port"],
             config["Serial"]["Baudrate"],
-            config["Serial"]["Timeout"]))
+            config["Serial"]["Timeout"],
+        )
+    )
     logging.info("Initializing board")
-    logging.info("Board {} ready".format(
-        await sd.return_board()))
+    logging.info("Board {} ready".format(await sd.return_board()))
 
     async with server:
         await server.serve_forever()
+
 
 if __name__ == "__main__":
     asyncio.run(main())
