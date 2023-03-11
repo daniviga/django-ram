@@ -1,9 +1,7 @@
-FROM python:3.11-alpine
+FROM alpine:edge
 
-RUN mkdir /opt/dcc && pip -q install pyserial
-ADD net-to-serial.py config.ini /opt/dcc
-RUN python3 -q -m compileall /opt/dcc/net-to-serial.py
+RUN apk update && apk add nmap-ncat
 
 EXPOSE 2560/tcp
 
-CMD ["python3", "/opt/dcc/net-to-serial.py"]
+CMD ncat -n -k -l 2560 </dev/arduino >/dev/arduino

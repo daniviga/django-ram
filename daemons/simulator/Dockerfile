@@ -1,7 +1,7 @@
 FROM dcc/net-to-serial
 
 RUN apk update && apk add qemu-system-avr && mkdir /io
-ADD start.sh /opt/dcc
+ADD start.sh /usr/local/bin
 ADD CommandStation-EX*.elf /io
 
-ENTRYPOINT ["/opt/dcc/start.sh"]
+ENTRYPOINT ["/usr/local/bin/start.sh"]
