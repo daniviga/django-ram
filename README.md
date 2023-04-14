@@ -113,7 +113,7 @@ Settings may need to be customized based on your setup.
 ```bash
 $ cd daemons
 $ podman build -t dcc/net-to-serial .
-$ podman run --group-add keep-groups --device /dev/ttyACM0 -p 2560:2560 dcc/net-to-serial
+$ podman run --init --group-add keep-groups -v /dev/ttyACM0:/dev/arduino -p 2560:2560 dcc/net-to-serial
 ```
 
 ### Manual setup
