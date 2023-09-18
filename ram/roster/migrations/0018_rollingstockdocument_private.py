@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('roster', '0009_alter_rollingstock_options_and_more'),
+        ('roster', '0017_remove_rollingstockimage_is_thumbnail'),
     ]
 
     operations = [
