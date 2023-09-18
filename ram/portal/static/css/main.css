@@ -1,5 +1,5 @@
 /* Switch SVG logo to white on dark mode */
-html.dark .navbar-light svg {
+html[data-bs-theme='dark'] .navbar svg {
   fill: #fff;
 }
 

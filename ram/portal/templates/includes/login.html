@@ -1,8 +1,8 @@
       {% if request.user.is_staff %}
-      <button class="btn btn-sm btn-outline-dark dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
+      <button class="btn btn-sm dropdown-toggle" type="button" id="dropdownLogin" data-bs-toggle="dropdown" aria-expanded="false">
         Welcome back, <strong>{{ request.user }}</strong>
       </button>
-      <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+      <ul class="dropdown-menu" aria-labelledby="dropdownLogin">
         <li><a class="dropdown-item" href="{% url 'admin:roster_rollingstock_changelist' %}">Rolling stock</a></li>
         <li><a class="dropdown-item" href="{% url 'admin:consist_consist_changelist' %}">Consists</a></li>
         <li><a class="dropdown-item" href="{% url 'admin:app_list' 'metadata' %}">Metadata</a></li>
@@ -15,5 +15,19 @@
         <li><a class="dropdown-item text-danger" href="{% url 'admin:logout' %}?next={{ request.path }}">Logout</a></li>
       </ul>
       {% else %}
-      <a class="btn btn-sm btn-outline-dark" href="{% url 'admin:login' %}?next={{ request.path }}">Log in</a>
+      <a class="btn btn-sm" href="{% url 'admin:login' %}?next={{ request.path }}">Log in</a>
       {% endif %}
+      <button class="btn btn-sm dropdown-toggle" type="button" id="bd-theme" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="bi bi-circle-half"></i>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme">
+        <li>
+          <button class="dropdown-item" data-bs-theme-value="light" aria-pressed="false"><i class="bi bi-sun-fill"></i> Light</button>
+        </li>
+        <li>
+          <button class="dropdown-item" data-bs-theme-value="dark" aria-pressed="false"><i class="bi bi-moon-stars-fill"></i> Dark</button>
+        </li>
+        <li>
+          <button class="dropdown-item" data-bs-theme-value="auto" aria-pressed="false"><i class="bi bi-circle-half"></i> Auto</button>
+        </li>
+      </ul>
