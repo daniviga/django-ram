@@ -21,6 +21,7 @@ class ConsistAdmin(SortableAdminBase, admin.ModelAdmin):
     list_display = ("identifier", "company", "era")
     list_filter = list_display
     search_fields = list_display
+    save_as = True
 
     fieldsets = (
         (

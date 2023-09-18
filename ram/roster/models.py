@@ -3,12 +3,13 @@ import re
 from uuid import uuid4
 from django.db import models
 from django.urls import reverse
+from django.conf import settings
 from django.dispatch import receiver
 from django.utils.safestring import mark_safe
 
 from ckeditor_uploader.fields import RichTextUploadingField
 
-from ram.utils import get_image_preview
+from ram.utils import DeduplicatedStorage, get_image_preview
 from metadata.models import (
     Property,
     Scale,
@@ -18,11 +19,6 @@ from metadata.models import (
     Tag,
     RollingStockType,
 )
-
-# class OverwriteMixin(FileSystemStorage):
-#     def get_available_name(self, name, max_length):
-#         self.delete(name)
-#         return name
 
 
 class RollingClass(models.Model):
@@ -87,6 +83,9 @@ class RollingStock(models.Model):
     )
     scale = models.ForeignKey(Scale, on_delete=models.CASCADE)
     sku = models.CharField(max_length=32, blank=True)
+    decoder_interface = models.PositiveSmallIntegerField(
+        choices=settings.DECODER_INTERFACES, null=True, blank=True
+    )
     decoder = models.ForeignKey(
         Decoder, on_delete=models.CASCADE, null=True, blank=True
     )
@@ -133,7 +132,12 @@ class RollingStockDocument(models.Model):
         RollingStock, on_delete=models.CASCADE, related_name="document"
     )
     description = models.CharField(max_length=128, blank=True)
-    file = models.FileField(upload_to="files/", null=True, blank=True)
+    file = models.FileField(
+        upload_to="files/",
+        storage=DeduplicatedStorage(),
+        null=True,
+        blank=True,
+    )
     private = models.BooleanField(default=False)
 
     class Meta(object):
@@ -152,11 +156,13 @@ class RollingStockDocument(models.Model):
 
 
 class RollingStockImage(models.Model):
+    order = models.PositiveIntegerField(default=0, blank=False, null=False)
     rolling_stock = models.ForeignKey(
         RollingStock, on_delete=models.CASCADE, related_name="image"
     )
-    image = models.ImageField(upload_to="images/", null=True, blank=True)
-    is_thumbnail = models.BooleanField()
+    image = models.ImageField(
+        upload_to="images/", storage=DeduplicatedStorage, null=True, blank=True
+    )
 
     def image_thumbnail(self):
         return get_image_preview(self.image.url)
@@ -166,12 +172,8 @@ class RollingStockImage(models.Model):
     def __str__(self):
         return "{0}".format(os.path.basename(self.image.name))
 
-    def save(self, **kwargs):
-        if self.is_thumbnail:
-            RollingStockImage.objects.filter(
-                rolling_stock=self.rolling_stock
-            ).update(is_thumbnail=False)
-        super().save(**kwargs)
+    class Meta:
+        ordering = ["order"]
 
 
 class RollingStockProperty(models.Model):

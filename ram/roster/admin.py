@@ -1,4 +1,6 @@
 from django.contrib import admin
+from adminsortable2.admin import SortableAdminBase, SortableInlineAdminMixin
+
 from roster.models import (
     RollingClass,
     RollingClassProperty,
@@ -35,7 +37,7 @@ class RollingStockDocInline(admin.TabularInline):
     classes = ["collapse"]
 
 
-class RollingStockImageInline(admin.TabularInline):
+class RollingStockImageInline(SortableInlineAdminMixin, admin.TabularInline):
     model = RollingStockImage
     min_num = 0
     extra = 0
@@ -94,7 +96,7 @@ class RollingJournalDocumentAdmin(admin.ModelAdmin):
 
 
 @admin.register(RollingStock)
-class RollingStockAdmin(admin.ModelAdmin):
+class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
     inlines = (
         RollingStockPropertyInline,
         RollingStockImageInline,
@@ -126,6 +128,7 @@ class RollingStockAdmin(admin.ModelAdmin):
         "address",
         "sku",
     )
+    save_as = True
 
     fieldsets = (
         (
@@ -149,6 +152,7 @@ class RollingStockAdmin(admin.ModelAdmin):
             "DCC",
             {
                 "fields": (
+                    "decoder_interface",
                     "decoder",
                     "address",
                 )

@@ -1,9 +1,12 @@
+from urllib.parse import quote
+
 from django.db import models
+from django.urls import reverse
 from django.conf import settings
 from django.dispatch.dispatcher import receiver
 from django_countries.fields import CountryField
 
-from ram.utils import get_image_preview, slugify
+from ram.utils import DeduplicatedStorage, get_image_preview, slugify
 
 
 class Property(models.Model):
@@ -20,17 +23,28 @@ class Property(models.Model):
 
 class Manufacturer(models.Model):
     name = models.CharField(max_length=128, unique=True)
+    slug = models.CharField(max_length=128, unique=True, editable=False)
     category = models.CharField(
         max_length=64, choices=settings.MANUFACTURER_TYPES
     )
     website = models.URLField(blank=True)
-    logo = models.ImageField(upload_to="images/", null=True, blank=True)
+    logo = models.ImageField(
+        upload_to="images/", storage=DeduplicatedStorage, null=True, blank=True
+    )
 
     class Meta:
         ordering = ["category", "name"]
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse(
+            "filtered", kwargs={
+                "_filter": "manufacturer",
+                "search": self.slug,
+            }
+        )
 
     def logo_thumbnail(self):
         return get_image_preview(self.logo.url)
@@ -40,10 +54,13 @@ class Manufacturer(models.Model):
 
 class Company(models.Model):
     name = models.CharField(max_length=64, unique=True)
+    slug = models.CharField(max_length=64, unique=True, editable=False)
     extended_name = models.CharField(max_length=128, blank=True)
     country = CountryField()
     freelance = models.BooleanField(default=False)
-    logo = models.ImageField(upload_to="images/", null=True, blank=True)
+    logo = models.ImageField(
+        upload_to="images/", storage=DeduplicatedStorage, null=True, blank=True
+    )
 
     class Meta:
         verbose_name_plural = "Companies"
@@ -51,6 +68,14 @@ class Company(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse(
+            "filtered", kwargs={
+                "_filter": "company",
+                "search": self.slug,
+            }
+        )
 
     def logo_thumbnail(self):
         return get_image_preview(self.logo.url)
@@ -66,11 +91,10 @@ class Decoder(models.Model):
         limit_choices_to={"category": "model"},
     )
     version = models.CharField(max_length=64, blank=True)
-    interface = models.PositiveSmallIntegerField(
-        choices=settings.DECODER_INTERFACES, null=True, blank=True
-    )
     sound = models.BooleanField(default=False)
-    image = models.ImageField(upload_to="images/", null=True, blank=True)
+    image = models.ImageField(
+        upload_to="images/", storage=DeduplicatedStorage, null=True, blank=True
+    )
 
     def __str__(self):
         return "{0} - {1}".format(self.manufacturer, self.name)
@@ -83,6 +107,7 @@ class Decoder(models.Model):
 
 class Scale(models.Model):
     scale = models.CharField(max_length=32, unique=True)
+    slug = models.CharField(max_length=32, unique=True, editable=False)
     ratio = models.CharField(max_length=16, blank=True)
     gauge = models.CharField(max_length=16, blank=True)
     tracks = models.CharField(max_length=16, blank=True)
@@ -90,8 +115,40 @@ class Scale(models.Model):
     class Meta:
         ordering = ["scale"]
 
+    def get_absolute_url(self):
+        return reverse(
+            "filtered", kwargs={
+                "_filter": "scale",
+                "search": self.slug,
+            }
+        )
+
     def __str__(self):
         return str(self.scale)
+
+
+class RollingStockType(models.Model):
+    type = models.CharField(max_length=64)
+    order = models.PositiveSmallIntegerField()
+    category = models.CharField(
+        max_length=64, choices=settings.ROLLING_STOCK_TYPES
+    )
+    slug = models.CharField(max_length=128, unique=True, editable=False)
+
+    class Meta(object):
+        unique_together = ("category", "type")
+        ordering = ["order"]
+
+    def get_absolute_url(self):
+        return reverse(
+            "filtered", kwargs={
+                "_filter": "type",
+                "search": self.slug,
+            }
+        )
+
+    def __str__(self):
+        return "{0} {1}".format(self.type, self.category)
 
 
 class Tag(models.Model):
@@ -101,22 +158,20 @@ class Tag(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse(
+            "filtered", kwargs={
+                "_filter": "tag",
+                "search": self.slug,
+            }
+        )
 
+
+
+@receiver(models.signals.pre_save, sender=Manufacturer)
+@receiver(models.signals.pre_save, sender=Company)
+@receiver(models.signals.pre_save, sender=Scale)
+@receiver(models.signals.pre_save, sender=RollingStockType)
 @receiver(models.signals.pre_save, sender=Tag)
-def tag_pre_save(sender, instance, **kwargs):
-    instance.slug = slugify(instance.name)
-
-
-class RollingStockType(models.Model):
-    type = models.CharField(max_length=64)
-    order = models.PositiveSmallIntegerField()
-    category = models.CharField(
-        max_length=64, choices=settings.ROLLING_STOCK_TYPES
-    )
-
-    class Meta(object):
-        unique_together = ("category", "type")
-        ordering = ["order"]
-
-    def __str__(self):
-        return "{0} {1}".format(self.type, self.category)
+def slug_pre_save(sender, instance, **kwargs):
+    instance.slug = slugify(instance.__str__())

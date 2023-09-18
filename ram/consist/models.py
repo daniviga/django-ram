@@ -4,6 +4,7 @@ from django.urls import reverse
 
 from ckeditor_uploader.fields import RichTextUploadingField
 
+from ram.utils import DeduplicatedStorage
 from metadata.models import Company, Tag
 from roster.models import RollingStock
 
@@ -17,7 +18,9 @@ class Consist(models.Model):
     )
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     era = models.CharField(max_length=32, blank=True)
-    image = models.ImageField(upload_to="images/", null=True, blank=True)
+    image = models.ImageField(
+        upload_to="images/", storage=DeduplicatedStorage, null=True, blank=True
+    )
     notes = RichTextUploadingField(blank=True)
     creation_time = models.DateTimeField(auto_now_add=True)
     updated_time = models.DateTimeField(auto_now=True)
@@ -29,7 +32,7 @@ class Consist(models.Model):
         return reverse("consist", kwargs={"uuid": self.uuid})
 
     class Meta:
-        ordering = ["creation_time"]
+        ordering = ["company", "-creation_time"]
 
 
 class ConsistItem(models.Model):

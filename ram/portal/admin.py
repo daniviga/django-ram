@@ -3,7 +3,35 @@ from solo.admin import SingletonModelAdmin
 
 from portal.models import SiteConfiguration, Flatpage
 
-admin.site.register(SiteConfiguration, SingletonModelAdmin)
+@admin.register(SiteConfiguration)
+class SiteConfigurationAdmin(SingletonModelAdmin):
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "site_name",
+                    "site_author",
+                    "about",
+                    "items_per_page",
+                    "items_ordering",
+                    "footer",
+                    "footer_extended",
+                )
+            },
+        ),
+        (
+            "Advanced",
+            {
+                "classes": ("collapse",),
+                "fields": (
+                    "show_version",
+                    "use_cdn",
+                    "extra_head",
+                ),
+            },
+        ),
+    )
 
 
 @admin.register(Flatpage)

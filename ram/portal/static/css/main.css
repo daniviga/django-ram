@@ -1,3 +1,8 @@
+/* Switch SVG logo to white on dark mode */
+html[data-bs-theme='dark'] .navbar svg {
+  fill: #fff;
+}
+
 .card > a > img {
   width: 100%;
 }
@@ -9,10 +14,6 @@
 a.badge, a.badge:hover {
   text-decoration: none;
   color: #fff;
-}
-
-.tab-pane {
-  min-height: 300px;
 }
 
 .img-thumbnail {

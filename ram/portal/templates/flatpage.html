@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 
         {% block header %}
-        <h1 class="fw-light">{{ flatpage.name }}</h1>
         <small class="text-muted">Updated {{ flatpage.updated_time | date:"M d, Y H:i" }}</small>
         {% endblock %}
         {% block extra_content %}

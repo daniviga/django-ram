@@ -21,8 +21,8 @@ class PropertyAdmin(admin.ModelAdmin):
 @admin.register(Decoder)
 class DecoderAdmin(admin.ModelAdmin):
     readonly_fields = ("image_thumbnail",)
-    list_display = ("__str__", "interface")
-    list_filter = ("manufacturer", "interface")
+    list_display = ("__str__", "sound")
+    list_filter = ("manufacturer", "sound")
     search_fields = ("name", "manufacturer__name")
 
 

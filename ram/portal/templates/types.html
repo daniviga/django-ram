@@ -9,30 +9,22 @@
             <table class="table table-striped">
               <thead>
                 <tr>
-                  <th colspan="2" scope="row">Scale</th>
+                  <th colspan="2" scope="row">Type</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <th width="35%" scope="row">Name</th>
-                  <td>{{ d.scale }}</td>
+                  <th width="35%" scope="row">Type</th>
+                  <td>{{ d.type }}</td>
                 </tr>
                 <tr>
-                  <th width="35%" scope="row">Ratio</th>
-                  <td>{{ d.ratio }}</td>
-                </tr>
-                <tr>
-                  <th width="35%" scope="row">Gauge</th>
-                  <td>{{ d.gauge }}</td>
-                </tr>
-                <tr>
-                  <th width="35%" scope="row">Tracks</th>
-                  <td>{{ d.tracks }}</td>
+                  <th width="35%" scope="row">Category</th>
+                  <td>{{ d.category | title}}</td>
                 </tr>
               </tbody>
             </table>
             <div class="d-grid gap-2 mb-1 d-md-block">
-              <a class="btn btn-sm btn-outline-primary" href="{% url 'filtered' _filter="scale" search=d.slug %}">Show all rolling stock</a>
+              <a class="btn btn-sm btn-outline-primary" href="{% url 'filtered' _filter="type" search=d.slug %}">Show all rolling stock</a>
               {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% url 'admin:metadata_scale_change' d.pk %}">Edit</a>{% endif %}
             </div>
           </div>
