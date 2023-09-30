@@ -7,6 +7,7 @@ from django.utils.safestring import mark_safe
 from django.dispatch.dispatcher import receiver
 from django_countries.fields import CountryField
 
+from ram.models import Document
 from ram.utils import DeduplicatedStorage, get_image_preview, slugify
 
 
@@ -106,32 +107,13 @@ class Decoder(models.Model):
     image_thumbnail.short_description = "Preview"
 
 
-class DecoderDocument(models.Model):
+class DecoderDocument(Document):
     decoder = models.ForeignKey(
         Decoder, on_delete=models.CASCADE, related_name="document"
     )
-    description = models.CharField(max_length=128, blank=True)
-    file = models.FileField(
-        upload_to="files/",
-        storage=DeduplicatedStorage(),
-        null=True,
-        blank=True,
-    )
 
-    class Meta(object):
+    class Meta:
         unique_together = ("decoder", "file")
-
-    def __str__(self):
-        return "{0}".format(os.path.basename(self.file.name))
-
-    def filename(self):
-        return self.__str__()
-
-    def download(self):
-        return mark_safe(
-            '<a href="{0}" target="_blank">Link</a>'.format(self.file.url)
-        )
-
 
 class Scale(models.Model):
     scale = models.CharField(max_length=32, unique=True)
