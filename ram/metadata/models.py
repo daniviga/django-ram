@@ -1,8 +1,9 @@
-from urllib.parse import quote
+import os
 
 from django.db import models
 from django.urls import reverse
 from django.conf import settings
+from django.utils.safestring import mark_safe
 from django.dispatch.dispatcher import receiver
 from django_countries.fields import CountryField
 
@@ -88,7 +89,7 @@ class Decoder(models.Model):
     manufacturer = models.ForeignKey(
         Manufacturer,
         on_delete=models.CASCADE,
-        limit_choices_to={"category": "model"},
+        limit_choices_to={"category": "accessory"},
     )
     version = models.CharField(max_length=64, blank=True)
     sound = models.BooleanField(default=False)
@@ -103,6 +104,33 @@ class Decoder(models.Model):
         return get_image_preview(self.image.url)
 
     image_thumbnail.short_description = "Preview"
+
+
+class DecoderDocument(models.Model):
+    decoder = models.ForeignKey(
+        Decoder, on_delete=models.CASCADE, related_name="document"
+    )
+    description = models.CharField(max_length=128, blank=True)
+    file = models.FileField(
+        upload_to="files/",
+        storage=DeduplicatedStorage(),
+        null=True,
+        blank=True,
+    )
+
+    class Meta(object):
+        unique_together = ("decoder", "file")
+
+    def __str__(self):
+        return "{0}".format(os.path.basename(self.file.name))
+
+    def filename(self):
+        return self.__str__()
+
+    def download(self):
+        return mark_safe(
+            '<a href="{0}" target="_blank">Link</a>'.format(self.file.url)
+        )
 
 
 class Scale(models.Model):
