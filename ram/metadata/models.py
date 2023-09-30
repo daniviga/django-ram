@@ -1,9 +1,6 @@
-import os
-
 from django.db import models
 from django.urls import reverse
 from django.conf import settings
-from django.utils.safestring import mark_safe
 from django.dispatch.dispatcher import receiver
 from django_countries.fields import CountryField
 
@@ -115,6 +112,7 @@ class DecoderDocument(Document):
     class Meta:
         unique_together = ("decoder", "file")
 
+
 class Scale(models.Model):
     scale = models.CharField(max_length=32, unique=True)
     slug = models.CharField(max_length=32, unique=True, editable=False)
@@ -175,7 +173,6 @@ class Tag(models.Model):
                 "search": self.slug,
             }
         )
-
 
 
 @receiver(models.signals.pre_save, sender=Manufacturer)
