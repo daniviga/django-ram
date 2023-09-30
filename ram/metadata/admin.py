@@ -4,6 +4,7 @@ from adminsortable2.admin import SortableAdminMixin
 from metadata.models import (
     Property,
     Decoder,
+    DecoderDocument,
     Scale,
     Manufacturer,
     Company,
@@ -17,8 +18,16 @@ class PropertyAdmin(admin.ModelAdmin):
     search_fields = ("name",)
 
 
+class DecoderDocInline(admin.TabularInline):
+    model = DecoderDocument
+    min_num = 0
+    extra = 0
+    classes = ["collapse"]
+
+
 @admin.register(Decoder)
 class DecoderAdmin(admin.ModelAdmin):
+    inlines = (DecoderDocInline,)
     readonly_fields = ("image_thumbnail",)
     list_display = ("__str__", "sound")
     list_filter = ("manufacturer", "sound")

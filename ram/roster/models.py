@@ -5,11 +5,11 @@ from django.db import models
 from django.urls import reverse
 from django.conf import settings
 from django.dispatch import receiver
-from django.utils.safestring import mark_safe
 
 from ckeditor_uploader.fields import RichTextUploadingField
 
 from ram.utils import DeduplicatedStorage, get_image_preview
+from ram.models import Document
 from metadata.models import (
     Property,
     Scale,
@@ -127,31 +127,13 @@ def pre_save_running_number(sender, instance, *args, **kwargs):
         pass
 
 
-class RollingStockDocument(models.Model):
+class RollingStockDocument(Document):
     rolling_stock = models.ForeignKey(
         RollingStock, on_delete=models.CASCADE, related_name="document"
-    )
-    description = models.CharField(max_length=128, blank=True)
-    file = models.FileField(
-        upload_to="files/",
-        storage=DeduplicatedStorage(),
-        null=True,
-        blank=True,
     )
 
     class Meta(object):
         unique_together = ("rolling_stock", "file")
-
-    def __str__(self):
-        return "{0}".format(os.path.basename(self.file.name))
-
-    def filename(self):
-        return self.__str__()
-
-    def download(self):
-        return mark_safe(
-            '<a href="{0}" target="_blank">Link</a>'.format(self.file.url)
-        )
 
 
 class RollingStockImage(models.Model):

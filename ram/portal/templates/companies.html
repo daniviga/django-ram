@@ -17,25 +17,25 @@
               <tbody>
                 {% if d.logo %}
                 <tr>
-                  <th class="th-35" scope="row">Logo</th>
+                  <th class="w-25" scope="row">Logo</th>
                   <td><img style="max-height: 48px" src="{{ d.logo.url }}" /></td>
                 </tr>
                 {% endif %}
                 <tr>
-                  <th class="th-35" scope="row">Name</th>
+                  <th class="w-25" scope="row">Name</th>
                   <td>{{ d.extended_name }}</td>
                 </tr>
                 <tr>
-                  <th class="th-35" scope="row">Abbreviation</th>
+                  <th class="w-25" scope="row">Abbreviation</th>
                   <td>{{ d.name }}</td>
                 </tr>
                 <tr>
-                  <th class="th-35" scope="row">Country</th>
+                  <th class="w-25" scope="row">Country</th>
                   <td>{{ d.country.name }} <img src="{{ d.country.flag }}" alt="{{ d.country }}" />
                 </tr>
                {% if d.freelance %}
                <tr>
-                  <th class="th-35" scope="row">Notes</th>
+                  <th class="w-25" scope="row">Notes</th>
                   <td>A <em>freelance</em> company</td>
                 </tr>
                {% endif %}
