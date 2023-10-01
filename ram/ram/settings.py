@@ -151,7 +151,7 @@ COUNTRIES_OVERRIDE = {
 
 # Image used on cards without a custom image uploaded.
 # The file must be placed in the root of the 'static' folder
-DEFAULT_CARD_IMAGE = "coming_soon.png"
+DEFAULT_CARD_IMAGE = "coming_soon.svg"
 
 DECODER_INTERFACES = [
     (1, "NEM651"),
