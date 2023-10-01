@@ -50,7 +50,7 @@
                   <button class="nav-link" id="nav-class-tab" data-bs-toggle="tab" data-bs-target="#nav-class" type="button" role="tab" aria-controls="nav-class" aria-selected="false">Class data</button>
                   {% if rolling_stock.decoder %}<button class="nav-link" id="nav-dcc-tab" data-bs-toggle="tab" data-bs-target="#nav-dcc" type="button" role="tab" aria-controls="nav-dcc" aria-selected="false">DCC</button>{% endif %}
                   {% if rolling_stock.notes %}<button class="nav-link" id="nav-notes-tab" data-bs-toggle="tab" data-bs-target="#nav-notes" type="button" role="tab" aria-controls="nav-notes" aria-selected="false">Notes</button>{% endif %}
-                  {% if rolling_stock.document.count > 0 %}<button class="nav-link" id="nav-documents-tab" data-bs-toggle="tab" data-bs-target="#nav-documents" type="button" role="tab" aria-controls="nav-documents" aria-selected="false">Documents</button>{% endif %}
+                  {% if rolling_stock.document.count > 0 or rolling_stock.decoder.document.count > 0 %}<button class="nav-link" id="nav-documents-tab" data-bs-toggle="tab" data-bs-target="#nav-documents" type="button" role="tab" aria-controls="nav-documents" aria-selected="false">Documents</button>{% endif %}
                   {% if rolling_stock_journal.count > 0 %}<button class="nav-link" id="nav-journal-tab" data-bs-toggle="tab" data-bs-target="#nav-journal" type="button" role="tab" aria-controls="nav-journal" aria-selected="false">Journal</button>{% endif %}
                  </div>
               </nav>
@@ -292,6 +292,7 @@
                   </table>
                 </div>
                 <div class="tab-pane fade" id="nav-documents" role="tabpanel" aria-labelledby="nav-documents-tab">
+                  {% if rolling_stock.document.count > 0 %}
                   <table class="table table-striped">
                     <thead>
                       <tr>
@@ -308,6 +309,7 @@
                     {% endfor %}
                     </tbody>
                   </table>
+                  {% endif %}
                   {% if rolling_stock.decoder.document.count > 0 %}
                   <table class="table table-striped">
                     <thead>
