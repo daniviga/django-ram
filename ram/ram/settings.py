@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     "metadata",
     "roster",
     "consist",
+    "bookshelf",
 ]
 
 MIDDLEWARE = [
