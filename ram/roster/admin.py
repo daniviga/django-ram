@@ -68,7 +68,7 @@ class RollingStockDocumentAdmin(admin.ModelAdmin):
     )
     search_fields = (
         "rolling_stock__rolling_class__identifier",
-        "rolling_stock__sku",
+        "rolling_stock__item_number",
         "description",
         "file",
     )
@@ -89,7 +89,7 @@ class RollingJournalDocumentAdmin(admin.ModelAdmin):
     search_fields = (
         "rolling_stock__rolling_class__identifier",
         "rolling_stock__road_number",
-        "rolling_stock__sku",
+        "rolling_stock__item_number",
         "log",
     )
 
@@ -108,7 +108,7 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
         "address",
         "manufacturer",
         "scale",
-        "sku",
+        "item_number",
         "company",
         "country",
     )
@@ -125,7 +125,7 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
         "manufacturer__name",
         "road_number",
         "address",
-        "sku",
+        "item_number",
     )
     save_as = True
 
@@ -138,7 +138,7 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
                     "road_number",
                     "scale",
                     "manufacturer",
-                    "sku",
+                    "item_number",
                     "era",
                     "production_year",
                     "purchase_date",

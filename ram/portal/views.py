@@ -80,7 +80,7 @@ class SearchRoster(View):
                         | Q(rolling_class__description__icontains=s)
                         | Q(rolling_class__type__type__icontains=s)
                         | Q(road_number__icontains=s)
-                        | Q(sku=s)
+                        | Q(item_number=s)
                         | Q(rolling_class__company__name__icontains=s)
                         | Q(rolling_class__company__country__icontains=s)
                         | Q(manufacturer__name__icontains=s)

@@ -82,7 +82,7 @@ class RollingStock(models.Model):
         limit_choices_to={"category": "model"},
     )
     scale = models.ForeignKey(Scale, on_delete=models.CASCADE)
-    sku = models.CharField(max_length=32, blank=True)
+    item_number = models.CharField(max_length=32, blank=True)
     decoder_interface = models.PositiveSmallIntegerField(
         choices=settings.DECODER_INTERFACES, null=True, blank=True
     )
