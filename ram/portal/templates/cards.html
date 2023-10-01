@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
       {% block header %}
         <p class="lead text-muted">Results found: {{ matches }}</p>
@@ -9,9 +10,11 @@
         {% for d in data %}
         <div class="col">
           <div class="card shadow-sm">
-            {% for i in d.image.all %}
-            {% if forloop.first %}<a href="{{d.get_absolute_url}}"><img class="card-img-top" src="{{ i.image.url }}" alt="Card image cap"></a>{% endif %}
-            {% endfor %}
+            {% if d.image.count > 0 %}
+            <a href="{{d.get_absolute_url}}"><img class="card-img-top" src="{{ d.image.first.image.url }}" alt="{{ d }}"></a>
+            {% else %}
+            <a href="{{d.get_absolute_url}}"><img class="card-img-top" src="{% static DEFAULT_CARD_IMAGE %}" alt="{{ d }}"></a>
+            {% endif %}
             <div class="card-body">
               <p class="card-text" style="position: relative;">
                 <strong>{{ d }}</strong>
