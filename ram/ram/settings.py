@@ -80,6 +80,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "portal.context_processors.default_card_image",
             ],
         },
     },
@@ -147,6 +148,10 @@ CKEDITOR_UPLOAD_PATH = "uploads/"
 COUNTRIES_OVERRIDE = {
     "ZZ": "Freelance",
 }
+
+# Image used on cards without a custom image uploaded.
+# The file must be placed in the root of the 'static' folder
+DEFAULT_CARD_IMAGE = "coming_soon.svg"
 
 DECODER_INTERFACES = [
     (1, "NEM651"),
