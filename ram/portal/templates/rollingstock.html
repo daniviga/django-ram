@@ -64,7 +64,7 @@
                     </thead>
                     <tbody>
                       <tr>
-                        <th class="w-25" scope="row">Type</th>
+                        <th class="w-33" scope="row">Type</th>
                         <td>{{ rolling_stock.rolling_class.type }}</td>
                       </tr>
                       <tr>
@@ -95,7 +95,7 @@
                     </thead>
                     <tbody>
                       <tr>
-                        <th class="w-25" scope="row">Manufacturer</th>
+                        <th class="w-33" scope="row">Manufacturer</th>
                         <td>{%if rolling_stock.manufacturer %}
                           <a href="{% url 'filtered' _filter="manufacturer" search=rolling_stock.manufacturer.slug %}">{{ rolling_stock.manufacturer }}{% if rolling_stock.manufacturer.website %}</a> <a href="{{ rolling_stock.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
                         {% endif %}</td>
@@ -119,7 +119,7 @@
                     </thead>
                     <tbody>
                       <tr>
-                        <th class="w-25" scope="row">Interface</th>
+                        <th class="w-33" scope="row">Interface</th>
                         <td>{{ rolling_stock.get_decoder_interface_display }}</td>
                       </tr>
                       {% if rolling_stock.decoder %}
@@ -145,7 +145,7 @@
                     </thead>
                     <tbody>
                       <tr>
-                        <th class="w-25" scope="row">Manufacturer</th>
+                        <th class="w-33" scope="row">Manufacturer</th>
                         <td>{%if rolling_stock.manufacturer %}
                           <a href="{% url 'filtered' _filter="manufacturer" search=rolling_stock.manufacturer.slug %}">{{ rolling_stock.manufacturer }}{% if rolling_stock.manufacturer.website %}</a> <a href="{{ rolling_stock.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
                         {% endif %}</td>
@@ -182,7 +182,7 @@
                     <tbody>
                     {% for p in rolling_stock_properties %}
                       <tr>
-                        <th class="w-25" scope="row">{{ p.property }}</th>
+                        <th class="w-33" scope="row">{{ p.property }}</th>
                         <td>{{ p.value }}</td>
                       </tr>
                     {% endfor %}
@@ -199,7 +199,7 @@
                     </thead>
                     <tbody>
                       <tr>
-                        <th class="w-25" scope="row">Class</th>
+                        <th class="w-33" scope="row">Class</th>
                         <td>{{ rolling_stock.rolling_class.identifier }}</td>
                       </tr>
                       <tr>
@@ -234,7 +234,7 @@
                     <tbody>
                     {% for p in class_properties %}
                       <tr>
-                        <th class="w-25" scope="row">{{ p.property }}</th>
+                        <th class="w-33" scope="row">{{ p.property }}</th>
                         <td>{{ p.value }}</td>
                       </tr>
                     {% endfor %}
@@ -255,7 +255,7 @@
                         <td>{{ rolling_stock.get_decoder_interface_display }}</td>
                       </tr>
                       <tr>
-                        <th class="w-25" scope="row">Address</th>
+                        <th class="w-33" scope="row">Address</th>
                         <td>{{ rolling_stock.address }}</td>
                       </tr>
                       <tr>
@@ -301,7 +301,7 @@
                     <tbody>
                     {% for d in rolling_stock.document.all %}
                       <tr>
-                        <td class="w-25">{{ d.description }}</td>
+                        <td class="w-33">{{ d.description }}</td>
                         <td><a href="{{ d.file.url }}" target="_blank">{{ d.filename }}</a></td>
                         <td class="text-end">{{ d.file.size | filesizeformat }}</td>
                       </tr>
@@ -318,7 +318,7 @@
                     <tbody>
                     {% for d in rolling_stock.decoder.document.all %}
                       <tr>
-                        <td class="w-25">{{ d.description }}</td>
+                        <td class="w-33">{{ d.description }}</td>
                         <td><a href="{{ d.file.url }}" target="_blank">{{ d.filename }}</a></td>
                         <td class="text-end">{{ d.file.size | filesizeformat }}</td>
                       </tr>
@@ -337,7 +337,7 @@
                     <tbody>
                     {% for j in rolling_stock_journal %}
                       <tr>
-                        <th class="w-25" scope="row">{{ j.date }}</th>
+                        <th class="w-33" scope="row">{{ j.date }}</th>
                         <td>{{ j.log | safe }}</a></td>
                       </tr>
                     {% endfor %}

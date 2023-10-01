@@ -20,6 +20,10 @@ a.badge, a.badge:hover {
   padding: 0;
 }
 
+.w-33 {
+  width: 33% !important;
+}
+
 #nav-notes > p {
   padding: .5rem;
 }

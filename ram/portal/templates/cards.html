@@ -32,7 +32,7 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <th class="w-25" scope="row">Type</th>
+                    <th class="w-33" scope="row">Type</th>
                     <td>{{ d.rolling_class.type }}</td>
                   </tr>
                   <tr>
@@ -54,7 +54,7 @@
                     <td>{{ d.era }}</td>
                   </tr>
                   <tr>
-                    <th class="w-25" scope="row">Manufacturer</th>
+                    <th class="w-33" scope="row">Manufacturer</th>
                     <td>{%if d.manufacturer %}
                       <a href="{% url 'filtered' _filter="manufacturer" search=d.manufacturer.slug %}">{{ d.manufacturer }}{% if d.manufacturer.website %}</a> <a href="{{ d.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
                     {% endif %}</td>
@@ -78,7 +78,7 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <th class="w-25" scope="row">Decoder</th>
+                    <th class="w-33" scope="row">Decoder</th>
                     <td>{{ d.decoder }}</td>
                   </tr>
                   <tr>
