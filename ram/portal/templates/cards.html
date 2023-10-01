@@ -13,7 +13,8 @@
             {% if d.image.count > 0 %}
             <a href="{{d.get_absolute_url}}"><img class="card-img-top" src="{{ d.image.first.image.url }}" alt="{{ d }}"></a>
             {% else %}
-            <a href="{{d.get_absolute_url}}"><img class="card-img-top" src="{% static DEFAULT_CARD_IMAGE %}" alt="{{ d }}"></a>
+            <!-- Do not show the "Coming soon" image when running in a single card column mode (e.g. on mobile) -->
+            <a href="{{d.get_absolute_url}}"><img class="card-img-top d-none d-sm-block" src="{% static DEFAULT_CARD_IMAGE %}" alt="{{ d }}"></a>
             {% endif %}
             <div class="card-body">
               <p class="card-text" style="position: relative;">
