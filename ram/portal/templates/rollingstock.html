@@ -62,7 +62,7 @@
                         <th colspan="2" scope="row">Data</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="table-group-divider">
                       <tr>
                         <th class="w-33" scope="row">Type</th>
                         <td>{{ rolling_stock.rolling_class.type }}</td>
@@ -93,7 +93,7 @@
                         <th colspan="2" scope="row">Model data</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="table-group-divider">
                       <tr>
                         <th class="w-33" scope="row">Manufacturer</th>
                         <td>{%if rolling_stock.manufacturer %}
@@ -117,7 +117,7 @@
                         <th colspan="2" scope="row">DCC data</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="table-group-divider">
                       <tr>
                         <th class="w-33" scope="row">Interface</th>
                         <td>{{ rolling_stock.get_decoder_interface_display }}</td>
@@ -143,7 +143,7 @@
                         <th colspan="2" scope="row">Model data</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="table-group-divider">
                       <tr>
                         <th class="w-33" scope="row">Manufacturer</th>
                         <td>{%if rolling_stock.manufacturer %}
@@ -179,7 +179,7 @@
                         <th colspan="2" scope="row">Properties</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="table-group-divider">
                     {% for p in rolling_stock_properties %}
                       <tr>
                         <th class="w-33" scope="row">{{ p.property }}</th>
@@ -197,7 +197,7 @@
                         <th colspan="2" scope="row">Class data</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="table-group-divider">
                       <tr>
                         <th class="w-33" scope="row">Class</th>
                         <td>{{ rolling_stock.rolling_class.identifier }}</td>
@@ -231,7 +231,7 @@
                         <th colspan="2" scope="row">Properties</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="table-group-divider">
                     {% for p in class_properties %}
                       <tr>
                         <th class="w-33" scope="row">{{ p.property }}</th>
@@ -249,7 +249,7 @@
                         <th colspan="2" scope="row">DCC data</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="table-group-divider">
                       <tr>
                         <th scope="row">Interface</th>
                         <td>{{ rolling_stock.get_decoder_interface_display }}</td>
@@ -284,7 +284,7 @@
                         <th scope="row">Notes</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="table-group-divider">
                       <tr>
                         <td>{{ rolling_stock.notes | safe }}</td>
                       </tr>
@@ -299,7 +299,7 @@
                         <th colspan="3" scope="row">Documents</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="table-group-divider">
                     {% for d in rolling_stock.document.all %}
                       <tr>
                         <td class="w-33">{{ d.description }}</td>
@@ -317,7 +317,7 @@
                         <th colspan="3" scope="row">Decoder documents</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="table-group-divider">
                     {% for d in rolling_stock.decoder.document.all %}
                       <tr>
                         <td class="w-33">{{ d.description }}</td>
@@ -336,7 +336,7 @@
                         <th colspan="3" scope="row">Journal</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="table-group-divider">
                     {% for j in rolling_stock_journal %}
                       <tr>
                         <th class="w-33" scope="row">{{ j.date }}</th>
