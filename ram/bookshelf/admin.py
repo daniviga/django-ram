@@ -1,6 +1,15 @@
 from django.contrib import admin
+from adminsortable2.admin import SortableAdminBase, SortableInlineAdminMixin
 
-from bookshelf.models import BookProperty, Book, Author, Publisher
+from bookshelf.models import BookProperty, BookImage, Book, Author, Publisher
+
+
+class BookImageInline(SortableInlineAdminMixin, admin.TabularInline):
+    model = BookImage
+    min_num = 0
+    extra = 0
+    readonly_fields = ("image_thumbnail",)
+    classes = ["collapse"]
 
 
 class BookPropertyInline(admin.TabularInline):
@@ -10,8 +19,8 @@ class BookPropertyInline(admin.TabularInline):
 
 
 @admin.register(Book)
-class BookAdmin(admin.ModelAdmin):
-    inlines = (BookPropertyInline,)
+class BookAdmin(SortableAdminBase, admin.ModelAdmin):
+    inlines = (BookImageInline, BookPropertyInline,)
     list_display = (
         "title",
         "get_authors",
@@ -19,8 +28,8 @@ class BookAdmin(admin.ModelAdmin):
         "publication_year",
         "numbers_of_pages"
     )
-    search_fields = ("title",)
-    list_filter = ("publisher__name",)
+    search_fields = ("title", "publisher__name", "authors__last_name")
+    list_filter = ("publisher__name", "authors")
 
     @admin.display(description="Publisher")
     def get_publisher(self, obj):

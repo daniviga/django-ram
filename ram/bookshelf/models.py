@@ -5,10 +5,9 @@ from django_countries.fields import CountryField
 
 from ckeditor_uploader.fields import RichTextUploadingField
 
-from metadata.models import (
-    Property,
-    Tag,
-)
+from metadata.models import Tag
+from ram.utils import DeduplicatedStorage
+from ram.models import Image, PropertyInstance
 
 
 class Publisher(models.Model):
@@ -62,7 +61,19 @@ class Book(models.Model):
     #     return reverse("rolling_stock", kwargs={"uuid": self.uuid})
 
 
-class BookProperty(models.Model):
+class BookImage(Image):
+    book = models.ForeignKey(
+        Book, on_delete=models.CASCADE, related_name="image"
+    )
+    image = models.ImageField(
+        upload_to="images/books/",  # FIXME, find a better way to replace this
+        storage=DeduplicatedStorage,
+        null=True,
+        blank=True
+    )
+
+
+class BookProperty(PropertyInstance):
     book = models.ForeignKey(
         Book,
         on_delete=models.CASCADE,
@@ -70,11 +81,3 @@ class BookProperty(models.Model):
         blank=False,
         related_name="property",
     )
-    property = models.ForeignKey(Property, on_delete=models.CASCADE)
-    value = models.CharField(max_length=256)
-
-    def __str__(self):
-        return self.property.name
-
-    class Meta:
-        verbose_name_plural = "Properties"
