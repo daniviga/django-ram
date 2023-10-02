@@ -1,6 +1,7 @@
 from uuid import uuid4
 from django.db import models
 from django.conf import settings
+from django.urls import reverse
 from django_countries.fields import CountryField
 
 from ckeditor_uploader.fields import RichTextUploadingField
@@ -41,7 +42,7 @@ class Book(models.Model):
         choices=settings.LANGUAGES,
         default='en'
     )
-    numbers_of_pages = models.SmallIntegerField(null=True, blank=True)
+    number_of_pages = models.SmallIntegerField(null=True, blank=True)
     publication_year = models.SmallIntegerField(null=True, blank=True)
     purchase_date = models.DateField(null=True, blank=True)
     tags = models.ManyToManyField(
@@ -58,7 +59,7 @@ class Book(models.Model):
         return self.publisher.name
 
     # def get_absolute_url(self):
-    #     return reverse("rolling_stock", kwargs={"uuid": self.uuid})
+    #     return reverse("books", kwargs={"uuid": self.uuid})
 
 
 class BookImage(Image):

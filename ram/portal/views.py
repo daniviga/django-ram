@@ -14,6 +14,7 @@ from portal.utils import get_site_conf
 from portal.models import Flatpage
 from roster.models import RollingStock
 from consist.models import Consist
+from bookshelf.models import Book
 from metadata.models import Company, Manufacturer, Scale, RollingStockType, Tag
 
 
@@ -338,6 +339,13 @@ class Types(GetData):
         self.title = "Types"
         self.template = "types.html"
         self.data = RollingStockType.objects.all()
+
+
+class Books(GetData):
+    def __init__(self):
+        self.title = "Books"
+        self.template = "books.html"
+        self.data = Book.objects.all()
 
 
 class GetFlatpage(View):

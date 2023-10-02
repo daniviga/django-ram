@@ -12,6 +12,7 @@ from portal.views import (
     Manufacturers,
     Scales,
     Types,
+    Books,
     SearchRoster,
 )
 
@@ -54,6 +55,8 @@ urlpatterns = [
     path("scales/<int:page>", Types.as_view(), name="scales_pagination"),
     path("types", Types.as_view(), name="types"),
     path("types/<int:page>", Types.as_view(), name="types_pagination"),
+    path("books", Books.as_view(), name="books"),
+    path("books/<int:page>", Books.as_view(), name="books_pagination"),
     path(
         "search",
         SearchRoster.as_view(http_method_names=["post"]),

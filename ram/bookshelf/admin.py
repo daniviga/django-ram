@@ -26,7 +26,7 @@ class BookAdmin(SortableAdminBase, admin.ModelAdmin):
         "get_authors",
         "get_publisher",
         "publication_year",
-        "numbers_of_pages"
+        "number_of_pages"
     )
     search_fields = ("title", "publisher__name", "authors__last_name")
     list_filter = ("publisher__name", "authors")
