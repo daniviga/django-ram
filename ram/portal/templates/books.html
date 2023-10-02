@@ -46,11 +46,11 @@
                 </tr>
                 <tr>
                   <th scope="row">Pages</th>
-                  <td>{{ d.number_of_pages }}</td>
+                  <td>{{ d.number_of_pages|default:"-" }}</td>
                 </tr>
                 <tr>
                   <th scope="row">Year</th>
-                  <td>{{ d.publication_year }}</td>
+                  <td>{{ d.publication_year|default:"-" }}</td>
                 </tr>
               </tbody>
             </table>

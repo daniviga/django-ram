@@ -164,11 +164,11 @@
                       </tr>
                       <tr>
                         <th scope="row">Production year</th>
-                        <td>{{ rolling_stock.production_year | default_if_none:"" }}</td>
+                        <td>{{ rolling_stock.production_year|default:"-" }}</td>
                       </tr>
                       <tr>
                         <th scope="row">Purchase date</th>
-                        <td>{{ rolling_stock.purchase_date | default_if_none:"" }}</td>
+                        <td>{{ rolling_stock.purchase_date|default:"-" }}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -264,7 +264,7 @@
                       </tr>
                       <tr>
                         <th scope="row">Manufacturer</th>
-                        <td>{{ rolling_stock.decoder.manufacturer|default_if_none:"" }}</td>
+                        <td>{{ rolling_stock.decoder.manufacturer|default:"-" }}</td>
                       </tr>
                       <tr>
                         <th scope="row">Version</th>
