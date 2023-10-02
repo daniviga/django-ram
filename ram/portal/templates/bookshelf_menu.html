@@ -1,12 +1,10 @@
-                {% if flatpage_menu %}
+                {% if bookshelf_menu %}
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Articles
+                    Bookshelf
                   </a>
                   <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                  {% for m in flatpage_menu %}
-                    <li><a class="dropdown-item" href="{{ m.get_absolute_url }}">{{ m.name }}</a></li>
-                  {% endfor %}
+                    <li><a class="nav-link" href="{% url 'books' %}">Books</a></li>
                   </ul>
                 </li>
                 {% endif %}
