@@ -53,7 +53,7 @@ class Book(models.Model):
     updated_time = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ["authors__last_name", "title"]
+        ordering = ["title"]
 
     def __str__(self):
         return self.title
