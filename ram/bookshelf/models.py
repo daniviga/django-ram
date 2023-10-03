@@ -54,7 +54,6 @@ class Book(models.Model):
 
     class Meta:
         ordering = ["authors__last_name", "title"]
-        verbose_name_plural = "Rolling stock"
 
     def __str__(self):
         return self.title
