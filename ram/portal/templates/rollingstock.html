@@ -105,8 +105,8 @@
                         <td><a href="{% url 'filtered' _filter="scale" search=rolling_stock.scale %}"><abbr title="{{ rolling_stock.scale.ratio }} - {{ rolling_stock.scale.tracks }}">{{ rolling_stock.scale }}</abbr></a></td>
                       </tr>
                       <tr>
-                        <th scope="row">SKU</th>
-                        <td>{{ rolling_stock.sku }}</td>
+                        <th scope="row">Item number</th>
+                        <td>{{ rolling_stock.item_number }}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -155,8 +155,8 @@
                         <td><a href="{% url 'filtered' _filter="scale" search=rolling_stock.scale %}"><abbr title="{{ rolling_stock.scale.ratio }} - {{ rolling_stock.scale.tracks }}">{{ rolling_stock.scale }}</abbr></a></td>
                       </tr>
                       <tr>
-                        <th scope="row">SKU</th>
-                        <td>{{ rolling_stock.sku }}</td>
+                        <th scope="row">Item number</th>
+                        <td>{{ rolling_stock.item_number }}</td>
                       </tr>
                       <tr>
                         <th scope="row">Era</th>
@@ -164,11 +164,11 @@
                       </tr>
                       <tr>
                         <th scope="row">Production year</th>
-                        <td>{{ rolling_stock.production_year | default_if_none:"" }}</td>
+                        <td>{{ rolling_stock.production_year|default:"-" }}</td>
                       </tr>
                       <tr>
                         <th scope="row">Purchase date</th>
-                        <td>{{ rolling_stock.purchase_date | default_if_none:"" }}</td>
+                        <td>{{ rolling_stock.purchase_date|default:"-" }}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -264,7 +264,7 @@
                       </tr>
                       <tr>
                         <th scope="row">Manufacturer</th>
-                        <td>{{ rolling_stock.decoder.manufacturer|default_if_none:"" }}</td>
+                        <td>{{ rolling_stock.decoder.manufacturer|default:"-" }}</td>
                       </tr>
                       <tr>
                         <th scope="row">Version</th>

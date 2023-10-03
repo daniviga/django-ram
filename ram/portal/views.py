@@ -14,6 +14,7 @@ from portal.utils import get_site_conf
 from portal.models import Flatpage
 from roster.models import RollingStock
 from consist.models import Consist
+from bookshelf.models import Book
 from metadata.models import Company, Manufacturer, Scale, RollingStockType, Tag
 
 
@@ -80,7 +81,7 @@ class SearchRoster(View):
                         | Q(rolling_class__description__icontains=s)
                         | Q(rolling_class__type__type__icontains=s)
                         | Q(road_number__icontains=s)
-                        | Q(sku=s)
+                        | Q(item_number=s)
                         | Q(rolling_class__company__name__icontains=s)
                         | Q(rolling_class__company__country__icontains=s)
                         | Q(manufacturer__name__icontains=s)
@@ -340,6 +341,36 @@ class Types(GetData):
         self.data = RollingStockType.objects.all()
 
 
+class Books(GetData):
+    def __init__(self):
+        self.title = "Books"
+        self.template = "bookshelf/books.html"
+        self.data = Book.objects.all()
+
+
+class GetBook(View):
+    def get(self, request, uuid):
+        try:
+            book = Book.objects.get(uuid=uuid)
+        except ObjectDoesNotExist:
+            raise Http404
+
+        book_properties = (
+            book.property.all()
+            if request.user.is_authenticated
+            else book.property.filter(property__private=False)
+        )
+        return render(
+            request,
+            "bookshelf/book.html",
+            {
+                "title": book,
+                "book_properties": book_properties,
+                "book": book,
+            },
+        )
+
+
 class GetFlatpage(View):
     def get(self, request, flatpage):
         try:
@@ -351,6 +382,6 @@ class GetFlatpage(View):
 
         return render(
             request,
-            "flatpage.html",
+            "flatpages/flatpage.html",
             {"title": flatpage.name, "flatpage": flatpage},
         )

@@ -1,4 +1,3 @@
-import os
 import re
 from uuid import uuid4
 from django.db import models
@@ -8,10 +7,9 @@ from django.dispatch import receiver
 
 from ckeditor_uploader.fields import RichTextUploadingField
 
-from ram.utils import DeduplicatedStorage, get_image_preview
-from ram.models import Document
+from ram.models import Document, Image, PropertyInstance
+from ram.utils import get_image_preview
 from metadata.models import (
-    Property,
     Scale,
     Manufacturer,
     Decoder,
@@ -43,7 +41,7 @@ class RollingClass(models.Model):
         return "{0} {1}".format(self.company, self.identifier)
 
 
-class RollingClassProperty(models.Model):
+class RollingClassProperty(PropertyInstance):
     rolling_class = models.ForeignKey(
         RollingClass,
         on_delete=models.CASCADE,
@@ -52,14 +50,6 @@ class RollingClassProperty(models.Model):
         related_name="property",
         verbose_name="Class",
     )
-    property = models.ForeignKey(Property, on_delete=models.CASCADE)
-    value = models.CharField(max_length=256)
-
-    def __str__(self):
-        return self.property.name
-
-    class Meta:
-        verbose_name_plural = "Properties"
 
 
 class RollingStock(models.Model):
@@ -82,7 +72,7 @@ class RollingStock(models.Model):
         limit_choices_to={"category": "model"},
     )
     scale = models.ForeignKey(Scale, on_delete=models.CASCADE)
-    sku = models.CharField(max_length=32, blank=True)
+    item_number = models.CharField(max_length=32, blank=True)
     decoder_interface = models.PositiveSmallIntegerField(
         choices=settings.DECODER_INTERFACES, null=True, blank=True
     )
@@ -136,28 +126,13 @@ class RollingStockDocument(Document):
         unique_together = ("rolling_stock", "file")
 
 
-class RollingStockImage(models.Model):
-    order = models.PositiveIntegerField(default=0, blank=False, null=False)
+class RollingStockImage(Image):
     rolling_stock = models.ForeignKey(
         RollingStock, on_delete=models.CASCADE, related_name="image"
     )
-    image = models.ImageField(
-        upload_to="images/", storage=DeduplicatedStorage, null=True, blank=True
-    )
-
-    def image_thumbnail(self):
-        return get_image_preview(self.image.url)
-
-    image_thumbnail.short_description = "Preview"
-
-    def __str__(self):
-        return "{0}".format(os.path.basename(self.image.name))
-
-    class Meta:
-        ordering = ["order"]
 
 
-class RollingStockProperty(models.Model):
+class RollingStockProperty(PropertyInstance):
     rolling_stock = models.ForeignKey(
         RollingStock,
         on_delete=models.CASCADE,
@@ -165,14 +140,6 @@ class RollingStockProperty(models.Model):
         null=False,
         blank=False,
     )
-    property = models.ForeignKey(Property, on_delete=models.CASCADE)
-    value = models.CharField(max_length=256)
-
-    def __str__(self):
-        return self.property.name
-
-    class Meta:
-        verbose_name_plural = "Properties"
 
 
 class RollingStockJournal(models.Model):

@@ -171,7 +171,8 @@
                     <li><a class="dropdown-item" href="{% url 'manufacturers' category='real' %}">Real</a></li>
                   </ul>
                 </li>
-                {% show_menu %}
+                {% show_flatpages_menu %}
+                {% show_bookshelf_menu %}
               </ul>
               {% include 'includes/search.html' %}
             </div>
@@ -191,7 +192,7 @@
         <div class="container">
           {% block carousel %}
           {% endblock %}
-          <a id="rolling-stock"></a>
+          <a id="main-content"></a>
           {% block cards_layout %}
           {% endblock %}
         </div>
