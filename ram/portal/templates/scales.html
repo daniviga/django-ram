@@ -46,7 +46,7 @@
         <ul class="pagination justify-content-center mt-4 mb-0">
           {% if data.has_previous %}
           <li class="page-item">
-            <a class="page-link" href="{% url 'scales_pagination' page=data.previous_page_number %}#rolling-stock" tabindex="-1">Previous</a>
+            <a class="page-link" href="{% url 'scales_pagination' page=data.previous_page_number %}#main-content" tabindex="-1">Previous</a>
           </li>
           {% else %}
           <li class="page-item disabled">
@@ -62,13 +62,13 @@
               {% if i == data.paginator.ELLIPSIS %}
               <li class="page-item"><span class="page-link">{{ i }}</span></li>
               {% else %}
-              <li class="page-item"><a class="page-link" href="{% url 'scales_pagination' page=i %}#rolling-stock">{{ i }}</a></li>
+              <li class="page-item"><a class="page-link" href="{% url 'scales_pagination' page=i %}#main-content">{{ i }}</a></li>
               {% endif %}
             {% endif %}
           {% endfor %}
           {% if data.has_next %}
           <li class="page-item">
-            <a class="page-link" href="{% url 'scales_pagination' page=data.next_page_number %}#rolling-stock" tabindex="-1">Next</a>
+            <a class="page-link" href="{% url 'scales_pagination' page=data.next_page_number %}#main-content" tabindex="-1">Next</a>
           </li>
           {% else %}
           <li class="page-item disabled">
