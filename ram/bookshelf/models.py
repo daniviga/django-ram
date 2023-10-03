@@ -52,6 +52,10 @@ class Book(models.Model):
     creation_time = models.DateTimeField(auto_now_add=True)
     updated_time = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        ordering = ["authors__last_name", "title"]
+        verbose_name_plural = "Rolling stock"
+
     def __str__(self):
         return self.title
 
