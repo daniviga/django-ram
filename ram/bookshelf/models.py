@@ -36,7 +36,7 @@ class Book(models.Model):
     title = models.CharField(max_length=200)
     authors = models.ManyToManyField(Author)
     publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE)
-    ISBN = models.CharField(max_length=13, blank=True)
+    ISBN = models.CharField(max_length=17, blank=True)  # 13 + dashes
     language = models.CharField(
         max_length=7,
         choices=settings.LANGUAGES,
