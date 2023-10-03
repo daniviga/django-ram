@@ -58,8 +58,8 @@ class Book(models.Model):
     def publisher_name(self):
         return self.publisher.name
 
-    # def get_absolute_url(self):
-    #     return reverse("books", kwargs={"uuid": self.uuid})
+    def get_absolute_url(self):
+        return reverse("book", kwargs={"uuid": self.uuid})
 
 
 class BookImage(Image):

@@ -344,8 +344,31 @@ class Types(GetData):
 class Books(GetData):
     def __init__(self):
         self.title = "Books"
-        self.template = "books.html"
+        self.template = "bookshelf/books.html"
         self.data = Book.objects.all()
+
+
+class GetBook(View):
+    def get(self, request, uuid):
+        try:
+            book = Book.objects.get(uuid=uuid)
+        except ObjectDoesNotExist:
+            raise Http404
+
+        book_properties = (
+            book.property.all()
+            if request.user.is_authenticated
+            else book.property.filter(property__private=False)
+        )
+        return render(
+            request,
+            "bookshelf/book.html",
+            {
+                "title": book,
+                "book_properties": book_properties,
+                "book": book,
+            },
+        )
 
 
 class GetFlatpage(View):
@@ -359,6 +382,6 @@ class GetFlatpage(View):
 
         return render(
             request,
-            "flatpage.html",
+            "flatpages/flatpage.html",
             {"title": flatpage.name, "flatpage": flatpage},
         )
