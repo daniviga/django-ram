@@ -132,7 +132,12 @@ class SearchRoster(View):
             })
         if _filter is None:
             consists = (
-                Consist.objects.filter(identifier__icontains=search)
+                Consist.objects.filter(
+                    Q(
+                        Q(identifier__icontains=search)
+                        | Q(company__name__icontains=search)
+                    )
+                )
                 .distinct()
             )
             for item in consists:
