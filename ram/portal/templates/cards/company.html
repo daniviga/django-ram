@@ -1,0 +1,46 @@
+      <div class="col">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <p class="card-text" style="position: relative;">
+              <strong>{{ d.item.name }}</strong>
+            </p>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th colspan="2" scope="row">Company</th>
+                </tr>
+              </thead>
+              <tbody class="table-group-divider">
+                {% if d.item.logo %}
+                <tr>
+                  <th class="w-33" scope="row">Logo</th>
+                  <td><img style="max-height: 48px" src="{{ d.item.logo.url }}" /></td>
+                </tr>
+                {% endif %}
+                <tr>
+                  <th class="w-33" scope="row">Name</th>
+                  <td>{{ d.item.extended_name }}</td>
+                </tr>
+                <tr>
+                  <th class="w-33" scope="row">Abbreviation</th>
+                  <td>{{ d.item.name }}</td>
+                </tr>
+                <tr>
+                  <th class="w-33" scope="row">Country</th>
+                  <td>{{ d.item.country.name }} <img src="{{ d.item.country.flag }}" alt="{{ d.item.country }}" />
+                </tr>
+               {% if d.item.freelance %}
+               <tr>
+                  <th class="w-33" scope="row">Notes</th>
+                  <td>A <em>freelance</em> company</td>
+                </tr>
+               {% endif %}
+              </tbody>
+            </table>
+            <div class="d-grid gap-2 mb-1 d-md-block">
+              <a class="btn btn-sm btn-outline-primary" href="{% url 'filtered' _filter="company" search=d.item.slug %}">Show all rolling stock</a>
+              {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% url 'admin:metadata_company_change' d.item.pk %}">Edit</a>{% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
