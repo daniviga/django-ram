@@ -1,50 +1,7 @@
 {% extends "cards.html" %}
-
-      {% block cards %}
-      {% for d in data %}
-      <div class="col">
-        <div class="card shadow-sm">
-          <div class="card-body">
-            <p class="card-text" style="position: relative;">
-              <strong>{{ d.name }}</strong>
-            </p>
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th colspan="2" scope="row">Manufacturer</th>
-                </tr>
-              </thead>
-              <tbody class="table-group-divider">
-                {% if d.logo %}
-                <tr>
-                  <th class="w-33" scope="row">Logo</th>
-                  <td><img style="max-height: 48px" src="{{ d.logo.url }}" /></td>
-                </tr>
-                {% endif %}
-                {% if d.website %}
-                <tr>
-                  <th class="w-33" scope="row">Website</th>
-                  <td><a href="{{ d.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a></td>
-                </tr>
-                {% endif %}
-                <tr>
-                  <th class="w-33" scope="row">Category</th>
-                  <td>{{ d.category | title }}</td>
-                </tr>
-              </tbody>
-            </table>
-            <div class="d-grid gap-2 mb-1 d-md-block">
-              <a class="btn btn-sm btn-outline-primary" href="{% url 'filtered' _filter="manufacturer" search=d.slug %}">Show all rolling stock</a>
-              {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% url 'admin:metadata_manufacturer_change' d.pk %}">Edit</a>{% endif %}
-            </div>
-          </div>
-        </div>
-      </div>
-      {% endfor %}
-      {% endblock %}
       {% block pagination %}
       {% if data.has_other_pages %}
-      {% with data.0.category as c %}
+      {% with data.0.item.category as c %}
       <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center mt-4 mb-0">
           {% if data.has_previous %}

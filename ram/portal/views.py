@@ -36,15 +36,22 @@ def order_by_fields():
 
 
 class GetData(View):
-    def __init__(self):
-        self.title = "Home"
-        self.template = "home.html"
-        self.data = RollingStock.objects.order_by(*order_by_fields())
+    title = "Home"
+    template = "roster.html"
+    item_type = "rolling_stock"
+    queryset = RollingStock.objects.order_by(*order_by_fields())
 
     def get(self, request, page=1):
         site_conf = get_site_conf()
 
-        paginator = Paginator(self.data, site_conf.items_per_page)
+        data = []
+        for item in self.queryset:
+            data.append({
+                "type": self.item_type,
+                "item": item
+            })
+
+        paginator = Paginator(data, site_conf.items_per_page)
         data = paginator.get_page(page)
         page_range = paginator.get_elided_page_range(
             data.number, on_each_side=2, on_ends=1
@@ -55,6 +62,7 @@ class GetData(View):
             self.template,
             {
                 "title": self.title,
+                "type": self.item_type,
                 "data": data,
                 "matches": paginator.count,
                 "page_range": page_range,
@@ -63,10 +71,9 @@ class GetData(View):
 
 
 class GetRoster(GetData):
-    def __init__(self):
-        self.title = "Rolling stock"
-        self.template = "roster.html"
-        self.data = RollingStock.objects.order_by(*order_by_fields())
+    title = "Rolling stock"
+    item_type = "rolling_stock"
+    queryset = RollingStock.objects.order_by(*order_by_fields())
 
 
 class SearchRoster(View):
@@ -111,20 +118,45 @@ class SearchRoster(View):
         else:
             raise Http404
 
+        # FIXME duplicated code!
+        data = []
         rolling_stock = (
             RollingStock.objects.filter(query)
             .distinct()
             .order_by(*order_by_fields())
         )
-        matches = rolling_stock.count()
+        for item in rolling_stock:
+            data.append({
+                "type": "rolling_stock",
+                "item": item
+            })
+        if _filter is None:
+            consists = (
+                Consist.objects.filter(identifier__icontains=search)
+                .distinct()
+            )
+            for item in consists:
+                data.append({
+                    "type": "consist",
+                    "item": item
+                })
+            books = (
+                Book.objects.filter(title__icontains=search)
+                .distinct()
+            )
+            for item in books:
+                data.append({
+                    "type": "book",
+                    "item": item
+                })
 
-        paginator = Paginator(rolling_stock, site_conf.items_per_page)
-        rolling_stock = paginator.get_page(page)
+        paginator = Paginator(data, site_conf.items_per_page)
+        data = paginator.get_page(page)
         page_range = paginator.get_elided_page_range(
-            rolling_stock.number, on_each_side=2, on_ends=1
+            data.number, on_each_side=2, on_ends=1
         )
 
-        return rolling_stock, matches, page_range
+        return data, paginator.count, page_range
 
     def split_search(self, search):
         search = search.strip().split(":")
@@ -149,7 +181,7 @@ class SearchRoster(View):
             encoded_search = base64.b64encode(
                 search.encode()).decode()
         _filter, keyword = self.split_search(search)
-        rolling_stock, matches, page_range = self.run_search(
+        data, matches, page_range = self.run_search(
             request, keyword, _filter, page
         )
 
@@ -160,8 +192,8 @@ class SearchRoster(View):
                 "title": "Search: \"{}\"".format(search),
                 "search": search,
                 "encoded_search": encoded_search,
+                "data": data,
                 "matches": matches,
-                "data": rolling_stock,
                 "page_range": page_range,
             },
         )
@@ -200,15 +232,41 @@ class GetRosterFiltered(View):
             .distinct()
             .order_by(*order_by_fields())
         )
-        matches = rolling_stock.count()
 
-        paginator = Paginator(rolling_stock, site_conf.items_per_page)
-        rolling_stock = paginator.get_page(page)
+        data = []
+        for item in rolling_stock:
+            data.append({
+                "type": "rolling_stock",
+                "item": item
+            })
+
+        if _filter == "tag":
+            consists = (
+                Consist.objects.filter(query)
+                .distinct()
+            )
+            for item in consists:
+                data.append({
+                    "type": "consist",
+                    "item": item
+                })
+            books = (
+                Book.objects.filter(query)
+                .distinct()
+            )
+            for item in books:
+                data.append({
+                    "type": "book",
+                    "item": item
+                })
+
+        paginator = Paginator(data, site_conf.items_per_page)
+        data = paginator.get_page(page)
         page_range = paginator.get_elided_page_range(
-            rolling_stock.number, on_each_side=2, on_ends=1
+            data.number, on_each_side=2, on_ends=1
         )
 
-        return rolling_stock, title, matches, page_range
+        return data, title, paginator.count, page_range
 
     def get(self, request, search, _filter, page=1):
         data, title, matches, page_range = self.run_filter(
@@ -223,8 +281,8 @@ class GetRosterFiltered(View):
                     _filter.capitalize(), title),
                 "search": search,
                 "filter": _filter,
-                "matches": matches,
                 "data": data,
+                "matches": matches,
                 "page_range": page_range,
             },
         )
@@ -272,8 +330,8 @@ class GetRollingStock(View):
 class Consists(GetData):
     def __init__(self):
         self.title = "Consists"
-        self.template = "consists.html"
-        self.data = Consist.objects.all()
+        self.item_type = "consist"
+        self.queryset = Consist.objects.all()
 
 
 class GetConsist(View):
@@ -283,15 +341,15 @@ class GetConsist(View):
             consist = Consist.objects.get(uuid=uuid)
         except ObjectDoesNotExist:
             raise Http404
-        rolling_stock = [
-            RollingStock.objects.get(uuid=r.rolling_stock_id) for r in
-            consist.consist_item.all()
-        ]
+        data = [{
+            "type": "rolling_stock",
+            "item": RollingStock.objects.get(uuid=r.rolling_stock_id)
+        } for r in consist.consist_item.all()]
 
-        paginator = Paginator(rolling_stock, site_conf.items_per_page)
-        rolling_stock = paginator.get_page(page)
+        paginator = Paginator(data, site_conf.items_per_page)
+        data = paginator.get_page(page)
         page_range = paginator.get_elided_page_range(
-            rolling_stock.number, on_each_side=2, on_ends=1
+            data.number, on_each_side=2, on_ends=1
         )
 
         return render(
@@ -300,52 +358,47 @@ class GetConsist(View):
             {
                 "title": consist,
                 "consist": consist,
-                "data": rolling_stock,
+                "data": data,
                 "page_range": page_range,
             },
         )
 
 
 class Manufacturers(GetData):
-    def __init__(self):
-        self.title = "Manufacturers"
-        self.template = "manufacturers.html"
-        self.data = None  # Set via method get
+    title = "Manufacturers"
+    item_type = "manufacturer"
+    queryset = None  # Set via method get
 
     # overload get method to filter by category
     def get(self, request, category, page=1):
         if category not in ("real", "model"):
             raise Http404
-        self.data = Manufacturer.objects.filter(category=category)
+        self.queryset = Manufacturer.objects.filter(category=category)
         return super().get(request, page)
 
 
 class Companies(GetData):
-    def __init__(self):
-        self.title = "Companies"
-        self.template = "companies.html"
-        self.data = Company.objects.all()
+    title = "Companies"
+    item_type = "company"
+    queryset = Company.objects.all()
 
 
 class Scales(GetData):
-    def __init__(self):
-        self.title = "Scales"
-        self.template = "scales.html"
-        self.data = Scale.objects.all()
+    title = "Scales"
+    item_type = "scale"
+    queryset = Scale.objects.all()
 
 
 class Types(GetData):
-    def __init__(self):
-        self.title = "Types"
-        self.template = "types.html"
-        self.data = RollingStockType.objects.all()
+    title = "Types"
+    item_type = "rolling_stock_type"
+    queryset = RollingStockType.objects.all()
 
 
 class Books(GetData):
-    def __init__(self):
-        self.title = "Books"
-        self.template = "bookshelf/books.html"
-        self.data = Book.objects.all()
+    title = "Books"
+    item_type = "book"
+    queryset = Book.objects.all()
 
 
 class GetBook(View):

@@ -66,14 +66,12 @@
       <section class="py-4 text-start container">
         <div class="row">
           <div class="mx-auto">
-            <nav>
-              <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                <button class="nav-link active" id="nav-summary-tab" data-bs-toggle="tab" data-bs-target="#nav-summary" type="button" role="tab" aria-controls="nav-summary" aria-selected="true">Summary</button>
-                {% if consist.notes %}<button class="nav-link" id="nav-notes-tab" data-bs-toggle="tab" data-bs-target="#nav-notes" type="button" role="tab" aria-controls="nav-notes" aria-selected="false">Notes</button>{% endif %}
-               </div>
+            <nav class="nav nav-tabs flex-column flex-md-row mb-2" id="nav-tab">
+              <button class="nav-link active" id="nav-summary-tab" data-bs-toggle="tab" data-bs-target="#nav-summary" type="button" role="tab" aria-controls="nav-summary" aria-selected="true">Summary</button>
+              {% if consist.notes %}<button class="nav-link" id="nav-notes-tab" data-bs-toggle="tab" data-bs-target="#nav-notes" type="button" role="tab" aria-controls="nav-notes" aria-selected="false">Notes</button>{% endif %}
             </nav>
             <div class="tab-content" id="nav-tabContent">
-              <div class="tab-pane fade show active" id="nav-summary" role="tabpanel" aria-labelledby="nav-summary-tab">
+              <div class="tab-pane show active" id="nav-summary" role="tabpanel" aria-labelledby="nav-summary-tab">
                 <table class="table table-striped">
                   <thead>
                     <tr>
@@ -96,7 +94,7 @@
                   </tbody>
                 </table>
               </div>
-              <div class="tab-pane fade" id="nav-notes" role="tabpanel" aria-labelledby="nav-notes-tab">
+              <div class="tab-pane" id="nav-notes" role="tabpanel" aria-labelledby="nav-notes-tab">
                 <table class="table">
                   <thead>
                     <tr>
