@@ -5,6 +5,7 @@ from urllib.parse import unquote
 
 from django.views import View
 from django.http import Http404, HttpResponseBadRequest
+from django.db.utils import OperationalError, ProgrammingError
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
@@ -19,7 +20,11 @@ from metadata.models import Company, Manufacturer, Scale, RollingStockType, Tag
 
 
 def order_by_fields():
-    order_by = get_site_conf().items_ordering
+    try:
+        order_by = get_site_conf().items_ordering
+    except (OperationalError, ProgrammingError):
+        order_by = "type"
+
     fields = [
         "rolling_class__type",
         "rolling_class__company",
