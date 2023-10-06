@@ -1,52 +1,11 @@
 {% extends "cards.html" %}
-
-      {% block cards %}
-      {% for d in data %}
-      <div class="col">
-        <div class="card shadow-sm">
-          <div class="card-body">
-            <p class="card-text"><strong>{{ d }}</strong></p>
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th colspan="2" scope="row">Scale</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th width="35%" scope="row">Name</th>
-                  <td>{{ d.scale }}</td>
-                </tr>
-                <tr>
-                  <th width="35%" scope="row">Ratio</th>
-                  <td>{{ d.ratio }}</td>
-                </tr>
-                <tr>
-                  <th width="35%" scope="row">Gauge</th>
-                  <td>{{ d.gauge }}</td>
-                </tr>
-                <tr>
-                  <th width="35%" scope="row">Tracks</th>
-                  <td>{{ d.tracks }}</td>
-                </tr>
-              </tbody>
-            </table>
-            <div class="d-grid gap-2 mb-1 d-md-block">
-              <a class="btn btn-sm btn-outline-primary" href="{% url 'filtered' _filter="scale" search=d.slug %}">Show all rolling stock</a>
-              {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% url 'admin:metadata_scale_change' d.pk %}">Edit</a>{% endif %}
-            </div>
-          </div>
-        </div>
-      </div>
-      {% endfor %}
-      {% endblock %}
       {% block pagination %}
       {% if data.has_other_pages %}
       <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center mt-4 mb-0">
           {% if data.has_previous %}
           <li class="page-item">
-            <a class="page-link" href="{% url 'scales_pagination' page=data.previous_page_number %}#rolling-stock" tabindex="-1">Previous</a>
+            <a class="page-link" href="{% url 'scales_pagination' page=data.previous_page_number %}#main-content" tabindex="-1">Previous</a>
           </li>
           {% else %}
           <li class="page-item disabled">
@@ -56,19 +15,19 @@
           {% for i in page_range %}
             {% if data.number == i %}
             <li class="page-item active">
-              <span class="page-link">{{ i }}</span></span>
+              <span class="page-link">{{ i }}</span>
             </li>
             {% else %}
               {% if i == data.paginator.ELLIPSIS %}
               <li class="page-item"><span class="page-link">{{ i }}</span></li>
               {% else %}
-              <li class="page-item"><a class="page-link" href="{% url 'scales_pagination' page=i %}#rolling-stock">{{ i }}</a></li>
+              <li class="page-item"><a class="page-link" href="{% url 'scales_pagination' page=i %}#main-content">{{ i }}</a></li>
               {% endif %}
             {% endif %}
           {% endfor %}
           {% if data.has_next %}
           <li class="page-item">
-            <a class="page-link" href="{% url 'scales_pagination' page=data.next_page_number %}#rolling-stock" tabindex="-1">Next</a>
+            <a class="page-link" href="{% url 'scales_pagination' page=data.next_page_number %}#main-content" tabindex="-1">Next</a>
           </li>
           {% else %}
           <li class="page-item disabled">

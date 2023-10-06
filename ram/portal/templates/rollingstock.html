@@ -43,28 +43,26 @@
         <section class="py-4 text-start container">
           <div class="row">
             <div class="mx-auto">
-              <nav>
-                <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                  <button class="nav-link active" id="nav-summary-tab" data-bs-toggle="tab" data-bs-target="#nav-summary" type="button" role="tab" aria-controls="nav-summary" aria-selected="true">Summary</button>
-                  <button class="nav-link" id="nav-model-tab" data-bs-toggle="tab" data-bs-target="#nav-model" type="button" role="tab" aria-controls="nav-model" aria-selected="false">Model data</button>
-                  <button class="nav-link" id="nav-class-tab" data-bs-toggle="tab" data-bs-target="#nav-class" type="button" role="tab" aria-controls="nav-class" aria-selected="false">Class data</button>
-                  {% if rolling_stock.decoder %}<button class="nav-link" id="nav-dcc-tab" data-bs-toggle="tab" data-bs-target="#nav-dcc" type="button" role="tab" aria-controls="nav-dcc" aria-selected="false">DCC</button>{% endif %}
-                  {% if rolling_stock.notes %}<button class="nav-link" id="nav-notes-tab" data-bs-toggle="tab" data-bs-target="#nav-notes" type="button" role="tab" aria-controls="nav-notes" aria-selected="false">Notes</button>{% endif %}
-                  {% if rolling_stock.document.count > 0 %}<button class="nav-link" id="nav-documents-tab" data-bs-toggle="tab" data-bs-target="#nav-documents" type="button" role="tab" aria-controls="nav-documents" aria-selected="false">Documents</button>{% endif %}
-                  {% if rolling_stock_journal.count > 0 %}<button class="nav-link" id="nav-journal-tab" data-bs-toggle="tab" data-bs-target="#nav-journal" type="button" role="tab" aria-controls="nav-journal" aria-selected="false">Journal</button>{% endif %}
-                 </div>
+              <nav class="nav nav-tabs flex-column flex-md-row mb-2" id="nav-tab">
+                <button class="nav-link active" id="nav-summary-tab" data-bs-toggle="tab" data-bs-target="#nav-summary" type="button" role="tab" aria-controls="nav-summary" aria-selected="true">Summary</button>
+                <button class="nav-link" id="nav-model-tab" data-bs-toggle="tab" data-bs-target="#nav-model" type="button" role="tab" aria-controls="nav-model" aria-selected="false">Model data</button>
+                <button class="nav-link" id="nav-class-tab" data-bs-toggle="tab" data-bs-target="#nav-class" type="button" role="tab" aria-controls="nav-class" aria-selected="false">Class data</button>
+                {% if rolling_stock.decoder %}<button class="nav-link" id="nav-dcc-tab" data-bs-toggle="tab" data-bs-target="#nav-dcc" type="button" role="tab" aria-controls="nav-dcc" aria-selected="false">DCC</button>{% endif %}
+                {% if rolling_stock.document.count > 0 or rolling_stock.decoder.document.count > 0 %}<button class="nav-link" id="nav-documents-tab" data-bs-toggle="tab" data-bs-target="#nav-documents" type="button" role="tab" aria-controls="nav-documents" aria-selected="false">Documents</button>{% endif %}
+                {% if rolling_stock_journal.count > 0 %}<button class="nav-link" id="nav-journal-tab" data-bs-toggle="tab" data-bs-target="#nav-journal" type="button" role="tab" aria-controls="nav-journal" aria-selected="false">Journal</button>{% endif %}
+                {% if rolling_stock.notes %}<button class="nav-link" id="nav-notes-tab" data-bs-toggle="tab" data-bs-target="#nav-notes" type="button" role="tab" aria-controls="nav-notes" aria-selected="false">Notes</button>{% endif %}
               </nav>
               <div class="tab-content" id="nav-tabContent">
-                <div class="tab-pane fade show active" id="nav-summary" role="tabpanel" aria-labelledby="nav-summary-tab">
+                <div class="tab-pane show active" id="nav-summary" role="tabpanel" aria-labelledby="nav-summary-tab">
                   <table class="table table-striped">
                     <thead>
                       <tr>
                         <th colspan="2" scope="row">Data</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="table-group-divider">
                       <tr>
-                        <th width="35%" scope="row">Type</th>
+                        <th class="w-33" scope="row">Type</th>
                         <td>{{ rolling_stock.rolling_class.type }}</td>
                       </tr>
                       <tr>
@@ -93,9 +91,9 @@
                         <th colspan="2" scope="row">Model data</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="table-group-divider">
                       <tr>
-                        <th width="35%" scope="row">Manufacturer</th>
+                        <th class="w-33" scope="row">Manufacturer</th>
                         <td>{%if rolling_stock.manufacturer %}
                           <a href="{% url 'filtered' _filter="manufacturer" search=rolling_stock.manufacturer.slug %}">{{ rolling_stock.manufacturer }}{% if rolling_stock.manufacturer.website %}</a> <a href="{{ rolling_stock.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
                         {% endif %}</td>
@@ -105,8 +103,8 @@
                         <td><a href="{% url 'filtered' _filter="scale" search=rolling_stock.scale %}"><abbr title="{{ rolling_stock.scale.ratio }} - {{ rolling_stock.scale.tracks }}">{{ rolling_stock.scale }}</abbr></a></td>
                       </tr>
                       <tr>
-                        <th scope="row">SKU</th>
-                        <td>{{ rolling_stock.sku }}</td>
+                        <th scope="row">Item number</th>
+                        <td>{{ rolling_stock.item_number }}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -117,9 +115,9 @@
                         <th colspan="2" scope="row">DCC data</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="table-group-divider">
                       <tr>
-                        <th width="35%" scope="row">Interface</th>
+                        <th class="w-33" scope="row">Interface</th>
                         <td>{{ rolling_stock.get_decoder_interface_display }}</td>
                       </tr>
                       {% if rolling_stock.decoder %}
@@ -136,16 +134,16 @@
                   </table>
                   {% endif %}
                 </div>
-                <div class="tab-pane fade" id="nav-model" role="tabpanel" aria-labelledby="nav-model-tab">
+                <div class="tab-pane" id="nav-model" role="tabpanel" aria-labelledby="nav-model-tab">
                   <table class="table table-striped">
                     <thead>
                       <tr>
                         <th colspan="2" scope="row">Model data</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="table-group-divider">
                       <tr>
-                        <th width="35%" scope="row">Manufacturer</th>
+                        <th class="w-33" scope="row">Manufacturer</th>
                         <td>{%if rolling_stock.manufacturer %}
                           <a href="{% url 'filtered' _filter="manufacturer" search=rolling_stock.manufacturer.slug %}">{{ rolling_stock.manufacturer }}{% if rolling_stock.manufacturer.website %}</a> <a href="{{ rolling_stock.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
                         {% endif %}</td>
@@ -155,8 +153,8 @@
                         <td><a href="{% url 'filtered' _filter="scale" search=rolling_stock.scale %}"><abbr title="{{ rolling_stock.scale.ratio }} - {{ rolling_stock.scale.tracks }}">{{ rolling_stock.scale }}</abbr></a></td>
                       </tr>
                       <tr>
-                        <th scope="row">SKU</th>
-                        <td>{{ rolling_stock.sku }}</td>
+                        <th scope="row">Item number</th>
+                        <td>{{ rolling_stock.item_number }}</td>
                       </tr>
                       <tr>
                         <th scope="row">Era</th>
@@ -164,11 +162,11 @@
                       </tr>
                       <tr>
                         <th scope="row">Production year</th>
-                        <td>{{ rolling_stock.production_year | default_if_none:"" }}</td>
+                        <td>{{ rolling_stock.production_year|default:"-" }}</td>
                       </tr>
                       <tr>
                         <th scope="row">Purchase date</th>
-                        <td>{{ rolling_stock.purchase_date | default_if_none:"" }}</td>
+                        <td>{{ rolling_stock.purchase_date|default:"-" }}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -179,10 +177,10 @@
                         <th colspan="2" scope="row">Properties</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="table-group-divider">
                     {% for p in rolling_stock_properties %}
                       <tr>
-                        <th width="35%" scope="row">{{ p.property }}</th>
+                        <th class="w-33" scope="row">{{ p.property }}</th>
                         <td>{{ p.value }}</td>
                       </tr>
                     {% endfor %}
@@ -190,16 +188,16 @@
                   </table>
                   {% endif %}
                 </div>
-                <div class="tab-pane fade" id="nav-class" role="tabpanel" aria-labelledby="nav-class-tab">
+                <div class="tab-pane" id="nav-class" role="tabpanel" aria-labelledby="nav-class-tab">
                   <table class="table table-striped">
                     <thead>
                       <tr>
                         <th colspan="2" scope="row">Class data</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="table-group-divider">
                       <tr>
-                        <th width="35%" scope="row">Class</th>
+                        <th class="w-33" scope="row">Class</th>
                         <td>{{ rolling_stock.rolling_class.identifier }}</td>
                       </tr>
                       <tr>
@@ -231,10 +229,10 @@
                         <th colspan="2" scope="row">Properties</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="table-group-divider">
                     {% for p in class_properties %}
                       <tr>
-                        <th width="35%" scope="row">{{ p.property }}</th>
+                        <th class="w-33" scope="row">{{ p.property }}</th>
                         <td>{{ p.value }}</td>
                       </tr>
                     {% endfor %}
@@ -242,20 +240,20 @@
                   </table>
                   {% endif %}
                 </div>
-                <div class="tab-pane fade" id="nav-dcc" role="tabpanel" aria-labelledby="nav-dcc-tab">
+                <div class="tab-pane" id="nav-dcc" role="tabpanel" aria-labelledby="nav-dcc-tab">
                   <table class="table table-striped">
                     <thead>
                       <tr>
                         <th colspan="2" scope="row">DCC data</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="table-group-divider">
                       <tr>
                         <th scope="row">Interface</th>
                         <td>{{ rolling_stock.get_decoder_interface_display }}</td>
                       </tr>
                       <tr>
-                        <th width="35%" scope="row">Address</th>
+                        <th class="w-33" scope="row">Address</th>
                         <td>{{ rolling_stock.address }}</td>
                       </tr>
                       <tr>
@@ -264,7 +262,7 @@
                       </tr>
                       <tr>
                         <th scope="row">Manufacturer</th>
-                        <td>{{ rolling_stock.decoder.manufacturer|default_if_none:"" }}</td>
+                        <td>{{ rolling_stock.decoder.manufacturer|default:"-" }}</td>
                       </tr>
                       <tr>
                         <th scope="row">Version</th>
@@ -277,54 +275,63 @@
                     </tbody>
                   </table>
                 </div>
-                <div class="tab-pane fade" id="nav-notes" role="tabpanel" aria-labelledby="nav-notes-tab">
-                  <table class="table">
-                    <thead>
-                      <tr>
-                        <th scope="row">Notes</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>{{ rolling_stock.notes | safe }}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-                <div class="tab-pane fade" id="nav-documents" role="tabpanel" aria-labelledby="nav-documents-tab">
+                <div class="tab-pane" id="nav-documents" role="tabpanel" aria-labelledby="nav-documents-tab">
+                  {% if rolling_stock.document.count > 0 %}
                   <table class="table table-striped">
                     <thead>
                       <tr>
                         <th colspan="3" scope="row">Documents</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="table-group-divider">
                     {% for d in rolling_stock.document.all %}
                       <tr>
-                        <td>{{ d.description }}</td>
+                        <td class="w-33">{{ d.description }}</td>
                         <td><a href="{{ d.file.url }}" target="_blank">{{ d.filename }}</a></td>
                         <td class="text-end">{{ d.file.size | filesizeformat }}</td>
                       </tr>
                     {% endfor %}
                     </tbody>
                   </table>
+                  {% endif %}
+                  {% if rolling_stock.decoder.document.count > 0 %}
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th colspan="3" scope="row">Decoder documents</th>
+                      </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                    {% for d in rolling_stock.decoder.document.all %}
+                      <tr>
+                        <td class="w-33">{{ d.description }}</td>
+                        <td><a href="{{ d.file.url }}" target="_blank">{{ d.filename }}</a></td>
+                        <td class="text-end">{{ d.file.size | filesizeformat }}</td>
+                      </tr>
+                    {% endfor %}
+                    </tbody>
+                  </table>
+                  {% endif %}
                 </div>
-                <div class="tab-pane fade" id="nav-journal" role="tabpanel" aria-labelledby="nav-journal-tab">
+                <div class="tab-pane" id="nav-journal" role="tabpanel" aria-labelledby="nav-journal-tab">
                   <table class="table table-striped">
                     <thead>
                       <tr>
                         <th colspan="3" scope="row">Journal</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="table-group-divider">
                     {% for j in rolling_stock_journal %}
                       <tr>
-                          <th width="35%" scope="row">{{ j.date }}</th>
+                        <th class="w-33" scope="row">{{ j.date }}</th>
                         <td>{{ j.log | safe }}</a></td>
                       </tr>
                     {% endfor %}
                     </tbody>
                   </table>
+                </div>
+                <div class="tab-pane" id="nav-notes" role="tabpanel" aria-labelledby="nav-notes-tab">
+                  {{ rolling_stock.notes | safe }}
                 </div>
               </div>
               <div class="d-grid gap-2 d-md-flex justify-content-md-end">

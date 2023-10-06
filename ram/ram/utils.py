@@ -16,7 +16,7 @@ class DeduplicatedStorage(FileSystemStorage):
 
     def save(self, name, content, max_length=None):
         if super().exists(name):
-            new = hashlib.sha256(content.file.getbuffer()).hexdigest()
+            new = hashlib.sha256(content.read()).hexdigest()
             with open(super().path(name), "rb") as file:
                 file_binary = file.read()
                 old = hashlib.sha256(file_binary).hexdigest()

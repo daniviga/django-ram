@@ -4,7 +4,7 @@
 {% get_solo 'portal.SiteConfiguration' as site_conf %}
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-bs-theme="auto">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,11 +16,11 @@
     <link rel="icon" href="{% static "favicon.png" %}" sizes="any">
     <link rel="icon" href="{% static "favicon.svg" %}" type="image/svg+xml">
     {% if site_conf.use_cdn %}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-dark-5@1.1.3/dist/css/bootstrap-nightshade.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
     {% else %}
-    <link href="{% static "bootstrap-dark-5@1.1.3/dist/css/bootstrap-nightshade.min.css" %}" rel="stylesheet">
-    <link href="{% static "bootstrap-icons@1.10.3/font/bootstrap-icons.css" %}" rel="stylesheet">
+    <link href="{% static "bootstrap@5.3.2/dist/css/bootstrap.min.css" %}" rel="stylesheet">
+    <link href="{% static "bootstrap-icons@1.11.1/font/bootstrap-icons.css" %}" rel="stylesheet">
     {% endif %}
     <link href="{% static "css/main.css" %}?v={{ site_conf.version }}" rel="stylesheet">
     <style>
@@ -36,51 +36,123 @@
           font-size: 3.5rem;
         }
       }
-      .d-light-inline { display: inline !important; }
-      .d-dark-inline { display: none !important; }
-      html.dark .d-light-inline { display: none !important; }
-      html.dark .d-dark-inline { display: inline !important; }
     </style>
+    <script>
+      /*!
+      * Color mode toggler for Bootstrap's docs (https://getbootstrap.com/)
+      * Copyright 2011-2023 The Bootstrap Authors
+      * Licensed under the Creative Commons Attribution 3.0 Unported License.
+      */
+
+      (() => {
+        'use strict'
+
+        const getStoredTheme = () => localStorage.getItem('theme')
+        const setStoredTheme = theme => localStorage.setItem('theme', theme)
+
+        const getPreferredTheme = () => {
+          const storedTheme = getStoredTheme()
+          if (storedTheme) {
+            return storedTheme
+          }
+
+          return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+        }
+
+        const setTheme = theme => {
+          if (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.setAttribute('data-bs-theme', 'dark')
+          } else {
+            document.documentElement.setAttribute('data-bs-theme', theme)
+          }
+        }
+
+        setTheme(getPreferredTheme())
+
+        const showActiveTheme = (theme, focus = false) => {
+          const themeSwitcher = document.querySelector('#bd-theme')
+
+          if (!themeSwitcher) {
+            return
+          }
+
+          const activeThemeIcon = document.querySelector('.theme-icon-active i')
+          const btnToActive = document.querySelector(`[data-bs-theme-value="${theme}"]`)
+          const biOfActiveBtn = btnToActive.querySelector('.theme-icon i').getAttribute('class')
+
+          document.querySelectorAll('[data-bs-theme-value]').forEach(element => {
+            element.classList.remove('active')
+            element.setAttribute('aria-pressed', 'false')
+          })
+
+          btnToActive.classList.add('active')
+          btnToActive.setAttribute('aria-pressed', 'true')
+          activeThemeIcon.setAttribute('class', biOfActiveBtn)
+
+          if (focus) {
+            themeSwitcher.focus()
+          }
+        }
+
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+          const storedTheme = getStoredTheme()
+          if (storedTheme !== 'light' && storedTheme !== 'dark') {
+            setTheme(getPreferredTheme())
+          }
+        })
+
+        window.addEventListener('DOMContentLoaded', () => {
+          showActiveTheme(getPreferredTheme())
+          document.querySelectorAll('[data-bs-theme-value]')
+            .forEach(toggle => {
+              toggle.addEventListener('click', () => {
+                const theme = toggle.getAttribute('data-bs-theme-value')
+                setStoredTheme(theme)
+                setTheme(theme)
+                showActiveTheme(theme, true)
+              })
+            })
+          })
+       })()
+    </script>
     {% block extra_head %}
     {{ site_conf.extra_head | safe }}
     {% endblock %}
-
   </head>
   <body>
     <header>
-      <div class="navbar navbar-light bg-light shadow-sm">
-        <div class="container">
-          <a href="{% url 'index' %}" class="navbar-brand d-flex align-items-center">
-            <svg class="me-2" width="26" height="16" enable-background="new 0 0 26 26" version="1" viewBox="0 0 26 16" xmlns="http://www.w3.org/2000/svg">
-              <path d="m2.8125 0.0010991a1.0001 1.0001 0 0 0-0.8125 1c0 0.55455-0.44545 1-1 1a1.0001 1.0001 0 0 0-1 1v10a1.0001 1.0001 0 0 0 1 1c0.55455 0 1 0.44546 1 1a1.0001 1.0001 0 0 0 1 1h20a1.0001 1.0001 0 0 0 1-1c0-0.55454 0.44546-1 1-1a1.0001 1.0001 0 0 0 1-1v-10a1.0001 1.0001 0 0 0-1-1c-0.55454 0-1-0.44545-1-1a1.0001 1.0001 0 0 0-1-1h-20a1.0001 1.0001 0 0 0-0.09375 0 1.0001 1.0001 0 0 0-0.09375 0zm0.78125 2h14.406v1h2v-1h2.4062c0.30628 0.76906 0.82469 1.2875 1.5938 1.5938v8.8125c-0.76906 0.30628-1.2875 0.82469-1.5938 1.5938h-2.4062v-1h-2v1h-14.406c-0.30628-0.76906-0.82469-1.2875-1.5938-1.5938v-8.8125c0.76906-0.30628 1.2875-0.82469 1.5938-1.5938zm14.406 2v2h2v-2zm0 3v2h2v-2zm0 3v2h2v-2z" enable-background="accumulate" overflow="visible" stroke-width="2" />
-              <style>
-                path {
-                  text-indent:0;
-                  text-transform:none;
-                }
-              </style>
-            </svg>
-            <strong>{{ site_conf.site_name }}</strong>
-          </a>
-          <div class="btn-group" role="group" aria-label="Login menu">
-            {% include 'includes/login.html' %}
-            <a id="darkmode-button" class="btn btn-sm btn-outline-dark"><i class="bi bi-moon d-none d-light-inline" title="Switch to dark mode"></i><i class="bi bi-sun d-none d-dark-inline" title="Switch to light mode"></i></a>
+      <nav class="navbar navbar-expand-lg bg-body-tertiary shadow-sm">
+        <div class="container d-flex">
+          <div class="me-auto">
+            <a href="{% url 'index' %}" class="navbar-brand d-flex align-items-center">
+              <svg class="me-2" width="26" height="16" viewBox="0 0 26 16" xmlns="http://www.w3.org/2000/svg">
+                <path d="m2.8125 0.0010991a1.0001 1.0001 0 0 0-0.8125 1c0 0.55455-0.44545 1-1 1a1.0001 1.0001 0 0 0-1 1v10a1.0001 1.0001 0 0 0 1 1c0.55455 0 1 0.44546 1 1a1.0001 1.0001 0 0 0 1 1h20a1.0001 1.0001 0 0 0 1-1c0-0.55454 0.44546-1 1-1a1.0001 1.0001 0 0 0 1-1v-10a1.0001 1.0001 0 0 0-1-1c-0.55454 0-1-0.44545-1-1a1.0001 1.0001 0 0 0-1-1h-20a1.0001 1.0001 0 0 0-0.09375 0 1.0001 1.0001 0 0 0-0.09375 0zm0.78125 2h14.406v1h2v-1h2.4062c0.30628 0.76906 0.82469 1.2875 1.5938 1.5938v8.8125c-0.76906 0.30628-1.2875 0.82469-1.5938 1.5938h-2.4062v-1h-2v1h-14.406c-0.30628-0.76906-0.82469-1.2875-1.5938-1.5938v-8.8125c0.76906-0.30628 1.2875-0.82469 1.5938-1.5938zm14.406 2v2h2v-2zm0 3v2h2v-2zm0 3v2h2v-2z" stroke-width="2" />
+                <style>
+                  path {
+                    text-indent:0;
+                    text-transform:none;
+                  }
+                </style>
+              </svg>
+              <strong>{{ site_conf.site_name }}</strong>
+            </a>
          </div>
+         {% include 'includes/login.html' %}
         </div>
-      </div>
+      </nav>
     </header>
     <main>
       <div class="container py-2">
-        <nav class="navbar navbar-expand-lg navbar-light">
+        <nav class="navbar navbar-expand-lg">
           <div class="container-fluid g-0">
-              <a class="navbar-brand" href="{% url 'index' %}">Home</a>
+            <a class="navbar-brand" href="{% url 'index' %}">Home</a>
             <div class="navbar-collapse" id="navbarSupportedContent">
               <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <a class="nav-link dropdown-toggle" href="#" id="rosterDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     Roster
                   </a>
-                  <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                  <ul class="dropdown-menu" aria-labelledby="rosterDropdownMenu">
                     <li><a class="dropdown-item" href="{% url 'roster' %}">Rolling stock</a></li>
                     <li><a class="dropdown-item" href="{% url 'companies' %}">Companies</a></li>
                     <li><a class="dropdown-item" href="{% url 'types' %}">Types</a></li>
@@ -91,15 +163,16 @@
                   <a class="nav-link" href="{% url 'consists' %}">Consists</a>
                 </li>
                 <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <a class="nav-link dropdown-toggle" href="#" id="manufacturersDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     Manufacturers
                   </a>
-                  <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                  <ul class="dropdown-menu" aria-labelledby="manufacturersDropdownMenu">
                     <li><a class="dropdown-item" href="{% url 'manufacturers' category='model' %}">Models</a></li>
                     <li><a class="dropdown-item" href="{% url 'manufacturers' category='real' %}">Real</a></li>
                   </ul>
                 </li>
-                {% show_menu %}
+                {% show_bookshelf_menu %}
+                {% show_flatpages_menu %}
               </ul>
               {% include 'includes/search.html' %}
             </div>
@@ -115,11 +188,11 @@
           </div>
         </div>
       </section>
-      <div class="album py-4 bg-light">
+      <div class="album py-4 bg-body-tertiary">
         <div class="container">
           {% block carousel %}
           {% endblock %}
-          <a id="rolling-stock"></a>
+          <a id="main-content"></a>
           {% block cards_layout %}
           {% endblock %}
         </div>
@@ -129,17 +202,9 @@
     </main>
     {% include 'includes/footer.html' %}
     {% if site_conf.use_cdn %}
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap-dark-5@1.1.3/dist/js/darkmode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     {% else %}
-    <script src="{% static "bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" %}"></script>
-    <script src="{% static "bootstrap-dark-5@1.1.3/dist/js/darkmode.min.js" %}"></script>
+    <script src="{% static "bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" %}"></script>
     {% endif %}
-    <!-- script src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" integrity="sha384-GNFwBvfVxBkLMJpYMOABq3c+d3KnQxudP/mGPkzpZSTYykLBNsZEnG2D9G/X/+7D" crossorigin="anonymous" async></script -->
-    <script>
-      document.querySelector("#darkmode-button").onclick = function(e){
-        darkmode.toggleDarkMode();
-      }
-    </script>
   </body>
 </html>

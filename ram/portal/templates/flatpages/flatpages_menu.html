@@ -1,0 +1,12 @@
+                {% if flatpages_menu %}
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="flatpageDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Articles
+                  </a>
+                  <ul class="dropdown-menu" aria-labelledby="flatpageDropdownMenuLink">
+                  {% for m in flatpages_menu %}
+                    <li><a class="dropdown-item" href="{{ m.get_absolute_url }}">{{ m.name }}</a></li>
+                  {% endfor %}
+                  </ul>
+                </li>
+                {% endif %}

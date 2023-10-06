@@ -1,75 +1,11 @@
 {% extends "cards.html" %}
-
-      {% block cards %}
-      {% for d in data %}
-      <div class="col">
-        <div class="card shadow-sm">
-          <a href="{{ d.get_absolute_url }}">
-          {% if d.image %}
-            <img src="{{ d.image.url }}" alt="Card image cap">
-          {% else %}
-            {% with d.consist_item.first.rolling_stock as r %}
-            {% for i in r.image.all %}
-              {% if forloop.first %}<img src="{{ i.image.url }}" alt="Card image cap">{% endif %}
-            {% endfor %}
-            {% endwith %}
-          {% endif %}
-          </a>
-          <div class="card-body">
-            <p class="card-text" style="position: relative;">
-              <strong>{{ d }}</strong>
-              <a class="stretched-link" href="{{ d.get_absolute_url }}"></a>
-            </p>
-            {% if d.tags.all %}
-            <p class="card-text"><small>Tags:</small>
-              {% for t in d.tags.all %}<a href="{% url 'filtered' _filter="tag" search=t.slug %}" class="badge rounded-pill bg-primary">
-              {{ t.name }}</a>{# new line is required #}
-              {% endfor %}
-            </p>
-            {% endif %}
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th colspan="2" scope="row">Consist data</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% if d.address %}
-                <tr>
-                  <th width="35%" scope="row">Address</th>
-                  <td>{{ d.address }}</td>
-                </tr>
-                {% endif %}
-                <tr>
-                  <th width="35%" scope="row">Company</th>
-                  <td><abbr title="{{ d.company.extended_name }}">{{ d.company }}</abbr></td>
-                </tr>
-                <tr>
-                  <th scope="row">Era</th>
-                  <td>{{ d.era }}</td>
-                </tr>
-                <tr>
-                  <th scope="row">Length</th>
-                  <td>{{ d.consist_item.all | length }}</td>
-                </tr>
-              </tbody>
-            </table>
-            <div class="d-grid gap-2 mb-1 d-md-block">
-             <a class="btn btn-sm btn-outline-primary" href="{{ d.get_absolute_url }}">Show all data</a>
-              {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% url 'admin:consist_consist_change' d.pk %}">Edit</a>{% endif %}
-            </div>
-          </div>
-        </div>
-      </div>
-      {% endfor %}
-      {% endblock %}
       {% block pagination %}
       {% if data.has_other_pages %}
       <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center mt-4 mb-0">
           {% if data.has_previous %}
           <li class="page-item">
-            <a class="page-link" href="{% url 'consists_pagination' page=data.previous_page_number %}#rolling-stock" tabindex="-1">Previous</a>
+            <a class="page-link" href="{% url 'consists_pagination' page=data.previous_page_number %}#main-content" tabindex="-1">Previous</a>
           </li>
           {% else %}
           <li class="page-item disabled">
@@ -79,19 +15,19 @@
           {% for i in page_range %}
             {% if data.number == i %}
             <li class="page-item active">
-              <span class="page-link">{{ i }}</span></span>
+              <span class="page-link">{{ i }}</span>
             </li>
             {% else %}
               {% if i == data.paginator.ELLIPSIS %}
               <li class="page-item"><span class="page-link">{{ i }}</span></li>
               {% else %}
-              <li class="page-item"><a class="page-link" href="{% url 'consists_pagination' page=i %}#rolling-stock">{{ i }}</a></li>
+              <li class="page-item"><a class="page-link" href="{% url 'consists_pagination' page=i %}#main-content">{{ i }}</a></li>
               {% endif %}
             {% endif %}
           {% endfor %}
           {% if data.has_next %}
           <li class="page-item">
-            <a class="page-link" href="{% url 'consists_pagination' page=data.next_page_number %}#rolling-stock" tabindex="-1">Next</a>
+            <a class="page-link" href="{% url 'consists_pagination' page=data.next_page_number %}#main-content" tabindex="-1">Next</a>
           </li>
           {% else %}
           <li class="page-item disabled">
