@@ -3,6 +3,7 @@ from solo.admin import SingletonModelAdmin
 
 from portal.models import SiteConfiguration, Flatpage
 
+
 @admin.register(SiteConfiguration)
 class SiteConfigurationAdmin(SingletonModelAdmin):
     fieldsets = (

@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+        {% block header %}
+        {% if book.tags.all %}
+        <p><small>Tags:</small>
+          {% for t in book.tags.all %}<a href="{% url 'filtered' _filter="tag" search=t.slug %}" class="badge rounded-pill bg-primary">
+          {{ t.name }}</a>{# new line is required #}
+          {% endfor %}
+        </p>
+        {% endif %}
+        <small class="text-muted">Updated {{ book.updated_time | date:"M d, Y H:i" }}</small>
+        {% endblock %}
+        {% block carousel %}
+        <div class="row">
+          <div id="carouselControls" class="carousel carousel-dark slide" data-bs-ride="carousel" data-bs-interval="10000">
+            <div class="carousel-inner">
+              {% for t in book.image.all %}
+              {% if forloop.first %}
+              <div class="carousel-item active">
+              {% else %}
+              <div class="carousel-item">
+              {% endif %}
+                <img src="{{ t.image.url }}" class="d-block w-100 rounded img-thumbnail" alt="...">
+              </div>
+              {% endfor %}
+            </div>
+            {% if book.image.count > 1 %}
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselControls" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselControls" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+            {% endif %}
+          </div>
+        </div>
+        {% endblock %}
+        {% block cards %}
+        {% endblock %}
+        {% block extra_content %}
+        <section class="py-4 text-start container">
+          <div class="row">
+            <div class="mx-auto">
+              <nav class="nav nav-tabs flex-column flex-md-row mb-2" id="nav-tab">
+                <button class="nav-link active" id="nav-summary-tab" data-bs-toggle="tab" data-bs-target="#nav-summary" type="button" role="tab" aria-controls="nav-summary" aria-selected="true">Summary</button>
+                {% if book.notes %}<button class="nav-link" id="nav-notes-tab" data-bs-toggle="tab" data-bs-target="#nav-notes" type="button" role="tab" aria-controls="nav-notes" aria-selected="false">Notes</button>{% endif %}
+              </nav>
+              <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane show active" id="nav-summary" role="tabpanel" aria-labelledby="nav-summary-tab">
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th colspan="2" scope="row">Book</th>
+                      </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                      <tr>
+                        <th class="w-33" scope="row">Title</th>
+                        <td>{{ book.title }}</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Authors</th>
+                          <td>
+                            <ul class="mb-0 list-unstyled">{% for a in book.authors.all %}<li>{{ a }}</li>{% endfor %}</ul>
+                          </td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Publisher</th>
+                        <td>{{ book.publisher }}</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">ISBN</th>
+                        <td>{{ book.ISBN|default:"-" }}</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Language</th>
+                        <td>{{ book.get_language_display }}</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Number of pages</th>
+                        <td>{{ book.number_of_pages|default:"-" }}</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Publication year</th>
+                        <td>{{ book.publication_year|default:"-" }}</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Purchase date</th>
+                        <td>{{ book.purchase_date|default:"-" }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  {% if book_properties %}
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th colspan="2" scope="row">Properties</th>
+                      </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                    {% for p in book_properties %}
+                      <tr>
+                        <th class="w-33" scope="row">{{ p.property }}</th>
+                        <td>{{ p.value }}</td>
+                      </tr>
+                    {% endfor %}
+                    </tbody>
+                  </table>
+                  {% endif %}
+                </div>
+                <div class="tab-pane" id="nav-notes" role="tabpanel" aria-labelledby="nav-notes-tab">
+                  {{ book.notes | safe }}
+                </div>
+              </div>
+              <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% url 'admin:bookshelf_book_change' book.pk %}">Edit</a>{% endif %}
+              </div>
+            </div>
+          </div>
+        </section>
+        {% endblock %}

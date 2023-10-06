@@ -28,6 +28,7 @@ urlpatterns = [
     path("api/v1/consist/", include("consist.urls")),
     path("api/v1/roster/", include("roster.urls")),
     path("api/v1/dcc/", include("driver.urls")),
+    path("api/v1/bookshelf/", include("bookshelf.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:

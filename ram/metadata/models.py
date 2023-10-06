@@ -1,11 +1,10 @@
-from urllib.parse import quote
-
 from django.db import models
 from django.urls import reverse
 from django.conf import settings
 from django.dispatch.dispatcher import receiver
 from django_countries.fields import CountryField
 
+from ram.models import Document
 from ram.utils import DeduplicatedStorage, get_image_preview, slugify
 
 
@@ -88,7 +87,7 @@ class Decoder(models.Model):
     manufacturer = models.ForeignKey(
         Manufacturer,
         on_delete=models.CASCADE,
-        limit_choices_to={"category": "model"},
+        limit_choices_to={"category": "accessory"},
     )
     version = models.CharField(max_length=64, blank=True)
     sound = models.BooleanField(default=False)
@@ -103,6 +102,15 @@ class Decoder(models.Model):
         return get_image_preview(self.image.url)
 
     image_thumbnail.short_description = "Preview"
+
+
+class DecoderDocument(Document):
+    decoder = models.ForeignKey(
+        Decoder, on_delete=models.CASCADE, related_name="document"
+    )
+
+    class Meta:
+        unique_together = ("decoder", "file")
 
 
 class Scale(models.Model):
@@ -165,7 +173,6 @@ class Tag(models.Model):
                 "search": self.slug,
             }
         )
-
 
 
 @receiver(models.signals.pre_save, sender=Manufacturer)

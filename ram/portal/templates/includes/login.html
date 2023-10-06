@@ -10,6 +10,7 @@
               <li><a class="dropdown-item" href="{% url 'admin:consist_consist_changelist' %}">Consists</a></li>
               <li><a class="dropdown-item" href="{% url 'admin:app_list' 'metadata' %}">Metadata</a></li>
               <li><a class="dropdown-item" href="{% url 'admin:portal_flatpage_changelist' %}">Pages</a></li>
+              <li><a class="dropdown-item" href="{% url 'admin:app_list' 'bookshelf' %}">Bookshelf</a></li>
               <li><hr class="dropdown-divider"></li>
               <li><a class="dropdown-item" href="{% url 'admin:index' %}">Admin</a></li>
               <li><a class="dropdown-item" href="{% url 'admin:portal_siteconfiguration_changelist' %}">Site configuration</a></li>
@@ -22,7 +23,7 @@
             {% endif %}
           </li>
           <li class="nav-item dropdown">
-            <a class="theme-icon-active nav-link dropdown-toggle" href="#" type="button" id="bd-theme" data-bs-toggle="dropdown" aria-expanded="false">
+            <a class="theme-icon-active nav-link dropdown-toggle" href="#" role="button" id="bd-theme" data-bs-toggle="dropdown" aria-expanded="false">
               <i class="bi bi-circle-half"></i>
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme">

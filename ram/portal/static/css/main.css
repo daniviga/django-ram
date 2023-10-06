@@ -20,6 +20,14 @@ a.badge, a.badge:hover {
   padding: 0;
 }
 
+.w-33 {
+  width: 33% !important;
+}
+
+.table-group-divider {
+  border-top: calc(var(--bs-border-width) * 3) solid var(--bs-border-color);
+}
+
 #nav-notes > p {
   padding: .5rem;
 }
