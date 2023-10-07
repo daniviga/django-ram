@@ -446,11 +446,12 @@ class GetBook(View):
 class GetFlatpage(View):
     def get(self, request, flatpage):
         try:
-            flatpage = Flatpage.objects.get(
-                Q(Q(path=flatpage) & Q(published=True))
-            )
+            flatpage = Flatpage.objects.get(path=flatpage)
         except ObjectDoesNotExist:
             raise Http404
+
+        if not request.user.is_authenticated:
+            flatpage = flatpage.filter(published=False)
 
         return render(
             request,
