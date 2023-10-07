@@ -48,8 +48,8 @@
                 <button class="nav-link" id="nav-model-tab" data-bs-toggle="tab" data-bs-target="#nav-model" type="button" role="tab" aria-controls="nav-model" aria-selected="false">Model data</button>
                 <button class="nav-link" id="nav-class-tab" data-bs-toggle="tab" data-bs-target="#nav-class" type="button" role="tab" aria-controls="nav-class" aria-selected="false">Class data</button>
                 {% if rolling_stock.decoder %}<button class="nav-link" id="nav-dcc-tab" data-bs-toggle="tab" data-bs-target="#nav-dcc" type="button" role="tab" aria-controls="nav-dcc" aria-selected="false">DCC</button>{% endif %}
-                {% if rolling_stock.document.count > 0 or rolling_stock.decoder.document.count > 0 %}<button class="nav-link" id="nav-documents-tab" data-bs-toggle="tab" data-bs-target="#nav-documents" type="button" role="tab" aria-controls="nav-documents" aria-selected="false">Documents</button>{% endif %}
-                {% if rolling_stock_journal.count > 0 %}<button class="nav-link" id="nav-journal-tab" data-bs-toggle="tab" data-bs-target="#nav-journal" type="button" role="tab" aria-controls="nav-journal" aria-selected="false">Journal</button>{% endif %}
+                {% if documents or decoder_documents %}<button class="nav-link" id="nav-documents-tab" data-bs-toggle="tab" data-bs-target="#nav-documents" type="button" role="tab" aria-controls="nav-documents" aria-selected="false">Documents</button>{% endif %}
+                {% if journal %}<button class="nav-link" id="nav-journal-tab" data-bs-toggle="tab" data-bs-target="#nav-journal" type="button" role="tab" aria-controls="nav-journal" aria-selected="false">Journal</button>{% endif %}
                 {% if rolling_stock.notes %}<button class="nav-link" id="nav-notes-tab" data-bs-toggle="tab" data-bs-target="#nav-notes" type="button" role="tab" aria-controls="nav-notes" aria-selected="false">Notes</button>{% endif %}
               </nav>
               <div class="tab-content" id="nav-tabContent">
@@ -170,7 +170,7 @@
                       </tr>
                     </tbody>
                   </table>
-                  {% if rolling_stock_properties %}
+                  {% if properties %}
                   <table class="table table-striped">
                     <thead>
                       <tr>
@@ -178,7 +178,7 @@
                       </tr>
                     </thead>
                     <tbody class="table-group-divider">
-                    {% for p in rolling_stock_properties %}
+                    {% for p in properties %}
                       <tr>
                         <th class="w-33" scope="row">{{ p.property }}</th>
                         <td>{{ p.value }}</td>
@@ -276,7 +276,7 @@
                   </table>
                 </div>
                 <div class="tab-pane" id="nav-documents" role="tabpanel" aria-labelledby="nav-documents-tab">
-                  {% if rolling_stock.document.count > 0 %}
+                  {% if documents %}
                   <table class="table table-striped">
                     <thead>
                       <tr>
@@ -284,7 +284,7 @@
                       </tr>
                     </thead>
                     <tbody class="table-group-divider">
-                    {% for d in rolling_stock.document.all %}
+                    {% for d in documents.all %}
                       <tr>
                         <td class="w-33">{{ d.description }}</td>
                         <td><a href="{{ d.file.url }}" target="_blank">{{ d.filename }}</a></td>
@@ -294,7 +294,7 @@
                     </tbody>
                   </table>
                   {% endif %}
-                  {% if rolling_stock.decoder.document.count > 0 %}
+                  {% if decoder_documents %}
                   <table class="table table-striped">
                     <thead>
                       <tr>
@@ -302,7 +302,7 @@
                       </tr>
                     </thead>
                     <tbody class="table-group-divider">
-                    {% for d in rolling_stock.decoder.document.all %}
+                    {% for d in decoder_documents.all %}
                       <tr>
                         <td class="w-33">{{ d.description }}</td>
                         <td><a href="{{ d.file.url }}" target="_blank">{{ d.filename }}</a></td>
@@ -321,7 +321,7 @@
                       </tr>
                     </thead>
                     <tbody class="table-group-divider">
-                    {% for j in rolling_stock_journal %}
+                    {% for j in journal %}
                       <tr>
                         <th class="w-33" scope="row">{{ j.date }}</th>
                         <td>{{ j.log | safe }}</a></td>

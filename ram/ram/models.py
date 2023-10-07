@@ -14,6 +14,7 @@ class Document(models.Model):
         null=True,
         blank=True,
     )
+    private = models.BooleanField(default=False)
 
     class Meta:
         abstract = True

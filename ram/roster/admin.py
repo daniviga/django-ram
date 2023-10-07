@@ -64,6 +64,7 @@ class RollingStockDocumentAdmin(admin.ModelAdmin):
         "__str__",
         "rolling_stock",
         "description",
+        "private",
         "download",
     )
     search_fields = (

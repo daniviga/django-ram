@@ -66,12 +66,11 @@ class Flatpage(models.Model):
         return reverse("flatpage", kwargs={"flatpage": self.path})
 
     def get_link(self):
-        if self.published:
-            return mark_safe(
-                '<a href="{0}" target="_blank">Link</a>'.format(
-                    self.get_absolute_url()
-                )
+        return mark_safe(
+            '<a href="{0}" target="_blank">Link</a>'.format(
+                self.get_absolute_url()
             )
+        )
 
 
 @receiver(models.signals.pre_save, sender=Flatpage)
