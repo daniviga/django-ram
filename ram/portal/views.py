@@ -16,7 +16,9 @@ from portal.models import Flatpage
 from roster.models import RollingStock
 from consist.models import Consist
 from bookshelf.models import Book
-from metadata.models import Company, Manufacturer, Scale, RollingStockType, Tag
+from metadata.models import (
+    Company, Manufacturer, Scale, DecoderDocument, RollingStockType, Tag
+)
 
 
 def order_by_fields():
@@ -305,29 +307,29 @@ class GetRollingStock(View):
         except ObjectDoesNotExist:
             raise Http404
 
-        class_properties = (
-            rolling_stock.rolling_class.property.all()
-            if request.user.is_authenticated
-            else rolling_stock.rolling_class.property.filter(
+        # FIXME there's likely a better and more efficient way of doing this
+        # but keeping KISS for now
+        decoder_documents = []
+        if request.user.is_authenticated:
+            class_properties = rolling_stock.rolling_class.property.all()
+            properties = rolling_stock.property.all()
+            documents = rolling_stock.document.all()
+            journal = rolling_stock.journal.all()
+            if rolling_stock.decoder:
+                decoder_documents = rolling_stock.decoder.document.all()
+        else:
+            class_properties = rolling_stock.rolling_class.property.filter(
                 property__private=False
             )
-        )
-        rolling_stock_properties = (
-            rolling_stock.property.all()
-            if request.user.is_authenticated
-            else rolling_stock.property.filter(property__private=False)
-        )
-        rolling_stock_documents = (
-            rolling_stock.document.all()
-            if request.user.is_authenticated
-            else rolling_stock.document.filter(private=False)
-        )
-
-        rolling_stock_journal = (
-            rolling_stock.journal.all()
-            if request.user.is_authenticated
-            else rolling_stock.journal.filter(private=False)
-        )
+            properties = rolling_stock.property.filter(
+                property__private=False
+            )
+            documents = rolling_stock.document.filter(private=False)
+            journal = rolling_stock.journal.filter(private=False)
+            if rolling_stock.decoder:
+                decoder_documents = rolling_stock.decoder.document.filter(
+                    private=False
+                )
 
         return render(
             request,
@@ -336,9 +338,10 @@ class GetRollingStock(View):
                 "title": rolling_stock,
                 "rolling_stock": rolling_stock,
                 "class_properties": class_properties,
-                "rolling_stock_properties": rolling_stock_properties,
-                "rolling_stock_documents": rolling_stock_documents,
-                "rolling_stock_journal": rolling_stock_journal,
+                "properties": properties,
+                "decoder_documents": decoder_documents,
+                "documents": documents,
+                "journal": journal,
             },
         )
 
