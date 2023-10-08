@@ -347,10 +347,9 @@ class GetRollingStock(View):
 
 
 class Consists(GetData):
-    def __init__(self):
-        self.title = "Consists"
-        self.item_type = "consist"
-        self.queryset = Consist.objects.all()
+    title = "Consists"
+    item_type = "consist"
+    queryset = Consist.objects.all()
 
 
 class GetConsist(View):

@@ -26,9 +26,15 @@ urlpatterns = [
         GetFlatpage.as_view(),
         name="flatpage",
     ),
-    path("consists", Consists.as_view(), name="consists"),
     path(
-        "consists/<int:page>", Consists.as_view(), name="consists_pagination"
+        "consists",
+        Consists.as_view(template="consists.html"),
+        name="consists"
+    ),
+    path(
+        "consists/<int:page>",
+        Consists.as_view(template="consists.html"),
+        name="consists_pagination"
     ),
     path("consist/<uuid:uuid>", GetConsist.as_view(), name="consist"),
     path(
