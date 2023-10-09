@@ -8,5 +8,8 @@ django-countries
 django-health-check
 django-admin-sortable2
 django-ckeditor
-# psycopg2-binary
-pySerial
+# Optional: # psycopg2-binary
+# Optional: # pySerial
+# Required by django-countries and not always installed
+# by default on modern venvs (like Python 3.12 on Fedora 39)
+setuptools
