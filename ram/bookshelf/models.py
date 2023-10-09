@@ -16,6 +16,9 @@ class Publisher(models.Model):
     country = CountryField(blank=True)
     website = models.URLField(blank=True)
 
+    class Meta:
+        ordering = ["name"]
+
     def __str__(self):
         return self.name
 
@@ -23,6 +26,9 @@ class Publisher(models.Model):
 class Author(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
+
+    class Meta:
+        ordering = ["last_name", "first_name"]
 
     def __str__(self):
         return f"{self.last_name}, {self.first_name}"
