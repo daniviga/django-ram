@@ -14,7 +14,6 @@
               <li><hr class="dropdown-divider"></li>
               <li><a class="dropdown-item" href="{% url 'admin:index' %}">Admin</a></li>
               <li><a class="dropdown-item" href="{% url 'admin:portal_siteconfiguration_changelist' %}">Site configuration</a></li>
-              <li><a class="dropdown-item" href="{% url 'admin:driver_driverconfiguration_changelist' %}">DCC configuration</a></li>
               <li><hr class="dropdown-divider"></li>
               <li><a class="dropdown-item text-danger" href="{% url 'admin:logout' %}?next={{ request.path }}">Logout</a></li>
             </ul>

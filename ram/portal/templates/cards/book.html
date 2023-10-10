@@ -1,11 +1,7 @@
         <div class="col">
           <div class="card shadow-sm">
-            {% if d.item.image.all %}
-            <a href="{{ d.item.get_absolute_url }}">
-              {% for r in d.item.image.all %}
-                {% if forloop.first %}<img src="{{ r.image.url }}" alt="Card image cap">{% endif %}
-              {% endfor %}
-              </a>
+            {% if d.item.image.exists %}
+            <a href="{{d.item.get_absolute_url}}"><img class="card-img-top" src="{{ d.item.image.first.image.url }}" alt="{{ d }}"></a>
             {% endif %}
             <div class="card-body">
               <p class="card-text" style="position: relative;">
