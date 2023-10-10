@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "ram",
     "portal",
-    "driver",
+    # "driver",
     "metadata",
     "roster",
     "consist",
