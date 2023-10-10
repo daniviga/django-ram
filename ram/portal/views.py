@@ -444,13 +444,14 @@ class GetBook(View):
 
 class GetFlatpage(View):
     def get(self, request, flatpage):
+        _filter = Q(published=True)  # Show only published pages
+        if request.user.is_authenticated:
+            _filter = Q()  # Reset the filter if user is authenticated
+
         try:
-            flatpage = Flatpage.objects.get(path=flatpage)
+            flatpage = Flatpage.objects.filter(_filter).get(path=flatpage)
         except ObjectDoesNotExist:
             raise Http404
-
-        if not request.user.is_authenticated:
-            flatpage = flatpage.filter(published=False)
 
         return render(
             request,
