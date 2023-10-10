@@ -95,6 +95,9 @@ class Decoder(models.Model):
         upload_to="images/", storage=DeduplicatedStorage, null=True, blank=True
     )
 
+    class Meta(object):
+        ordering = ["manufacturer", "name"]
+
     def __str__(self):
         return "{0} - {1}".format(self.manufacturer, self.name)
 
@@ -162,6 +165,9 @@ class RollingStockType(models.Model):
 class Tag(models.Model):
     name = models.CharField(max_length=128, unique=True)
     slug = models.CharField(max_length=128, unique=True)
+
+    class Meta(object):
+        ordering = ["name"]
 
     def __str__(self):
         return self.name
