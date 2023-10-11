@@ -3,7 +3,7 @@
         <p class="lead text-muted">Results found: {{ matches }}</p>
       {% endblock %}
       {% block cards_layout %}
-      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
       {% block cards %}
         {% for d in data %}
         {% if d.type == "rolling_stock" %}
