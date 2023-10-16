@@ -224,6 +224,7 @@ class GetRosterFiltered(View):
         elif _filter == "company":
             title = get_object_or_404(Company, slug__iexact=search)
             query = Q(rolling_class__company__slug__iexact=search)
+            query_2nd = Q(company__slug__iexact=search)
         elif _filter == "manufacturer":
             title = get_object_or_404(Manufacturer, slug__iexact=search)
             query = Q(
@@ -236,6 +237,7 @@ class GetRosterFiltered(View):
         elif _filter == "tag":
             title = get_object_or_404(Tag, slug__iexact=search)
             query = Q(tags__slug__iexact=search)
+            query_2nd = query  # For tags the 2nd level query doesn't change
         else:
             raise Http404
 
@@ -252,9 +254,9 @@ class GetRosterFiltered(View):
                 "item": item
             })
 
-        if _filter == "tag":
+        try:  # Execute only if query_2nd is defined
             consists = (
-                Consist.objects.filter(query)
+                Consist.objects.filter(query_2nd)
                 .distinct()
             )
             for item in consists:
@@ -262,15 +264,18 @@ class GetRosterFiltered(View):
                     "type": "consist",
                     "item": item
                 })
-            books = (
-                Book.objects.filter(query)
-                .distinct()
-            )
-            for item in books:
-                data.append({
-                    "type": "book",
-                    "item": item
-                })
+            if _filter == "tag":  # Books can be filtered only by tag
+                books = (
+                    Book.objects.filter(query_2nd)
+                    .distinct()
+                )
+                for item in books:
+                    data.append({
+                        "type": "book",
+                        "item": item
+                    })
+        except NameError:
+            pass
 
         paginator = Paginator(data, site_conf.items_per_page)
         data = paginator.get_page(page)
@@ -331,6 +336,13 @@ class GetRollingStock(View):
                     private=False
                 )
 
+        consists = [{
+            "type": "consist",
+            "item": c
+        } for c in Consist.objects.filter(
+            consist_item__rolling_stock=rolling_stock
+        )]  # A dict with "item" is required by the consists card
+
         return render(
             request,
             "rollingstock.html",
@@ -342,6 +354,7 @@ class GetRollingStock(View):
                 "decoder_documents": decoder_documents,
                 "documents": documents,
                 "journal": journal,
+                "consists": consists,
             },
         )
 

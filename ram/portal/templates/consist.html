@@ -81,7 +81,9 @@
                   <tbody class="table-group-divider">
                     <tr>
                       <th class="w-33" scope="row">Company</th>
-                      <td><abbr title="{{ consist.company.extended_name }}">{{ consist.company }}</abbr></td>
+                      <td>
+                        <a href="{% url 'filtered' _filter="company" search=consist.company.slug %}">{{ consist.company }}</a> ({{ consist.company.extended_name }})
+                      </td>
                     </tr>
                     <tr>
                       <th scope="row">Era</th>

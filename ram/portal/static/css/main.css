@@ -12,6 +12,11 @@ td > img.logo {
   max-height: 48px;
 }
 
+td > img.logo-xl {
+  max-width: 400px;
+  max-height: 96px;
+}
+
 .btn > span {
   display: inline-block;
 }
