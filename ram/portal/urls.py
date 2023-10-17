@@ -3,7 +3,7 @@ from django.urls import path
 from portal.views import (
     GetData,
     GetRoster,
-    GetRosterFiltered,
+    GetObjectsFiltered,
     GetFlatpage,
     GetRollingStock,
     GetConsist,
@@ -14,7 +14,7 @@ from portal.views import (
     Types,
     Books,
     GetBook,
-    SearchRoster,
+    SearchObjects,
 )
 
 urlpatterns = [
@@ -95,22 +95,22 @@ urlpatterns = [
     path("bookshelf/book/<uuid:uuid>", GetBook.as_view(), name="book"),
     path(
         "search",
-        SearchRoster.as_view(http_method_names=["post"]),
+        SearchObjects.as_view(http_method_names=["post"]),
         name="search",
     ),
     path(
         "search/<str:search>/<int:page>",
-        SearchRoster.as_view(),
+        SearchObjects.as_view(),
         name="search_pagination",
     ),
     path(
         "<str:_filter>/<str:search>",
-        GetRosterFiltered.as_view(),
+        GetObjectsFiltered.as_view(),
         name="filtered",
     ),
     path(
         "<str:_filter>/<str:search>/<int:page>",
-        GetRosterFiltered.as_view(),
+        GetObjectsFiltered.as_view(),
         name="filtered_pagination",
     ),
     path("<uuid:uuid>", GetRollingStock.as_view(), name="rolling_stock"),

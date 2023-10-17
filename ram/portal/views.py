@@ -83,7 +83,7 @@ class GetRoster(GetData):
     queryset = RollingStock.objects.order_by(*order_by_fields())
 
 
-class SearchRoster(View):
+class SearchObjects(View):
     def run_search(self, request, search, _filter, page=1):
         site_conf = get_site_conf()
         if _filter is None:
@@ -215,11 +215,12 @@ class SearchRoster(View):
         return self.get(request, search, page)
 
 
-class GetRosterFiltered(View):
+class GetObjectsFiltered(View):
     def run_filter(self, request, search, _filter, page=1):
         site_conf = get_site_conf()
+
         if _filter == "type":
-            title = RollingStockType.objects.get(slug__iexact=search)
+            title = get_object_or_404(RollingStockType, slug__iexact=search)
             query = Q(rolling_class__type__slug__iexact=search)
         elif _filter == "company":
             title = get_object_or_404(Company, slug__iexact=search)
