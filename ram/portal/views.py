@@ -78,7 +78,7 @@ class GetData(View):
 
 
 class GetRoster(GetData):
-    title = "Rolling stock"
+    title = "Roster"
     item_type = "rolling_stock"
     queryset = RollingStock.objects.order_by(*order_by_fields())
 
@@ -234,6 +234,9 @@ class GetRosterFiltered(View):
         elif _filter == "scale":
             title = get_object_or_404(Scale, slug__iexact=search)
             query = Q(scale__slug__iexact=search)
+            query_2nd = Q(
+                consist_item__rolling_stock__scale__slug__iexact=search
+            )
         elif _filter == "tag":
             title = get_object_or_404(Tag, slug__iexact=search)
             query = Q(tags__slug__iexact=search)

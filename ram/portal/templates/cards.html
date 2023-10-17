@@ -7,7 +7,7 @@
       {% block cards %}
         {% for d in data %}
         {% if d.type == "rolling_stock" %}
-        {% include "cards/rolling_stock.html" %}
+        {% include "cards/roster.html" %}
         {% elif d.type == "company" %}
         {% include "cards/company.html" %}
         {% elif d.type == "rolling_stock_type" %}

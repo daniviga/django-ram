@@ -60,3 +60,7 @@ if settings.DEBUG:
             name="openapi-schema",
         ),
     ]
+    if apps.is_installed("debug_toolbar"):
+        urlpatterns += [
+            path("__debug__/", include("debug_toolbar.urls")),
+        ]

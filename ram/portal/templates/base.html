@@ -151,28 +151,26 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle" href="#" id="rosterDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Roster
-                  </a>
-                  <ul class="dropdown-menu" aria-labelledby="rosterDropdownMenu">
-                    <li><a class="dropdown-item" href="{% url 'roster' %}">Rolling stock</a></li>
-                    <li><a class="dropdown-item" href="{% url 'companies' %}">Companies</a></li>
-                    <li><a class="dropdown-item" href="{% url 'types' %}">Types</a></li>
-                    <li><a class="dropdown-item" href="{% url 'scales' %}">Scales</a></li>
-                  </ul>
-                </li>
-                <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle" href="#" id="manufacturersDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Manufacturers
-                  </a>
-                  <ul class="dropdown-menu" aria-labelledby="manufacturersDropdownMenu">
-                    <li><a class="dropdown-item" href="{% url 'manufacturers' category='model' %}">Models</a></li>
-                    <li><a class="dropdown-item" href="{% url 'manufacturers' category='real' %}">Real</a></li>
-                  </ul>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'roster' %}">Roster</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="{% url 'consists' %}">Consists</a>
+                </li>
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="filterDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Search by
+                  </a>
+                  <ul class="dropdown-menu" aria-labelledby="filterDropdownMenu">
+                    <li class="ps-2 text-secondary">Model</li>
+                    <li><a class="dropdown-item" href="{% url 'scales' %}">Scale</a></li>
+                    <li><a class="dropdown-item" href="{% url 'manufacturers' category='model' %}">Manufacturer</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li class="ps-2 text-secondary">Prototype</li>
+                    <li><a class="dropdown-item" href="{% url 'types' %}">Type</a></li>
+                    <li><a class="dropdown-item" href="{% url 'companies' %}">Company</a></li>
+                    <li><a class="dropdown-item" href="{% url 'manufacturers' category='real' %}">Manufacturer</a></li>
+                  </ul>
                 </li>
                 {% show_bookshelf_menu %}
                 {% show_flatpages_menu %}
