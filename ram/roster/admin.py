@@ -28,6 +28,7 @@ class RollingClass(admin.ModelAdmin):
         "company__name",
         "type__type",
     )
+    save_as = True
 
 
 class RollingStockDocInline(admin.TabularInline):
