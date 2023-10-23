@@ -76,6 +76,9 @@ class Company(models.Model):
             }
         )
 
+    def extended_name_pp(self):
+        return "({})".format(self.extended_name) if self.extended_name else ""
+
     def logo_thumbnail(self):
         return get_image_preview(self.logo.url)
 

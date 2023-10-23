@@ -71,7 +71,7 @@
                       <tr>
                         <th scope="row">Company</th>
                         <td>
-                            <a href="{% url 'filtered' _filter="company" search=company.slug %}">{{ company }}</a> ({{ company.extended_name }})
+                            <a href="{% url 'filtered' _filter="company" search=company.slug %}">{{ company }}</a> {{ company.extended_name_pp }}
                         </td>
                       </tr>
                       <tr>
@@ -249,7 +249,7 @@
                       {% endif %}
                       <tr>
                         <th class="w-33" scope="row">Name</th>
-                        <td><a href="{% url 'filtered' _filter="company" search=company.slug %}">{{ company.name }}</a> ({{ company.extended_name }})</td>
+                        <td><a href="{% url 'filtered' _filter="company" search=company.slug %}">{{ company.name }}</a> {{ company.extended_name_pp }}</td>
                       </tr>
                       <tr>
                         <th class="w-33" scope="row">Country</th>
