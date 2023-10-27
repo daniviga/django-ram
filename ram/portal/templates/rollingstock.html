@@ -43,7 +43,7 @@
         <section class="py-4 text-start container">
           <div class="row">
             <div class="mx-auto">
-              <nav class="nav nav-tabs flex-column flex-md-row mb-2" id="nav-tab">
+              <nav class="nav nav-tabs d-none d-lg-flex flex-row mb-2" id="nav-tab">
                 <button class="nav-link active" id="nav-summary-tab" data-bs-toggle="tab" data-bs-target="#nav-summary" type="button" role="tab" aria-controls="nav-summary" aria-selected="true">Summary</button>
                 <button class="nav-link" id="nav-model-tab" data-bs-toggle="tab" data-bs-target="#nav-model" type="button" role="tab" aria-controls="nav-model" aria-selected="false">Model</button>
                 <button class="nav-link" id="nav-class-tab" data-bs-toggle="tab" data-bs-target="#nav-class" type="button" role="tab" aria-controls="nav-class" aria-selected="false">Class</button>
@@ -54,6 +54,18 @@
                 {% if rolling_stock.notes %}<button class="nav-link" id="nav-notes-tab" data-bs-toggle="tab" data-bs-target="#nav-notes" type="button" role="tab" aria-controls="nav-notes" aria-selected="false">Notes</button>{% endif %}
                 {% if consists %}<button class="nav-link" id="nav-consists-tab" data-bs-toggle="tab" data-bs-target="#nav-consists" type="button" role="tab" aria-controls="nav-consists" aria-selected="false">Consists</button>{% endif %}
               </nav>
+              <select class="form-select d-lg-none mb-2" id="tabSelector">
+                <option data-bs-toggle="tab" data-bs-target="#nav-model" type="button" role="tab" aria-controls="nav-model" aria-selected="false">Model</option>
+                <option value="nav-summary" selected>Summary</option>
+                <option value="nav-model">Model</option>
+                <option value="nav-class">Class</option>
+                <option value="nav-company">Company</option>
+                {% if rolling_stock.decoder %}<option value="nav-dcc">DCC</option>{% endif %}
+                {% if documents or decoder_documents %}<option value="nav-documents">Documents</option>{% endif %}
+                {% if journal %}<option value="nav-journal">Journal</option>{% endif %}
+                {% if rolling_stock.notes %}<option value="nav-notes">Notes</option>{% endif %}
+                {% if consists %}<option value="nav-consists">Consists</option>{% endif %}
+              </select>
               {% with class=rolling_stock.rolling_class company=rolling_stock.rolling_class.company %}
               <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane show active" id="nav-summary" role="tabpanel" aria-labelledby="nav-summary-tab">
@@ -147,9 +159,11 @@
                     <tbody class="table-group-divider">
                       <tr>
                         <th class="w-33" scope="row">Manufacturer</th>
-                        <td>{%if rolling_stock.manufacturer %}
+                        <td>
+                          {%if rolling_stock.manufacturer %}
                           <a href="{% url 'filtered' _filter="manufacturer" search=rolling_stock.manufacturer.slug %}">{{ rolling_stock.manufacturer }}{% if rolling_stock.manufacturer.website %}</a> <a href="{{ rolling_stock.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
-                        {% endif %}</td>
+                          {% else %}-{% endif %}
+                        </td>
                       </tr>
                       <tr>
                         <th scope="row">Scale</th>
@@ -209,9 +223,11 @@
                       </tr>
                       <tr>
                         <th scope="row">Manufacturer</th>
-                        <td>{%if class.manufacturer %}
+                        <td>
+                          {%if class.manufacturer %}
                           <a href="{% url 'filtered' _filter="manufacturer" search=class.manufacturer.slug %}">{{ class.manufacturer }}{% if class.manufacturer.website %}</a> <a href="{{ class.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
-                        {% endif %}</td>
+                          {% else %}-{% endif %}
+                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -372,4 +388,17 @@
             </div>
           </div>
         </section>
+		<script>
+		  document.addEventListener('DOMContentLoaded', function () {
+			var selectElement = document.getElementById('tabSelector');
+			selectElement.addEventListener('change', function () {
+			  var selectedTabId = this.value;
+			  var tabs = document.querySelectorAll('.tab-pane');
+			  tabs.forEach(function (tab) {
+				tab.classList.remove('show', 'active');
+			  });
+			  document.getElementById(selectedTabId).classList.add('show', 'active');
+			});
+		  });
+		</script>
         {% endblock %}
