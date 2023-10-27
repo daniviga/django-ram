@@ -43,7 +43,7 @@
         <section class="py-4 text-start container">
           <div class="row">
             <div class="mx-auto">
-              <nav class="nav nav-tabs d-none d-lg-flex flex-row mb-2" id="nav-tab">
+              <nav class="nav nav-tabs d-none d-lg-flex flex-row mb-2" id="nav-tab" role="tablist">
                 <button class="nav-link active" id="nav-summary-tab" data-bs-toggle="tab" data-bs-target="#nav-summary" type="button" role="tab" aria-controls="nav-summary" aria-selected="true">Summary</button>
                 <button class="nav-link" id="nav-model-tab" data-bs-toggle="tab" data-bs-target="#nav-model" type="button" role="tab" aria-controls="nav-model" aria-selected="false">Model</button>
                 <button class="nav-link" id="nav-class-tab" data-bs-toggle="tab" data-bs-target="#nav-class" type="button" role="tab" aria-controls="nav-class" aria-selected="false">Class</button>
@@ -109,7 +109,7 @@
                       <tr>
                         <th class="w-33" scope="row">Manufacturer</th>
                         <td>{%if rolling_stock.manufacturer %}
-                          <a href="{% url 'filtered' _filter="manufacturer" search=rolling_stock.manufacturer.slug %}">{{ rolling_stock.manufacturer }}{% if rolling_stock.manufacturer.website %}</a> <a href="{{ rolling_stock.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
+                          <a href="{% url 'filtered' _filter="manufacturer" search=rolling_stock.manufacturer.slug %}">{{ rolling_stock.manufacturer }}</a>{% if rolling_stock.manufacturer.website %} <a href="{{ rolling_stock.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
                         {% endif %}</td>
                       </tr>
                       <tr>
@@ -160,7 +160,7 @@
                         <th class="w-33" scope="row">Manufacturer</th>
                         <td>
                           {%if rolling_stock.manufacturer %}
-                          <a href="{% url 'filtered' _filter="manufacturer" search=rolling_stock.manufacturer.slug %}">{{ rolling_stock.manufacturer }}{% if rolling_stock.manufacturer.website %}</a> <a href="{{ rolling_stock.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
+                          <a href="{% url 'filtered' _filter="manufacturer" search=rolling_stock.manufacturer.slug %}">{{ rolling_stock.manufacturer }}</a>{% if rolling_stock.manufacturer.website %} <a href="{{ rolling_stock.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
                           {% else %}-{% endif %}
                         </td>
                       </tr>
@@ -224,7 +224,7 @@
                         <th scope="row">Manufacturer</th>
                         <td>
                           {%if class.manufacturer %}
-                          <a href="{% url 'filtered' _filter="manufacturer" search=class.manufacturer.slug %}">{{ class.manufacturer }}{% if class.manufacturer.website %}</a> <a href="{{ class.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
+                          <a href="{% url 'filtered' _filter="manufacturer" search=class.manufacturer.slug %}">{{ class.manufacturer }}</a>{% if class.manufacturer.website %} <a href="{{ class.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
                           {% else %}-{% endif %}
                         </td>
                       </tr>
@@ -259,7 +259,7 @@
                       {% if company.logo %}
                       <tr>
                         <th class="w-33" scope="row">Logo</th>
-                        <td><img class="logo-xl" src="{{ company.logo.url }}" /></td>
+                        <td><img clas="logo-xl" src="{{ company.logo.url }}" alt="{{ company }} logo"></td>
                       </tr>
                       {% endif %}
                       <tr>
@@ -268,7 +268,7 @@
                       </tr>
                       <tr>
                         <th class="w-33" scope="row">Country</th>
-                        <td>{{ company.country.name }} <img src="{{ company.country.flag }}" alt="{{ company.country }}" />
+                        <td>{{ company.country.name }} <img src="{{ company.country.flag }}" alt="{{ company.country }}">
                       </tr>
                       {% if company.freelance %}
                       <tr>
@@ -356,7 +356,7 @@
                   <table class="table table-striped">
                     <thead>
                       <tr>
-                        <th colspan="3" scope="row">Journal</th>
+                        <th colspan="2" scope="row">Journal</th>
                       </tr>
                     </thead>
                     <tbody class="table-group-divider">

@@ -5,7 +5,7 @@
             <img class="card-img-top" src="{{ d.item.image.url }}" alt="{{ d }}">
           {% else %}
             {% with d.item.consist_item.first.rolling_stock as r %}
-            <img class="card-img-top" src="{{ r.image.first.image.url }}" alt="{{ d }}"></a>
+            <img class="card-img-top" src="{{ r.image.first.image.url }}" alt="{{ d }}">
             {% endwith %}
           {% endif %}
           </a>
