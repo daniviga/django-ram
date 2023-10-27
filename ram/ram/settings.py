@@ -41,8 +41,6 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "health_check",
-    "health_check.db",
     "adminsortable2",
     "django_countries",
     "solo",

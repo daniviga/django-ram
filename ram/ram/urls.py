@@ -24,7 +24,6 @@ urlpatterns = [
     path("", lambda r: redirect("portal/")),
     path("ckeditor/", include("ckeditor_uploader.urls")),
     path("portal/", include("portal.urls")),
-    path("ht/", include("health_check.urls")),
     path("admin/", admin.site.urls),
     path("api/v1/consist/", include("consist.urls")),
     path("api/v1/roster/", include("roster.urls")),
