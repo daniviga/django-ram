@@ -115,6 +115,19 @@
           })
        })()
     </script>
+	<script>
+	  document.addEventListener('DOMContentLoaded', function () {
+		var selectElement = document.getElementById('tabSelector');
+		selectElement.addEventListener('change', function () {
+		  var selectedTabId = this.value;
+		  var tabs = document.querySelectorAll('.tab-pane');
+		  tabs.forEach(function (tab) {
+			tab.classList.remove('show', 'active');
+		  });
+		  document.getElementById(selectedTabId).classList.add('show', 'active');
+		});
+	  });
+	</script>
     {% block extra_head %}
     {{ site_conf.extra_head | safe }}
     {% endblock %}

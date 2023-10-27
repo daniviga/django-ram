@@ -259,7 +259,7 @@
                       {% if company.logo %}
                       <tr>
                         <th class="w-33" scope="row">Logo</th>
-                        <td><img clas="logo-xl" src="{{ company.logo.url }}" alt="{{ company }} logo"></td>
+                        <td><img class="logo-xl" src="{{ company.logo.url }}" alt="{{ company }} logo"></td>
                       </tr>
                       {% endif %}
                       <tr>
@@ -356,7 +356,7 @@
                   <table class="table table-striped">
                     <thead>
                       <tr>
-                        <th colspan="2" scope="row">Journal</th>
+                        <th scope="row">Journal</th>
                       </tr>
                     </thead>
                     <tbody class="table-group-divider">
@@ -387,17 +387,4 @@
             </div>
           </div>
         </section>
-		<script>
-		  document.addEventListener('DOMContentLoaded', function () {
-			var selectElement = document.getElementById('tabSelector');
-			selectElement.addEventListener('change', function () {
-			  var selectedTabId = this.value;
-			  var tabs = document.querySelectorAll('.tab-pane');
-			  tabs.forEach(function (tab) {
-				tab.classList.remove('show', 'active');
-			  });
-			  document.getElementById(selectedTabId).classList.add('show', 'active');
-			});
-		  });
-		</script>
         {% endblock %}

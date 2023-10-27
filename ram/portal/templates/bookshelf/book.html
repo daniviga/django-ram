@@ -43,10 +43,14 @@
         <section class="py-4 text-start container">
           <div class="row">
             <div class="mx-auto">
-              <nav class="nav nav-tabs flex-column flex-md-row mb-2" id="nav-tab">
+              <nav class="nav nav-tabs d-none d-lg-flex flex-row mb-2" id="nav-tab" role="tablist">
                 <button class="nav-link active" id="nav-summary-tab" data-bs-toggle="tab" data-bs-target="#nav-summary" type="button" role="tab" aria-controls="nav-summary" aria-selected="true">Summary</button>
                 {% if book.notes %}<button class="nav-link" id="nav-notes-tab" data-bs-toggle="tab" data-bs-target="#nav-notes" type="button" role="tab" aria-controls="nav-notes" aria-selected="false">Notes</button>{% endif %}
               </nav>
+              <select class="form-select d-lg-none mb-2" id="tabSelector" aria-label="Tab selector">
+                <option value="nav-summary" selected>Summary</option>
+                {% if book.notes %}<option value="nav-notes">Notes</option>{% endif %}
+              </select>
               <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane show active" id="nav-summary" role="tabpanel" aria-labelledby="nav-summary-tab">
                   <table class="table table-striped">
