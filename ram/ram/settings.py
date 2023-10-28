@@ -145,7 +145,8 @@ MEDIA_ROOT = STORAGE_DIR / "media"
 CKEDITOR_UPLOAD_PATH = "uploads/"
 
 COUNTRIES_OVERRIDE = {
-    "ZZ": "Freelance",
+    "EU": "Europe",
+    "XX": "None",
 }
 
 # Image used on cards without a custom image uploaded.
