@@ -1,5 +1,6 @@
 import os
 import re
+import shutil
 from uuid import uuid4
 from django.db import models
 from django.urls import reverse
@@ -106,6 +107,15 @@ class RollingStock(models.Model):
 
     def company(self):
         return str(self.rolling_class.company)
+
+    def delete(self, *args, **kwargs):
+        shutil.rmtree(
+            os.path.join(
+                settings.MEDIA_ROOT, "images", "rollingstock", str(self.uuid)
+            ),
+            ignore_errors=True
+        )
+        super(RollingStock, self).delete(*args, **kwargs)
 
 
 @receiver(models.signals.pre_save, sender=RollingStock)
