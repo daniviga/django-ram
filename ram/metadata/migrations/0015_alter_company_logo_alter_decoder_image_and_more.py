@@ -20,7 +20,7 @@ def move_images(apps, schema_editor):
         model = apps.get_model("metadata", m[0])
         for r in model.objects.all():
             field = getattr(r, m[1][1])
-            if not field:
+            if not field:  # exit the loop if there's no image
                 continue
             fname = os.path.basename(field.path)
             new_image = os.path.join("images", m[1][0], fname)

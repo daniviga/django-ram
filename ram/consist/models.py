@@ -1,3 +1,5 @@
+import os
+
 from uuid import uuid4
 from django.db import models
 from django.urls import reverse
@@ -19,7 +21,10 @@ class Consist(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     era = models.CharField(max_length=32, blank=True)
     image = models.ImageField(
-        upload_to="images/", storage=DeduplicatedStorage, null=True, blank=True
+        upload_to=os.path.join("images", "consists"),
+        storage=DeduplicatedStorage,
+        null=True,
+        blank=True,
     )
     notes = RichTextUploadingField(blank=True)
     creation_time = models.DateTimeField(auto_now_add=True)
