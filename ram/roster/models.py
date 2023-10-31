@@ -1,4 +1,6 @@
+import os
 import re
+import shutil
 from uuid import uuid4
 from django.db import models
 from django.urls import reverse
@@ -8,7 +10,7 @@ from django.dispatch import receiver
 from ckeditor_uploader.fields import RichTextUploadingField
 
 from ram.models import Document, Image, PropertyInstance
-from ram.utils import get_image_preview
+from ram.utils import DeduplicatedStorage
 from metadata.models import (
     Scale,
     Manufacturer,
@@ -106,6 +108,15 @@ class RollingStock(models.Model):
     def company(self):
         return str(self.rolling_class.company)
 
+    def delete(self, *args, **kwargs):
+        shutil.rmtree(
+            os.path.join(
+                settings.MEDIA_ROOT, "images", "rollingstock", str(self.uuid)
+            ),
+            ignore_errors=True
+        )
+        super(RollingStock, self).delete(*args, **kwargs)
+
 
 @receiver(models.signals.pre_save, sender=RollingStock)
 def pre_save_running_number(sender, instance, *args, **kwargs):
@@ -126,9 +137,24 @@ class RollingStockDocument(Document):
         unique_together = ("rolling_stock", "file")
 
 
+def rolling_stock_image_upload(instance, filename):
+    return os.path.join(
+        "images",
+        "rollingstock",
+        str(instance.rolling_stock.uuid),
+        filename
+    )
+
+
 class RollingStockImage(Image):
     rolling_stock = models.ForeignKey(
         RollingStock, on_delete=models.CASCADE, related_name="image"
+    )
+    image = models.ImageField(
+        upload_to=rolling_stock_image_upload,
+        storage=DeduplicatedStorage,
+        null=True,
+        blank=True,
     )
 
 

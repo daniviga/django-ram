@@ -2,10 +2,10 @@
         <div class="col">
           <div class="card shadow-sm">
             {% if d.item.image.exists %}
-            <a href="{{d.item.get_absolute_url}}"><img class="card-img-top" src="{{ d.item.image.first.image.url }}" alt="{{ d }}"></a>
+            <a href="{{d.item.get_absolute_url}}"><img class="card-img-top" src="{{ d.item.image.first.image.url }}" alt="{{ d.item }}"></a>
             {% else %}
             <!-- Do not show the "Coming soon" image when running in a single card column mode (e.g. on mobile) -->
-            <a href="{{d.item.get_absolute_url}}"><img class="card-img-top d-none d-sm-block" src="{% static DEFAULT_CARD_IMAGE %}" alt="{{ d }}"></a>
+            <a href="{{d.item.get_absolute_url}}"><img class="card-img-top d-none d-sm-block" src="{% static DEFAULT_CARD_IMAGE %}" alt="{{ d.item }}"></a>
             {% endif %}
             <div class="card-body">
               <p class="card-text" style="position: relative;">

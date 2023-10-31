@@ -1,3 +1,5 @@
+import os
+import shutil
 from uuid import uuid4
 from django.db import models
 from django.conf import settings
@@ -70,13 +72,31 @@ class Book(models.Model):
     def get_absolute_url(self):
         return reverse("book", kwargs={"uuid": self.uuid})
 
+    def delete(self, *args, **kwargs):
+        shutil.rmtree(
+            os.path.join(
+                settings.MEDIA_ROOT, "images", "books", str(self.uuid)
+            ),
+            ignore_errors=True
+        )
+        super(Book, self).delete(*args, **kwargs)
+
+
+def book_image_upload(instance, filename):
+    return os.path.join(
+        "images",
+        "books",
+        str(instance.book.uuid),
+        filename
+    )
+
 
 class BookImage(Image):
     book = models.ForeignKey(
         Book, on_delete=models.CASCADE, related_name="image"
     )
     image = models.ImageField(
-        upload_to="images/books/",  # FIXME, find a better way to replace this
+        upload_to=book_image_upload,
         storage=DeduplicatedStorage,
         null=True,
         blank=True
