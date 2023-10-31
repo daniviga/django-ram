@@ -2,10 +2,10 @@
         <div class="card shadow-sm">
           <a href="{{ d.item.get_absolute_url }}">
           {% if d.item.image %}
-            <img class="card-img-top" src="{{ d.item.image.url }}" alt="{{ d }}">
+            <img class="card-img-top" src="{{ d.item.image.url }}" alt="{{ d.item }}">
           {% else %}
             {% with d.item.consist_item.first.rolling_stock as r %}
-            <img class="card-img-top" src="{{ r.image.first.image.url }}" alt="{{ d }}">
+            <img class="card-img-top" src="{{ r.image.first.image.url }}" alt="{{ d.item }}">
             {% endwith %}
           {% endif %}
           </a>

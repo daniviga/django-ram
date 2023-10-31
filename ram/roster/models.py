@@ -1,3 +1,4 @@
+import os
 import re
 from uuid import uuid4
 from django.db import models
@@ -8,7 +9,7 @@ from django.dispatch import receiver
 from ckeditor_uploader.fields import RichTextUploadingField
 
 from ram.models import Document, Image, PropertyInstance
-from ram.utils import get_image_preview
+from ram.utils import DeduplicatedStorage
 from metadata.models import (
     Scale,
     Manufacturer,
@@ -126,9 +127,24 @@ class RollingStockDocument(Document):
         unique_together = ("rolling_stock", "file")
 
 
+def rolling_stock_image_upload(instance, filename):
+    return os.path.join(
+        "images",
+        "rollingstock",
+        str(instance.rolling_stock.uuid),
+        filename
+    )
+
+
 class RollingStockImage(Image):
     rolling_stock = models.ForeignKey(
         RollingStock, on_delete=models.CASCADE, related_name="image"
+    )
+    image = models.ImageField(
+        upload_to=rolling_stock_image_upload,
+        storage=DeduplicatedStorage,
+        null=True,
+        blank=True,
     )
 
 

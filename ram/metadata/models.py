@@ -1,3 +1,4 @@
+import os
 from django.db import models
 from django.urls import reverse
 from django.conf import settings
@@ -28,7 +29,10 @@ class Manufacturer(models.Model):
     )
     website = models.URLField(blank=True)
     logo = models.ImageField(
-        upload_to="images/", storage=DeduplicatedStorage, null=True, blank=True
+        upload_to=os.path.join("images", "manufacturers"),
+        storage=DeduplicatedStorage,
+        null=True,
+        blank=True,
     )
 
     class Meta:
@@ -58,7 +62,10 @@ class Company(models.Model):
     country = CountryField()
     freelance = models.BooleanField(default=False)
     logo = models.ImageField(
-        upload_to="images/", storage=DeduplicatedStorage, null=True, blank=True
+        upload_to=os.path.join("images", "companies"),
+        storage=DeduplicatedStorage,
+        null=True,
+        blank=True,
     )
 
     class Meta:
@@ -95,7 +102,10 @@ class Decoder(models.Model):
     version = models.CharField(max_length=64, blank=True)
     sound = models.BooleanField(default=False)
     image = models.ImageField(
-        upload_to="images/", storage=DeduplicatedStorage, null=True, blank=True
+        upload_to=os.path.join("images", "decoders"),
+        storage=DeduplicatedStorage,
+        null=True,
+        blank=True,
     )
 
     class Meta(object):
