@@ -11,8 +11,6 @@ class Document(models.Model):
     file = models.FileField(
         upload_to="files/",
         storage=DeduplicatedStorage(),
-        null=True,
-        blank=True,
     )
     private = models.BooleanField(default=False)
 
@@ -34,7 +32,8 @@ class Document(models.Model):
 class Image(models.Model):
     order = models.PositiveIntegerField(default=0, blank=False, null=False)
     image = models.ImageField(
-        upload_to="images/", storage=DeduplicatedStorage, null=True, blank=True
+        upload_to="images/",
+        storage=DeduplicatedStorage,
     )
 
     def image_thumbnail(self):

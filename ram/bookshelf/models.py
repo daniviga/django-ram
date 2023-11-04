@@ -98,8 +98,6 @@ class BookImage(Image):
     image = models.ImageField(
         upload_to=book_image_upload,
         storage=DeduplicatedStorage,
-        null=True,
-        blank=True
     )
 
 
