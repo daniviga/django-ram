@@ -1,10 +1,4 @@
 from django.contrib import admin
-from django.db.utils import OperationalError, ProgrammingError
-from portal.utils import get_site_conf
+from django.conf import settings
 
-try:
-    site_name = get_site_conf().site_name
-except (OperationalError, ProgrammingError):
-    site_name = "Train Assets Manager"
-
-admin.site.site_header = site_name
+admin.site.site_header = settings.SITE_NAME

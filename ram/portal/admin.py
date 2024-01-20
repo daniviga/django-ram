@@ -6,6 +6,7 @@ from portal.models import SiteConfiguration, Flatpage
 
 @admin.register(SiteConfiguration)
 class SiteConfigurationAdmin(SingletonModelAdmin):
+    readonly_fields = ("site_name",)
     fieldsets = (
         (
             None,
