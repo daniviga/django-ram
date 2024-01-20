@@ -1,5 +1,6 @@
 import django
 from django.db import models
+from django.conf import settings
 from django.urls import reverse
 from django.dispatch.dispatcher import receiver
 from django.utils.safestring import mark_safe
@@ -13,9 +14,6 @@ from ram.utils import slugify
 
 
 class SiteConfiguration(SingletonModel):
-    site_name = models.CharField(
-        max_length=256, default="Railroad Assets Manager"
-    )
     site_author = models.CharField(max_length=256, blank=True)
     about = RichTextField(blank=True)
     items_per_page = models.CharField(
@@ -43,6 +41,9 @@ class SiteConfiguration(SingletonModel):
 
     def __str__(self):
         return "Site Configuration"
+
+    def site_name(self):
+        return settings.SITE_NAME
 
     def version(self):
         return app_version
