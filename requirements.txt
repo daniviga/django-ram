@@ -7,7 +7,7 @@ django-solo
 django-countries
 django-health-check
 django-admin-sortable2
-django-ckeditor
+django-tinymce
 # Optional: # psycopg2-binary
 # Optional: # pySerial
 # Required by django-countries and not always installed

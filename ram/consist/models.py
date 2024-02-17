@@ -4,7 +4,7 @@ from uuid import uuid4
 from django.db import models
 from django.urls import reverse
 
-from ckeditor_uploader.fields import RichTextUploadingField
+from tinymce import models as tinymce
 
 from ram.utils import DeduplicatedStorage
 from metadata.models import Company, Tag
@@ -26,7 +26,7 @@ class Consist(models.Model):
         null=True,
         blank=True,
     )
-    notes = RichTextUploadingField(blank=True)
+    notes = tinymce.HTMLField(blank=True)
     creation_time = models.DateTimeField(auto_now_add=True)
     updated_time = models.DateTimeField(auto_now=True)
 

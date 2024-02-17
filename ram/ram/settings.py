@@ -44,8 +44,7 @@ INSTALLED_APPS = [
     "adminsortable2",
     "django_countries",
     "solo",
-    "ckeditor",
-    "ckeditor_uploader",
+    "tinymce",
     "rest_framework",
     "ram",
     "portal",
@@ -60,7 +59,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
-    'django.middleware.csrf.CsrfViewMiddleware',
+    "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -142,7 +141,23 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 MEDIA_URL = "media/"
 MEDIA_ROOT = STORAGE_DIR / "media"
-CKEDITOR_UPLOAD_PATH = "uploads/"
+
+TINYMCE_DEFAULT_CONFIG = {
+    "height": "500px",
+    "menubar": False,
+    "plugins": "autolink lists link image charmap preview anchor "
+    "searchreplace visualblocks code fullscreen insertdatetime media "
+    "table paste code",
+    "toolbar": "undo redo | "
+    "bold italic underline strikethrough removeformat | "
+    "fontsizeselect formatselect | "
+    "alignleft aligncenter alignright alignjustify | "
+    "outdent indent numlist bullist | "
+    "insertfile image media pageembed template link anchor codesample | "
+    "charmap | "
+    "fullscreen preview code",
+    "images_upload_url": "/tinymce/upload_image",
+}
 
 COUNTRIES_OVERRIDE = {
     "EU": "Europe",

@@ -6,7 +6,7 @@ from django.conf import settings
 from django.urls import reverse
 from django_countries.fields import CountryField
 
-from ckeditor_uploader.fields import RichTextUploadingField
+from tinymce import models as tinymce
 
 from metadata.models import Tag
 from ram.utils import DeduplicatedStorage
@@ -56,7 +56,7 @@ class Book(models.Model):
     tags = models.ManyToManyField(
         Tag, related_name="bookshelf", blank=True
     )
-    notes = RichTextUploadingField(blank=True)
+    notes = tinymce.HTMLField(blank=True)
     creation_time = models.DateTimeField(auto_now_add=True)
     updated_time = models.DateTimeField(auto_now=True)
 
