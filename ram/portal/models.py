@@ -6,8 +6,7 @@ from django.dispatch.dispatcher import receiver
 from django.utils.safestring import mark_safe
 from solo.models import SingletonModel
 
-from ckeditor.fields import RichTextField
-from ckeditor_uploader.fields import RichTextUploadingField
+from tinymce import models as tinymce
 
 from ram import __version__ as app_version
 from ram.utils import slugify
@@ -15,7 +14,7 @@ from ram.utils import slugify
 
 class SiteConfiguration(SingletonModel):
     site_author = models.CharField(max_length=256, blank=True)
-    about = RichTextField(blank=True)
+    about = tinymce.HTMLField(blank=True)
     items_per_page = models.CharField(
         max_length=2,
         choices=[(str(x * 3), str(x * 3)) for x in range(2, 11)],
@@ -30,8 +29,8 @@ class SiteConfiguration(SingletonModel):
         ],
         default="type",
     )
-    footer = RichTextField(blank=True)
-    footer_extended = RichTextField(blank=True)
+    footer = tinymce.HTMLField(blank=True)
+    footer_extended = tinymce.HTMLField(blank=True)
     show_version = models.BooleanField(default=True)
     use_cdn = models.BooleanField(default=True)
     extra_head = models.TextField(blank=True)
@@ -56,7 +55,7 @@ class Flatpage(models.Model):
     name = models.CharField(max_length=256, unique=True)
     path = models.CharField(max_length=256, unique=True)
     published = models.BooleanField(default=False)
-    content = RichTextUploadingField()
+    content = tinymce.HTMLField()
     creation_time = models.DateTimeField(auto_now_add=True)
     updated_time = models.DateTimeField(auto_now=True)
 

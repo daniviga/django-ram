@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.conf import settings
 from django.dispatch import receiver
 
-from ckeditor_uploader.fields import RichTextUploadingField
+from tinymce import models as tinymce
 
 from ram.models import Document, Image, PropertyInstance
 from ram.utils import DeduplicatedStorage
@@ -85,7 +85,7 @@ class RollingStock(models.Model):
     era = models.CharField(max_length=32, blank=True)
     production_year = models.SmallIntegerField(null=True, blank=True)
     purchase_date = models.DateField(null=True, blank=True)
-    notes = RichTextUploadingField(blank=True)
+    notes = tinymce.HTMLField(blank=True)
     tags = models.ManyToManyField(
         Tag, related_name="rolling_stock", blank=True
     )
@@ -175,7 +175,7 @@ class RollingStockJournal(models.Model):
         blank=False,
     )
     date = models.DateField()
-    log = RichTextUploadingField()
+    log = tinymce.HTMLField()
     private = models.BooleanField(default=False)
     creation_time = models.DateTimeField(auto_now_add=True)
     updated_time = models.DateTimeField(auto_now=True)
