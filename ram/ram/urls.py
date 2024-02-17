@@ -20,9 +20,16 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
+from ram.views import UploadImage
+
 urlpatterns = [
     path("", lambda r: redirect("portal/")),
-    path("ckeditor/", include("ckeditor_uploader.urls")),
+    path('tinymce/', include('tinymce.urls')),
+    path(
+        "tinymce/upload_image",
+        UploadImage.as_view(),
+        name="upload_image"
+    ),
     path("portal/", include("portal.urls")),
     path("admin/", admin.site.urls),
     path("api/v1/consist/", include("consist.urls")),
