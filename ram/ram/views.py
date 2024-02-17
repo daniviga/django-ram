@@ -19,7 +19,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 @method_decorator(csrf_exempt, name="dispatch")
 class UploadImage(View):
-    def post(self, request, application=None, model=None):
+    def post(self, request):
         if not request.user.is_authenticated:
             raise HttpResponseForbidden()
 
