@@ -142,6 +142,7 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
                     "manufacturer",
                     "item_number",
                     "era",
+                    "description",
                     "production_year",
                     "purchase_date",
                     "notes",

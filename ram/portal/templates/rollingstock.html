@@ -149,6 +149,7 @@
                   {% endif %}
                 </div>
                 <div class="tab-pane" id="nav-model" role="tabpanel" aria-labelledby="nav-model-tab">
+                  {{ rolling_stock.description | safe }}
                   <table class="table table-striped">
                     <thead>
                       <tr>
@@ -205,6 +206,7 @@
                   {% endif %}
                 </div>
                 <div class="tab-pane" id="nav-class" role="tabpanel" aria-labelledby="nav-class-tab">
+                  {{ class.description | safe }}
                   <table class="table table-striped">
                     <thead>
                       <tr>
