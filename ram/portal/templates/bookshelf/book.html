@@ -54,6 +54,7 @@
               <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane show active" id="nav-summary" role="tabpanel" aria-labelledby="nav-summary-tab">
                   <table class="table table-striped">
+                    {{ book.description | safe }}
                     <thead>
                       <tr>
                         <th colspan="2" scope="row">Book</th>

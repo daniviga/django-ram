@@ -25,7 +25,7 @@ class RollingClass(models.Model):
     identifier = models.CharField(max_length=128, unique=False)
     type = models.ForeignKey(RollingStockType, on_delete=models.CASCADE)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
-    description = models.CharField(max_length=256, blank=True)
+    description = tinymce.HTMLField(blank=True)
     manufacturer = models.ForeignKey(
         Manufacturer,
         on_delete=models.CASCADE,
@@ -85,10 +85,11 @@ class RollingStock(models.Model):
     era = models.CharField(max_length=32, blank=True)
     production_year = models.SmallIntegerField(null=True, blank=True)
     purchase_date = models.DateField(null=True, blank=True)
-    notes = tinymce.HTMLField(blank=True)
+    description = tinymce.HTMLField(blank=True)
     tags = models.ManyToManyField(
         Tag, related_name="rolling_stock", blank=True
     )
+    notes = tinymce.HTMLField(blank=True)
     creation_time = models.DateTimeField(auto_now_add=True)
     updated_time = models.DateTimeField(auto_now=True)
 

@@ -52,6 +52,7 @@ class Book(models.Model):
     )
     number_of_pages = models.SmallIntegerField(null=True, blank=True)
     publication_year = models.SmallIntegerField(null=True, blank=True)
+    description = tinymce.HTMLField(blank=True)
     purchase_date = models.DateField(null=True, blank=True)
     tags = models.ManyToManyField(
         Tag, related_name="bookshelf", blank=True
