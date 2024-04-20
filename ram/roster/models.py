@@ -79,7 +79,7 @@ class RollingStock(models.Model):
         blank=True,
         help_text="Catalog item number or code",
     )
-    set_part = models.BooleanField(
+    set = models.BooleanField(
         default=False,
         help_text="Part of a set",
     )

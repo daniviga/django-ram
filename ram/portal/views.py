@@ -7,7 +7,7 @@ from django.views import View
 from django.http import Http404, HttpResponseBadRequest
 from django.db.utils import OperationalError, ProgrammingError
 from django.db.models import Q
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, get_list_or_404
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
 
@@ -215,6 +215,58 @@ class SearchObjects(View):
         return self.get(request, search, page)
 
 
+class GetManufacturerItem(View):
+    def get(self, request, manufacturer, search="all", page=1):
+        site_conf = get_site_conf()
+
+        if search != "all":
+            rolling_stock = get_list_or_404(
+                RollingStock.objects.order_by(*order_by_fields()),
+                Q(
+                    Q(manufacturer__name__iexact=manufacturer)
+                    & Q(item_number__exact=search)
+                )
+            )
+            title = "{0}: {1}".format(
+                rolling_stock[0].manufacturer,
+                search
+            )
+        else:
+            rolling_stock = get_list_or_404(
+                RollingStock.objects.order_by(*order_by_fields()),
+                Q(rolling_class__manufacturer__slug__iexact=manufacturer)
+                | Q(manufacturer__slug__iexact=manufacturer)
+            )
+            title = "Manufacturer: {0}".format(
+                    get_object_or_404(Manufacturer, slug__iexact=manufacturer)
+                )
+
+        data = []
+        for item in rolling_stock:
+            data.append({
+                "type": "rolling_stock",
+                "item": item
+            })
+
+        paginator = Paginator(data, site_conf.items_per_page)
+        data = paginator.get_page(page)
+        page_range = paginator.get_elided_page_range(
+            data.number, on_each_side=2, on_ends=1
+        )
+        return render(
+            request,
+            "manufacturer.html",
+            {
+                "title": title,
+                "manufacturer": manufacturer,
+                "search": search,
+                "data": data,
+                "matches": paginator.count,
+                "page_range": page_range,
+            },
+        )
+
+
 class GetObjectsFiltered(View):
     def run_filter(self, request, search, _filter, page=1):
         site_conf = get_site_conf()
@@ -226,12 +278,6 @@ class GetObjectsFiltered(View):
             title = get_object_or_404(Company, slug__iexact=search)
             query = Q(rolling_class__company__slug__iexact=search)
             query_2nd = Q(company__slug__iexact=search)
-        elif _filter == "manufacturer":
-            title = get_object_or_404(Manufacturer, slug__iexact=search)
-            query = Q(
-                Q(rolling_class__manufacturer__slug__iexact=search)
-                | Q(manufacturer__slug__iexact=search)
-            )
         elif _filter == "scale":
             title = get_object_or_404(Scale, slug__iexact=search)
             query = Q(scale__slug__iexact=search)
@@ -347,6 +393,16 @@ class GetRollingStock(View):
             consist_item__rolling_stock=rolling_stock
         )]  # A dict with "item" is required by the consists card
 
+        set = [{
+            "type": "set",
+            "item": s
+        } for s in RollingStock.objects.filter(
+                Q(
+                    Q(item_number__exact=rolling_stock.item_number)
+                    & Q(set=True)
+                )
+        )]
+
         return render(
             request,
             "rollingstock.html",
@@ -358,6 +414,7 @@ class GetRollingStock(View):
                 "decoder_documents": decoder_documents,
                 "documents": documents,
                 "journal": journal,
+                "set": set,
                 "consists": consists,
             },
         )
