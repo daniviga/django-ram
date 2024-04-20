@@ -11,7 +11,10 @@ from ram.utils import DeduplicatedStorage, get_image_preview, slugify
 
 class Property(models.Model):
     name = models.CharField(max_length=128, unique=True)
-    private = models.BooleanField(default=False)
+    private = models.BooleanField(
+        default=False,
+        help_text="Property will be only visible to logged users",
+    )
 
     class Meta:
         verbose_name_plural = "Properties"
