@@ -75,6 +75,10 @@ class RollingStock(models.Model):
     )
     scale = models.ForeignKey(Scale, on_delete=models.CASCADE)
     item_number = models.CharField(max_length=32, blank=True)
+    set_part = models.BooleanField(
+        default=False,
+        help_text="Part of a set",
+    )
     decoder_interface = models.PositiveSmallIntegerField(
         choices=settings.DECODER_INTERFACES, null=True, blank=True
     )
