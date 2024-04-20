@@ -60,7 +60,7 @@
                   </tr>
                   <tr>
                     <th scope="row">Item number</th>
-                    <td>{{ d.item.item_number }}</td>
+                    <td>{{ d.item.item_number }}{%if d.item.set %} | <a class="badge text-bg-primary" href="{% url 'manufacturer' manufacturer=d.item.manufacturer search=d.item.item_number %}">SET</a>{% endif %}</td>
                   </tr>
                 </tbody>
               </table>

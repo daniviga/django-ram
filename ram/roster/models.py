@@ -74,7 +74,15 @@ class RollingStock(models.Model):
         limit_choices_to={"category": "model"},
     )
     scale = models.ForeignKey(Scale, on_delete=models.CASCADE)
-    item_number = models.CharField(max_length=32, blank=True)
+    item_number = models.CharField(
+        max_length=32,
+        blank=True,
+        help_text="Catalog item number or code",
+    )
+    set = models.BooleanField(
+        default=False,
+        help_text="Part of a set",
+    )
     decoder_interface = models.PositiveSmallIntegerField(
         choices=settings.DECODER_INTERFACES, null=True, blank=True
     )
@@ -82,7 +90,11 @@ class RollingStock(models.Model):
         Decoder, on_delete=models.CASCADE, null=True, blank=True
     )
     address = models.SmallIntegerField(default=None, null=True, blank=True)
-    era = models.CharField(max_length=32, blank=True)
+    era = models.CharField(
+        max_length=32,
+        blank=True,
+        help_text="Era or epoch of the model",
+    )
     production_year = models.SmallIntegerField(null=True, blank=True)
     purchase_date = models.DateField(null=True, blank=True)
     description = tinymce.HTMLField(blank=True)
@@ -177,7 +189,10 @@ class RollingStockJournal(models.Model):
     )
     date = models.DateField()
     log = tinymce.HTMLField()
-    private = models.BooleanField(default=False)
+    private = models.BooleanField(
+        default=False,
+        help_text="Journal log will be visible only to logged users",
+    )
     creation_time = models.DateTimeField(auto_now_add=True)
     updated_time = models.DateTimeField(auto_now=True)
 

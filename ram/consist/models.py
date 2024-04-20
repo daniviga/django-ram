@@ -16,10 +16,17 @@ class Consist(models.Model):
     identifier = models.CharField(max_length=128, unique=False)
     tags = models.ManyToManyField(Tag, related_name="consist", blank=True)
     consist_address = models.SmallIntegerField(
-        default=None, null=True, blank=True
+        default=None,
+        null=True,
+        blank=True,
+        help_text="DCC consist address if enabled",
     )
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
-    era = models.CharField(max_length=32, blank=True)
+    era = models.CharField(
+        max_length=32,
+        blank=True,
+        help_text="Era or epoch of the consist",
+    )
     image = models.ImageField(
         upload_to=os.path.join("images", "consists"),
         storage=DeduplicatedStorage,
