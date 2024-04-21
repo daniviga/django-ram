@@ -21,7 +21,15 @@ from metadata.models import (
 )
 
 
-def order_by_fields():
+def get_items_per_page():
+    try:
+        items_per_page = get_site_conf().items_per_page
+    except (OperationalError, ProgrammingError):
+        items_per_page = 6
+    return items_per_page
+
+
+def get_order_by_field():
     try:
         order_by = get_site_conf().items_ordering
     except (OperationalError, ProgrammingError):
@@ -46,19 +54,22 @@ class GetData(View):
     title = "Home"
     template = "roster.html"
     item_type = "rolling_stock"
-    queryset = RollingStock.objects.order_by(*order_by_fields())
+    filter = Q()  # empty filter by default
+
+    def get_data(self):
+        return RollingStock.objects.order_by(
+            *get_order_by_field()
+        ).filter(self.filter)
 
     def get(self, request, page=1):
-        site_conf = get_site_conf()
-
         data = []
-        for item in self.queryset:
+        for item in self.get_data():
             data.append({
                 "type": self.item_type,
                 "item": item
             })
 
-        paginator = Paginator(data, site_conf.items_per_page)
+        paginator = Paginator(data, get_items_per_page())
         data = paginator.get_page(page)
         page_range = paginator.get_elided_page_range(
             data.number, on_each_side=2, on_ends=1
@@ -80,12 +91,13 @@ class GetData(View):
 class GetRoster(GetData):
     title = "Roster"
     item_type = "rolling_stock"
-    queryset = RollingStock.objects.order_by(*order_by_fields())
+
+    def get_data(self):
+        return RollingStock.objects.order_by(*get_order_by_field())
 
 
 class SearchObjects(View):
     def run_search(self, request, search, _filter, page=1):
-        site_conf = get_site_conf()
         if _filter is None:
             query = reduce(
                 operator.or_,
@@ -130,7 +142,7 @@ class SearchObjects(View):
         rolling_stock = (
             RollingStock.objects.filter(query)
             .distinct()
-            .order_by(*order_by_fields())
+            .order_by(*get_order_by_field())
         )
         for item in rolling_stock:
             data.append({
@@ -162,7 +174,7 @@ class SearchObjects(View):
                     "item": item
                 })
 
-        paginator = Paginator(data, site_conf.items_per_page)
+        paginator = Paginator(data, get_items_per_page())
         data = paginator.get_page(page)
         page_range = paginator.get_elided_page_range(
             data.number, on_each_side=2, on_ends=1
@@ -217,11 +229,9 @@ class SearchObjects(View):
 
 class GetManufacturerItem(View):
     def get(self, request, manufacturer, search="all", page=1):
-        site_conf = get_site_conf()
-
         if search != "all":
             rolling_stock = get_list_or_404(
-                RollingStock.objects.order_by(*order_by_fields()),
+                RollingStock.objects.order_by(*get_order_by_field()),
                 Q(
                     Q(manufacturer__name__iexact=manufacturer)
                     & Q(item_number__exact=search)
@@ -233,7 +243,7 @@ class GetManufacturerItem(View):
             )
         else:
             rolling_stock = get_list_or_404(
-                RollingStock.objects.order_by(*order_by_fields()),
+                RollingStock.objects.order_by(*get_order_by_field()),
                 Q(rolling_class__manufacturer__slug__iexact=manufacturer)
                 | Q(manufacturer__slug__iexact=manufacturer)
             )
@@ -248,7 +258,7 @@ class GetManufacturerItem(View):
                 "item": item
             })
 
-        paginator = Paginator(data, site_conf.items_per_page)
+        paginator = Paginator(data, get_items_per_page())
         data = paginator.get_page(page)
         page_range = paginator.get_elided_page_range(
             data.number, on_each_side=2, on_ends=1
@@ -269,8 +279,6 @@ class GetManufacturerItem(View):
 
 class GetObjectsFiltered(View):
     def run_filter(self, request, search, _filter, page=1):
-        site_conf = get_site_conf()
-
         if _filter == "type":
             title = get_object_or_404(RollingStockType, slug__iexact=search)
             query = Q(rolling_class__type__slug__iexact=search)
@@ -294,7 +302,7 @@ class GetObjectsFiltered(View):
         rolling_stock = (
             RollingStock.objects.filter(query)
             .distinct()
-            .order_by(*order_by_fields())
+            .order_by(*get_order_by_field())
         )
 
         data = []
@@ -327,7 +335,7 @@ class GetObjectsFiltered(View):
         except NameError:
             pass
 
-        paginator = Paginator(data, site_conf.items_per_page)
+        paginator = Paginator(data, get_items_per_page())
         data = paginator.get_page(page)
         page_range = paginator.get_elided_page_range(
             data.number, on_each_side=2, on_ends=1
@@ -401,7 +409,7 @@ class GetRollingStock(View):
                     Q(item_number__exact=rolling_stock.item_number)
                     & Q(set=True)
                 )
-        ).order_by(*order_by_fields())]
+        ).order_by(*get_order_by_field())]
 
         return render(
             request,
@@ -423,12 +431,13 @@ class GetRollingStock(View):
 class Consists(GetData):
     title = "Consists"
     item_type = "consist"
-    queryset = Consist.objects.all()
+
+    def get_data(self):
+        return Consist.objects.all()
 
 
 class GetConsist(View):
     def get(self, request, uuid, page=1):
-        site_conf = get_site_conf()
         try:
             consist = Consist.objects.get(uuid=uuid)
         except ObjectDoesNotExist:
@@ -438,7 +447,7 @@ class GetConsist(View):
             "item": RollingStock.objects.get(uuid=r.rolling_stock_id)
         } for r in consist.consist_item.all()]
 
-        paginator = Paginator(data, site_conf.items_per_page)
+        paginator = Paginator(data, get_items_per_page())
         data = paginator.get_page(page)
         page_range = paginator.get_elided_page_range(
             data.number, on_each_side=2, on_ends=1
@@ -459,20 +468,25 @@ class GetConsist(View):
 class Manufacturers(GetData):
     title = "Manufacturers"
     item_type = "manufacturer"
-    queryset = None  # Set via method get
+
+    def get_data(self):
+        return Manufacturer.objects.filter(self.filter)
 
     # overload get method to filter by category
     def get(self, request, category, page=1):
         if category not in ("real", "model"):
             raise Http404
-        self.queryset = Manufacturer.objects.filter(category=category)
+        self.filter = Q(category=category)
+
         return super().get(request, page)
 
 
 class Companies(GetData):
     title = "Companies"
     item_type = "company"
-    queryset = Company.objects.all()
+
+    def get_data(self):
+        return Company.objects.all()
 
 
 class Scales(GetData):
@@ -480,17 +494,24 @@ class Scales(GetData):
     item_type = "scale"
     queryset = Scale.objects.all()
 
+    def get_data(self):
+        return Scale.objects.all()
+
 
 class Types(GetData):
     title = "Types"
     item_type = "rolling_stock_type"
-    queryset = RollingStockType.objects.all()
+
+    def get_data(self):
+        return RollingStockType.objects.all()
 
 
 class Books(GetData):
     title = "Books"
     item_type = "book"
-    queryset = Book.objects.all()
+
+    def get_data(self):
+        return Book.objects.all()
 
 
 class GetBook(View):
