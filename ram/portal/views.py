@@ -401,7 +401,7 @@ class GetRollingStock(View):
                     Q(item_number__exact=rolling_stock.item_number)
                     & Q(set=True)
                 )
-        )]
+        ).order_by(*order_by_fields())]
 
         return render(
             request,
