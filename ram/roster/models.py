@@ -79,6 +79,11 @@ class RollingStock(models.Model):
         blank=True,
         help_text="Catalog item number or code",
     )
+    item_number_slug = models.CharField(
+        max_length=32,
+        blank=True,
+        editable=False
+    )
     set = models.BooleanField(
         default=False,
         help_text="Part of a set",

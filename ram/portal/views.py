@@ -50,6 +50,15 @@ def get_order_by_field():
         return (fields[2], fields[0], fields[1], fields[3])
 
 
+class Render404(View):
+    def get(self, request, exception):
+        return render(
+            request,
+            "base.html",
+            {"title": "404 page not found"}
+        )
+
+
 class GetData(View):
     title = "Home"
     template = "roster.html"
@@ -229,27 +238,33 @@ class SearchObjects(View):
 
 class GetManufacturerItem(View):
     def get(self, request, manufacturer, search="all", page=1):
+        manufacturer = get_object_or_404(
+            Manufacturer,
+            slug__iexact=manufacturer
+        )
+
         if search != "all":
             rolling_stock = get_list_or_404(
                 RollingStock.objects.order_by(*get_order_by_field()),
                 Q(
-                    Q(manufacturer__name__iexact=manufacturer)
-                    & Q(item_number__exact=search)
+                    Q(manufacturer=manufacturer)
+                    & Q(item_number_slug__exact=search)
                 )
             )
             title = "{0}: {1}".format(
-                rolling_stock[0].manufacturer,
-                search
+                manufacturer,
+                # all returned records must have the same `item_number``;
+                # just pick it up the first result, otherwise `search`
+                rolling_stock[0].item_number if rolling_stock else search
             )
         else:
-            rolling_stock = get_list_or_404(
-                RollingStock.objects.order_by(*get_order_by_field()),
-                Q(rolling_class__manufacturer__slug__iexact=manufacturer)
-                | Q(manufacturer__slug__iexact=manufacturer)
-            )
-            title = "Manufacturer: {0}".format(
-                    get_object_or_404(Manufacturer, slug__iexact=manufacturer)
+            rolling_stock = (
+                RollingStock.objects.order_by(*get_order_by_field()).filter(
+                    Q(manufacturer=manufacturer)
+                    | Q(rolling_class__manufacturer=manufacturer)
                 )
+            )
+            title = "Manufacturer: {0}".format(manufacturer)
 
         data = []
         for item in rolling_stock:

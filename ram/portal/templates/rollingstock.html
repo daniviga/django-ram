@@ -120,7 +120,7 @@
                       </tr>
                       <tr>
                         <th scope="row">Item number</th>
-                        <td>{{ rolling_stock.item_number }}{%if rolling_stock.set %} | <a class="badge text-bg-primary" href="{% url 'manufacturer' manufacturer=rolling_stock.manufacturer search=rolling_stock.item_number %}">SET</a>{% endif %}</td>
+                        <td>{{ rolling_stock.item_number }}{%if rolling_stock.set %} | <a class="badge text-bg-primary" href="{% url 'manufacturer' manufacturer=rolling_stock.manufacturer.slug search=rolling_stock.item_number_slug %}">SET</a>{% endif %}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -173,7 +173,7 @@
                       </tr>
                       <tr>
                         <th scope="row">Item number</th>
-                        <td>{{ rolling_stock.item_number }}{%if rolling_stock.set %} | <a class="badge text-bg-primary" href="{% url 'manufacturer' manufacturer=rolling_stock.manufacturer search=rolling_stock.item_number %}">SET</a>{% endif %}</td>
+                        <td>{{ rolling_stock.item_number }}{%if rolling_stock.set %} | <a class="badge text-bg-primary" href="{% url 'manufacturer' manufacturer=rolling_stock.manufacturer.slug search=rolling_stock.item_number_slug %}">SET</a>{% endif %}</td>
                       </tr>
                       <tr>
                         <th scope="row">Era</th>
