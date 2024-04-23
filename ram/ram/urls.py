@@ -22,6 +22,9 @@ from django.contrib import admin
 from django.urls import include, path
 
 from ram.views import UploadImage
+from portal.views import Render404
+
+handler404 = Render404.as_view()
 
 urlpatterns = [
     path("", lambda r: redirect("portal/")),

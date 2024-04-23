@@ -50,6 +50,15 @@ def get_order_by_field():
         return (fields[2], fields[0], fields[1], fields[3])
 
 
+class Render404(View):
+    def get(self, request, exception):
+        return render(
+            request,
+            "base.html",
+            {"title": "404 page not found"}
+        )
+
+
 class GetData(View):
     title = "Home"
     template = "roster.html"
