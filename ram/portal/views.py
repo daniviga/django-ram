@@ -81,7 +81,7 @@ class GetData(View):
         paginator = Paginator(data, get_items_per_page())
         data = paginator.get_page(page)
         page_range = paginator.get_elided_page_range(
-            data.number, on_each_side=2, on_ends=1
+            data.number, on_each_side=1, on_ends=1
         )
 
         return render(
@@ -186,7 +186,7 @@ class SearchObjects(View):
         paginator = Paginator(data, get_items_per_page())
         data = paginator.get_page(page)
         page_range = paginator.get_elided_page_range(
-            data.number, on_each_side=2, on_ends=1
+            data.number, on_each_side=1, on_ends=1
         )
 
         return data, paginator.count, page_range
@@ -276,7 +276,7 @@ class GetManufacturerItem(View):
         paginator = Paginator(data, get_items_per_page())
         data = paginator.get_page(page)
         page_range = paginator.get_elided_page_range(
-            data.number, on_each_side=2, on_ends=1
+            data.number, on_each_side=1, on_ends=1
         )
         return render(
             request,
@@ -353,7 +353,7 @@ class GetObjectsFiltered(View):
         paginator = Paginator(data, get_items_per_page())
         data = paginator.get_page(page)
         page_range = paginator.get_elided_page_range(
-            data.number, on_each_side=2, on_ends=1
+            data.number, on_each_side=1, on_ends=1
         )
 
         return data, title, paginator.count, page_range
@@ -465,7 +465,7 @@ class GetConsist(View):
         paginator = Paginator(data, get_items_per_page())
         data = paginator.get_page(page)
         page_range = paginator.get_elided_page_range(
-            data.number, on_each_side=2, on_ends=1
+            data.number, on_each_side=1, on_ends=1
         )
 
         return render(
