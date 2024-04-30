@@ -171,6 +171,7 @@ SITE_NAME = "Railroad Assets Manger"
 DEFAULT_CARD_IMAGE = "coming_soon.svg"
 
 DECODER_INTERFACES = [
+    (0, "Built-in"),
     (1, "NEM651"),
     (2, "NEM652"),
     (3, "PluX"),
