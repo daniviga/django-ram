@@ -11,6 +11,6 @@ def show_bookshelf_menu():
 
 
 @register.inclusion_tag('flatpages/flatpages_menu.html')
-def show_flatpages_menu():
-    menu = Flatpage.objects.filter(published=True).order_by("name")
+def show_flatpages_menu(user):
+    menu = Flatpage.objects.get_published(user).order_by("name")
     return {"flatpages_menu": menu}

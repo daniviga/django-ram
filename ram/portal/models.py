@@ -9,6 +9,7 @@ from solo.models import SingletonModel
 from tinymce import models as tinymce
 
 from ram import __version__ as app_version
+from ram.managers import PublicManager
 from ram.utils import slugify
 
 
@@ -71,6 +72,8 @@ class Flatpage(models.Model):
                 self.get_absolute_url()
             )
         )
+
+    objects = PublicManager()
 
 
 @receiver(models.signals.pre_save, sender=Flatpage)

@@ -4,6 +4,7 @@ from django.db import models
 from django.utils.safestring import mark_safe
 
 from ram.utils import DeduplicatedStorage, get_image_preview
+from ram.managers import PublicManager
 
 
 class Document(models.Model):
@@ -27,6 +28,8 @@ class Document(models.Model):
         return mark_safe(
             '<a href="{0}" target="_blank">Link</a>'.format(self.file.url)
         )
+
+    objects = PublicManager
 
 
 class Image(models.Model):
