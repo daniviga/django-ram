@@ -16,6 +16,7 @@ class BookPropertyInline(admin.TabularInline):
     model = BookProperty
     min_num = 0
     extra = 0
+    autocomplete_fields = ("property",)
 
 
 @admin.register(Book)

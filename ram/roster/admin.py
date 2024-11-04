@@ -16,11 +16,13 @@ class RollingClassPropertyInline(admin.TabularInline):
     model = RollingClassProperty
     min_num = 0
     extra = 0
+    autocomplete_fields = ("property",)
 
 
 @admin.register(RollingClass)
 class RollingClass(admin.ModelAdmin):
     inlines = (RollingClassPropertyInline,)
+    autocomplete_fields = ("manufacturer",)
     list_display = ("__str__", "type", "company")
     list_filter = ("company", "type__category", "type")
     search_fields = (
@@ -50,6 +52,7 @@ class RollingStockPropertyInline(admin.TabularInline):
     model = RollingStockProperty
     min_num = 0
     extra = 0
+    autocomplete_fields = ("property",)
 
 
 class RollingStockJournalInline(admin.TabularInline):
@@ -104,7 +107,8 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
         RollingStockDocInline,
         RollingStockJournalInline,
     )
-    readonly_fields = ("creation_time", "updated_time")
+    autocomplete_fields = ("rolling_class",)
+    readonly_fields = ("preview", "creation_time", "updated_time")
     list_display = (
         "__str__",
         "address",
@@ -136,6 +140,7 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
             None,
             {
                 "fields": (
+                    "preview",
                     "rolling_class",
                     "road_number",
                     "scale",
