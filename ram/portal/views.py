@@ -52,11 +52,7 @@ def get_order_by_field():
 
 class Render404(View):
     def get(self, request, exception):
-        return render(
-            request,
-            "base.html",
-            {"title": "404 page not found"}
-        )
+        return render(request, "base.html", {"title": "404 page not found"})
 
 
 class GetData(View):
@@ -65,18 +61,17 @@ class GetData(View):
     item_type = "rolling_stock"
     filter = Q()  # empty filter by default
 
-    def get_data(self):
-        return RollingStock.objects.order_by(
-            *get_order_by_field()
-        ).filter(self.filter)
+    def get_data(self, request):
+        return (
+            RollingStock.objects.get_published(request.user)
+            .order_by(*get_order_by_field())
+            .filter(self.filter)
+        )
 
     def get(self, request, page=1):
         data = []
-        for item in self.get_data():
-            data.append({
-                "type": self.item_type,
-                "item": item
-            })
+        for item in self.get_data(request):
+            data.append({"type": self.item_type, "item": item})
 
         paginator = Paginator(data, get_items_per_page())
         data = paginator.get_page(page)
@@ -101,8 +96,10 @@ class GetRoster(GetData):
     title = "Roster"
     item_type = "rolling_stock"
 
-    def get_data(self):
-        return RollingStock.objects.order_by(*get_order_by_field())
+    def get_data(self, request):
+        return RollingStock.objects.get_published(request.user).order_by(
+            *get_order_by_field()
+        )
 
 
 class SearchObjects(View):
@@ -149,18 +146,17 @@ class SearchObjects(View):
         # FIXME duplicated code!
         data = []
         rolling_stock = (
-            RollingStock.objects.filter(query)
+            RollingStock.objects.get_published(request.user)
+            .filter(query)
             .distinct()
             .order_by(*get_order_by_field())
         )
         for item in rolling_stock:
-            data.append({
-                "type": "rolling_stock",
-                "item": item
-            })
+            data.append({"type": "rolling_stock", "item": item})
         if _filter is None:
             consists = (
-                Consist.objects.filter(
+                Consist.objects.get_published(request.user)
+                .filter(
                     Q(
                         Q(identifier__icontains=search)
                         | Q(company__name__icontains=search)
@@ -169,19 +165,10 @@ class SearchObjects(View):
                 .distinct()
             )
             for item in consists:
-                data.append({
-                    "type": "consist",
-                    "item": item
-                })
-            books = (
-                Book.objects.filter(title__icontains=search)
-                .distinct()
-            )
+                data.append({"type": "consist", "item": item})
+            books = Book.objects.filter(title__icontains=search).distinct()
             for item in books:
-                data.append({
-                    "type": "book",
-                    "item": item
-                })
+                data.append({"type": "book", "item": item})
 
         paginator = Paginator(data, get_items_per_page())
         data = paginator.get_page(page)
@@ -211,8 +198,7 @@ class SearchObjects(View):
             encoded_search = search
             search = base64.b64decode(search.encode()).decode()
         except Exception:
-            encoded_search = base64.b64encode(
-                search.encode()).decode()
+            encoded_search = base64.b64encode(search.encode()).decode()
         _filter, keyword = self.split_search(search)
         data, matches, page_range = self.run_search(
             request, keyword, _filter, page
@@ -222,7 +208,7 @@ class SearchObjects(View):
             request,
             "search.html",
             {
-                "title": "Search: \"{}\"".format(search),
+                "title": 'Search: "{}"'.format(search),
                 "search": search,
                 "encoded_search": encoded_search,
                 "data": data,
@@ -239,27 +225,30 @@ class SearchObjects(View):
 class GetManufacturerItem(View):
     def get(self, request, manufacturer, search="all", page=1):
         manufacturer = get_object_or_404(
-            Manufacturer,
-            slug__iexact=manufacturer
+            Manufacturer, slug__iexact=manufacturer
         )
 
         if search != "all":
             rolling_stock = get_list_or_404(
-                RollingStock.objects.order_by(*get_order_by_field()),
+                RollingStock.objects.get_published(request.user).order_by(
+                    *get_order_by_field()
+                ),
                 Q(
                     Q(manufacturer=manufacturer)
                     & Q(item_number_slug__exact=search)
-                )
+                ),
             )
             title = "{0}: {1}".format(
                 manufacturer,
                 # all returned records must have the same `item_number``;
                 # just pick it up the first result, otherwise `search`
-                rolling_stock[0].item_number if rolling_stock else search
+                rolling_stock[0].item_number if rolling_stock else search,
             )
         else:
             rolling_stock = (
-                RollingStock.objects.order_by(*get_order_by_field()).filter(
+                RollingStock.objects.get_published(request.user)
+                .order_by(*get_order_by_field())
+                .filter(
                     Q(manufacturer=manufacturer)
                     | Q(rolling_class__manufacturer=manufacturer)
                 )
@@ -268,10 +257,7 @@ class GetManufacturerItem(View):
 
         data = []
         for item in rolling_stock:
-            data.append({
-                "type": "rolling_stock",
-                "item": item
-            })
+            data.append({"type": "rolling_stock", "item": item})
 
         paginator = Paginator(data, get_items_per_page())
         data = paginator.get_page(page)
@@ -315,38 +301,28 @@ class GetObjectsFiltered(View):
             raise Http404
 
         rolling_stock = (
-            RollingStock.objects.filter(query)
+            RollingStock.objects.get_published(request.user)
+            .filter(query)
             .distinct()
             .order_by(*get_order_by_field())
         )
 
         data = []
         for item in rolling_stock:
-            data.append({
-                "type": "rolling_stock",
-                "item": item
-            })
+            data.append({"type": "rolling_stock", "item": item})
 
         try:  # Execute only if query_2nd is defined
             consists = (
-                Consist.objects.filter(query_2nd)
+                Consist.objects.get_published(request.user)
+                .filter(query_2nd)
                 .distinct()
             )
             for item in consists:
-                data.append({
-                    "type": "consist",
-                    "item": item
-                })
+                data.append({"type": "consist", "item": item})
             if _filter == "tag":  # Books can be filtered only by tag
-                books = (
-                    Book.objects.filter(query_2nd)
-                    .distinct()
-                )
+                books = Book.objects.filter(query_2nd).distinct()
                 for item in books:
-                    data.append({
-                        "type": "book",
-                        "item": item
-                    })
+                    data.append({"type": "book", "item": item})
         except NameError:
             pass
 
@@ -367,8 +343,7 @@ class GetObjectsFiltered(View):
             request,
             "filter.html",
             {
-                "title": "{0}: {1}".format(
-                    _filter.capitalize(), title),
+                "title": "{0}: {1}".format(_filter.capitalize(), title),
                 "search": search,
                 "filter": _filter,
                 "data": data,
@@ -381,7 +356,9 @@ class GetObjectsFiltered(View):
 class GetRollingStock(View):
     def get(self, request, uuid):
         try:
-            rolling_stock = RollingStock.objects.get(uuid=uuid)
+            rolling_stock = RollingStock.objects.get_published(
+                request.user
+            ).get(uuid=uuid)
         except ObjectDoesNotExist:
             raise Http404
 
@@ -399,22 +376,24 @@ class GetRollingStock(View):
                 request.user
             )
 
-        consists = [{
-            "type": "consist",
-            "item": c
-        } for c in Consist.objects.filter(
-            consist_item__rolling_stock=rolling_stock
-        )]  # A dict with "item" is required by the consists card
+        consists = [
+            {"type": "consist", "item": c}
+            for c in Consist.objects.get_published(request.user).filter(
+                consist_item__rolling_stock=rolling_stock
+            )
+        ]  # A dict with "item" is required by the consists card
 
-        set = [{
-            "type": "set",
-            "item": s
-        } for s in RollingStock.objects.filter(
+        set = [
+            {"type": "set", "item": s}
+            for s in RollingStock.objects.get_published(request.user)
+            .filter(
                 Q(
                     Q(item_number__exact=rolling_stock.item_number)
                     & Q(set=True)
                 )
-        ).order_by(*get_order_by_field())]
+            )
+            .order_by(*get_order_by_field())
+        ]
 
         return render(
             request,
@@ -437,20 +416,27 @@ class Consists(GetData):
     title = "Consists"
     item_type = "consist"
 
-    def get_data(self):
-        return Consist.objects.all()
+    def get_data(self, request):
+        return Consist.objects.get_published(request.user).all()
 
 
 class GetConsist(View):
     def get(self, request, uuid, page=1):
         try:
-            consist = Consist.objects.get(uuid=uuid)
+            consist = Consist.objects.get_published(request.user).get(
+                uuid=uuid
+            )
         except ObjectDoesNotExist:
             raise Http404
-        data = [{
-            "type": "rolling_stock",
-            "item": RollingStock.objects.get(uuid=r.rolling_stock_id)
-        } for r in consist.consist_item.all()]
+        data = [
+            {
+                "type": "rolling_stock",
+                "item": RollingStock.objects.get_published(request.user).get(
+                    uuid=r.rolling_stock_id
+                ),
+            }
+            for r in consist.consist_item.all()
+        ]
 
         paginator = Paginator(data, get_items_per_page())
         data = paginator.get_page(page)

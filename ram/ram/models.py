@@ -1,10 +1,25 @@
 import os
+from uuid import uuid4
 
 from django.db import models
 from django.utils.safestring import mark_safe
+from tinymce import models as tinymce
 
 from ram.utils import DeduplicatedStorage, get_image_preview
 from ram.managers import PublicManager
+
+
+class BaseModel(models.Model):
+    uuid = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    notes = tinymce.HTMLField(blank=True)
+    creation_time = models.DateTimeField(auto_now_add=True)
+    updated_time = models.DateTimeField(auto_now=True)
+    published = models.BooleanField(default=True)
+
+    class Meta:
+        abstract = True
+
+    objects = PublicManager()
 
 
 class Document(models.Model):

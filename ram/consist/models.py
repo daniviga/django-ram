@@ -1,18 +1,17 @@
 import os
 
-from uuid import uuid4
 from django.db import models
 from django.urls import reverse
+from django.dispatch import receiver
+from django.core.exceptions import ValidationError
 
-from tinymce import models as tinymce
-
+from ram.models import BaseModel
 from ram.utils import DeduplicatedStorage
 from metadata.models import Company, Tag
 from roster.models import RollingStock
 
 
-class Consist(models.Model):
-    uuid = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+class Consist(BaseModel):
     identifier = models.CharField(max_length=128, unique=False)
     tags = models.ManyToManyField(Tag, related_name="consist", blank=True)
     consist_address = models.SmallIntegerField(
@@ -33,15 +32,18 @@ class Consist(models.Model):
         null=True,
         blank=True,
     )
-    notes = tinymce.HTMLField(blank=True)
-    creation_time = models.DateTimeField(auto_now_add=True)
-    updated_time = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return "{0} {1}".format(self.company, self.identifier)
 
     def get_absolute_url(self):
         return reverse("consist", kwargs={"uuid": self.uuid})
+
+    def clean(self):
+        if self.consist_item.filter(rolling_stock__published=False).exists():
+            raise ValidationError(
+                "You must publish all items in the consist before publishing the consist."  # noqa: E501
+            )
 
     class Meta:
         ordering = ["company", "-creation_time"]
@@ -60,6 +62,10 @@ class ConsistItem(models.Model):
     def __str__(self):
         return "{0}".format(self.rolling_stock)
 
+    def published(self):
+        return self.rolling_stock.published
+    published.boolean = True
+
     def preview(self):
         return self.rolling_stock.image.first().image_thumbnail(100)
 
@@ -74,3 +80,14 @@ class ConsistItem(models.Model):
 
     def era(self):
         return self.rolling_stock.era
+
+
+# Unpublish any consist that contains an unpublished rolling stock
+# this signal is called after a rolling stock is saved
+# it is hosted here to avoid circular imports
+@receiver(models.signals.post_save, sender=RollingStock)
+def post_save_unpublish_consist(sender, instance, *args, **kwargs):
+    consists = Consist.objects.filter(consist_item__rolling_stock=instance)
+    for consist in consists:
+        consist.published = False
+        consist.save()
