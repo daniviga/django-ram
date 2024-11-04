@@ -8,7 +8,8 @@ class ConsistItemInline(SortableInlineAdminMixin, admin.TabularInline):
     model = ConsistItem
     min_num = 1
     extra = 0
-    readonly_fields = ("address", "type", "company", "era")
+    autocomplete_fields = ("rolling_stock",)
+    readonly_fields = ("preview", "address", "type", "company", "era")
 
 
 @admin.register(Consist)

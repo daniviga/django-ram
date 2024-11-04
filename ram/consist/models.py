@@ -60,6 +60,9 @@ class ConsistItem(models.Model):
     def __str__(self):
         return "{0}".format(self.rolling_stock)
 
+    def preview(self):
+        return self.rolling_stock.image.first().image_thumbnail(100)
+
     def type(self):
         return self.rolling_stock.rolling_class.type
 

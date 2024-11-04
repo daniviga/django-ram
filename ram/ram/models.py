@@ -39,8 +39,8 @@ class Image(models.Model):
         storage=DeduplicatedStorage,
     )
 
-    def image_thumbnail(self):
-        return get_image_preview(self.image.url)
+    def image_thumbnail(self, max_size=150):
+        return get_image_preview(self.image.url, max_size)
 
     image_thumbnail.short_description = "Preview"
 
