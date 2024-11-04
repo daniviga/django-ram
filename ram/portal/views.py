@@ -388,26 +388,16 @@ class GetRollingStock(View):
         # FIXME there's likely a better and more efficient way of doing this
         # but keeping KISS for now
         decoder_documents = []
-        if request.user.is_authenticated:
-            class_properties = rolling_stock.rolling_class.property.all()
-            properties = rolling_stock.property.all()
-            documents = rolling_stock.document.all()
-            journal = rolling_stock.journal.all()
-            if rolling_stock.decoder:
-                decoder_documents = rolling_stock.decoder.document.all()
-        else:
-            class_properties = rolling_stock.rolling_class.property.filter(
-                property__private=False
+        class_properties = rolling_stock.rolling_class.property.get_public(
+            request.user
+        )
+        properties = rolling_stock.property.get_public(request.user)
+        documents = rolling_stock.document.get_public(request.user)
+        journal = rolling_stock.journal.get_public(request.user)
+        if rolling_stock.decoder:
+            decoder_documents = rolling_stock.decoder.document.get_public(
+                request.user
             )
-            properties = rolling_stock.property.filter(
-                property__private=False
-            )
-            documents = rolling_stock.document.filter(private=False)
-            journal = rolling_stock.journal.filter(private=False)
-            if rolling_stock.decoder:
-                decoder_documents = rolling_stock.decoder.document.filter(
-                    private=False
-                )
 
         consists = [{
             "type": "consist",

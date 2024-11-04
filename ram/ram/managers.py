@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import FieldError
 
 
 class PublicManager(models.Manager):
@@ -12,4 +13,7 @@ class PublicManager(models.Manager):
         if user.is_authenticated:
             return self.get_queryset()
         else:
-            return self.get_queryset().filter(private=False)
+            try:
+                return self.get_queryset().filter(private=False)
+            except FieldError:
+                return self.get_queryset().filter(property__private=False)

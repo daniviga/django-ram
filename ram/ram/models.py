@@ -29,7 +29,7 @@ class Document(models.Model):
             '<a href="{0}" target="_blank">Link</a>'.format(self.file.url)
         )
 
-    objects = PublicManager
+    objects = PublicManager()
 
 
 class Image(models.Model):
@@ -51,6 +51,8 @@ class Image(models.Model):
         abstract = True
         ordering = ["order"]
 
+    objects = PublicManager()
+
 
 class PropertyInstance(models.Model):
     property = models.ForeignKey(
@@ -65,3 +67,5 @@ class PropertyInstance(models.Model):
     class Meta:
         abstract = True
         verbose_name_plural = "Properties"
+
+    objects = PublicManager()
