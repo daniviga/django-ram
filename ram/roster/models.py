@@ -1,7 +1,6 @@
 import os
 import re
 import shutil
-from uuid import uuid4
 from django.db import models
 from django.urls import reverse
 from django.conf import settings
@@ -9,8 +8,9 @@ from django.dispatch import receiver
 
 from tinymce import models as tinymce
 
-from ram.models import Document, Image, PropertyInstance
+from ram.models import BaseModel, Document, Image, PropertyInstance
 from ram.utils import DeduplicatedStorage
+from ram.managers import PublicManager
 from metadata.models import (
     Scale,
     Manufacturer,
@@ -54,8 +54,7 @@ class RollingClassProperty(PropertyInstance):
     )
 
 
-class RollingStock(models.Model):
-    uuid = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+class RollingStock(BaseModel):
     rolling_class = models.ForeignKey(
         RollingClass,
         on_delete=models.CASCADE,
@@ -106,9 +105,6 @@ class RollingStock(models.Model):
     tags = models.ManyToManyField(
         Tag, related_name="rolling_stock", blank=True
     )
-    notes = tinymce.HTMLField(blank=True)
-    creation_time = models.DateTimeField(auto_now_add=True)
-    updated_time = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ["rolling_class", "road_number_int"]
@@ -209,6 +205,8 @@ class RollingStockJournal(models.Model):
 
     class Meta:
         ordering = ["date", "rolling_stock"]
+
+    objects = PublicManager()
 
 
 # @receiver(models.signals.post_delete, sender=Cab)

@@ -6,13 +6,16 @@ from bookshelf.serializers import BookSerializer
 
 
 class BookList(ListAPIView):
-    queryset = Book.objects.all()
     serializer_class = BookSerializer
+
+    def get_queryset(self):
+        return Book.objects.get_published(self.request.user)
 
 
 class BookGet(RetrieveAPIView):
-    queryset = Book.objects.all()
     serializer_class = BookSerializer
     lookup_field = "uuid"
-
     schema = AutoSchema(operation_id_base="retrieveBookByUUID")
+
+    def get_queryset(self):
+        return Book.objects.get_published(self.request.user)

@@ -1,6 +1,5 @@
 import os
 import shutil
-from uuid import uuid4
 from django.db import models
 from django.conf import settings
 from django.urls import reverse
@@ -10,7 +9,7 @@ from tinymce import models as tinymce
 
 from metadata.models import Tag
 from ram.utils import DeduplicatedStorage
-from ram.models import Image, PropertyInstance
+from ram.models import BaseModel, Image, PropertyInstance
 
 
 class Publisher(models.Model):
@@ -39,8 +38,7 @@ class Author(models.Model):
         return f"{self.last_name} {self.first_name[0]}."
 
 
-class Book(models.Model):
-    uuid = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+class Book(BaseModel):
     title = models.CharField(max_length=200)
     authors = models.ManyToManyField(Author)
     publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE)
@@ -57,9 +55,6 @@ class Book(models.Model):
     tags = models.ManyToManyField(
         Tag, related_name="bookshelf", blank=True
     )
-    notes = tinymce.HTMLField(blank=True)
-    creation_time = models.DateTimeField(auto_now_add=True)
-    updated_time = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ["title"]

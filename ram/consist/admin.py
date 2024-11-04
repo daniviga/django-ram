@@ -9,7 +9,7 @@ class ConsistItemInline(SortableInlineAdminMixin, admin.TabularInline):
     min_num = 1
     extra = 0
     autocomplete_fields = ("rolling_stock",)
-    readonly_fields = ("preview", "address", "type", "company", "era")
+    readonly_fields = ("preview", "published", "address", "type", "company", "era")
 
 
 @admin.register(Consist)
@@ -19,7 +19,7 @@ class ConsistAdmin(SortableAdminBase, admin.ModelAdmin):
         "creation_time",
         "updated_time",
     )
-    list_display = ("identifier", "company", "era")
+    list_display = ("identifier", "published", "company", "era")
     list_filter = list_display
     search_fields = list_display
     save_as = True
@@ -29,6 +29,7 @@ class ConsistAdmin(SortableAdminBase, admin.ModelAdmin):
             None,
             {
                 "fields": (
+                    "published",
                     "identifier",
                     "consist_address",
                     "company",

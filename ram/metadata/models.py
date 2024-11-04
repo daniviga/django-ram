@@ -7,6 +7,7 @@ from django_countries.fields import CountryField
 
 from ram.models import Document
 from ram.utils import DeduplicatedStorage, get_image_preview, slugify
+from ram.managers import PublicManager
 
 
 class Property(models.Model):
@@ -22,6 +23,8 @@ class Property(models.Model):
 
     def __str__(self):
         return self.name
+
+    objects = PublicManager()
 
 
 class Manufacturer(models.Model):

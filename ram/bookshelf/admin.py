@@ -24,13 +24,47 @@ class BookAdmin(SortableAdminBase, admin.ModelAdmin):
     inlines = (BookImageInline, BookPropertyInline,)
     list_display = (
         "title",
+        "published",
         "get_authors",
         "get_publisher",
         "publication_year",
         "number_of_pages"
     )
+    readonly_fields = ("creation_time", "updated_time")
     search_fields = ("title", "publisher__name", "authors__last_name")
     list_filter = ("publisher__name", "authors")
+
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "published",
+                    "title",
+                    "authors",
+                    "publisher",
+                    "ISBN",
+                    "language",
+                    "number_of_pages",
+                    "publication_year",
+                    "description",
+                    "purchase_date",
+                    "notes",
+                    "tags",
+                )
+            },
+        ),
+        (
+            "Audit",
+            {
+                "classes": ("collapse",),
+                "fields": (
+                    "creation_time",
+                    "updated_time",
+                ),
+            },
+        ),
+    )
 
     @admin.display(description="Publisher")
     def get_publisher(self, obj):

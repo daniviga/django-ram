@@ -111,6 +111,7 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
     readonly_fields = ("preview", "creation_time", "updated_time")
     list_display = (
         "__str__",
+        "published",
         "address",
         "manufacturer",
         "scale",
@@ -141,6 +142,7 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
             {
                 "fields": (
                     "preview",
+                    "published",
                     "rolling_class",
                     "road_number",
                     "scale",
