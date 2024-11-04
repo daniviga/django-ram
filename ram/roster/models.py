@@ -120,6 +120,9 @@ class RollingStock(models.Model):
     def get_absolute_url(self):
         return reverse("rolling_stock", kwargs={"uuid": self.uuid})
 
+    def preview(self):
+        return self.image.first().image_thumbnail(350)
+
     def country(self):
         return str(self.rolling_class.company.country)
 

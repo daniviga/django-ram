@@ -44,10 +44,10 @@ def git_suffix(fname):
     return gh
 
 
-def get_image_preview(url):
+def get_image_preview(url, max_size=150):
     return format_html(
-        '<img src="%s" style="max-width: 150px; max-height: 150px;'
-        'background-color: #eee;" />' % url
+        '<img src="{src}" style="max-width: {size}px; max-height: {size}px;'
+        'background-color: #eee;" />'.format(src=url, size=max_size)
     )
 
 
