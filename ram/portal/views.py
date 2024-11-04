@@ -17,7 +17,11 @@ from roster.models import RollingStock
 from consist.models import Consist
 from bookshelf.models import Book
 from metadata.models import (
-    Company, Manufacturer, Scale, DecoderDocument, RollingStockType, Tag
+    Company,
+    Manufacturer,
+    Scale,
+    RollingStockType,
+    Tag,
 )
 
 
@@ -166,7 +170,11 @@ class SearchObjects(View):
             )
             for item in consists:
                 data.append({"type": "consist", "item": item})
-            books = Book.objects.filter(title__icontains=search).distinct()
+            books = (
+                Book.objects.get_published(request.user)
+                .filter(title__icontains=search)
+                .distinct()
+            )
             for item in books:
                 data.append({"type": "book", "item": item})
 
@@ -320,7 +328,11 @@ class GetObjectsFiltered(View):
             for item in consists:
                 data.append({"type": "consist", "item": item})
             if _filter == "tag":  # Books can be filtered only by tag
-                books = Book.objects.filter(query_2nd).distinct()
+                books = (
+                    Book.objects.get_published(request.user)
+                    .filter(query_2nd)
+                    .distinct()
+                )
                 for item in books:
                     data.append({"type": "book", "item": item})
         except NameError:
@@ -501,22 +513,18 @@ class Books(GetData):
     title = "Books"
     item_type = "book"
 
-    def get_data(self):
-        return Book.objects.all()
+    def get_data(self, request):
+        return Book.objects.get_published(request.user).all()
 
 
 class GetBook(View):
     def get(self, request, uuid):
         try:
-            book = Book.objects.get(uuid=uuid)
+            book = Book.objects.get_published(request.user).get(uuid=uuid)
         except ObjectDoesNotExist:
             raise Http404
 
-        book_properties = (
-            book.property.all()
-            if request.user.is_authenticated
-            else book.property.filter(property__private=False)
-        )
+        book_properties = book.property.get_public(request.user)
         return render(
             request,
             "bookshelf/book.html",
