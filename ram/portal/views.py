@@ -472,7 +472,7 @@ class Manufacturers(GetData):
     title = "Manufacturers"
     item_type = "manufacturer"
 
-    def get_data(self):
+    def get_data(self, request):
         return Manufacturer.objects.filter(self.filter)
 
     # overload get method to filter by category
@@ -488,7 +488,7 @@ class Companies(GetData):
     title = "Companies"
     item_type = "company"
 
-    def get_data(self):
+    def get_data(self, request):
         return Company.objects.all()
 
 
@@ -497,7 +497,7 @@ class Scales(GetData):
     item_type = "scale"
     queryset = Scale.objects.all()
 
-    def get_data(self):
+    def get_data(self, request):
         return Scale.objects.all()
 
 
@@ -505,7 +505,7 @@ class Types(GetData):
     title = "Types"
     item_type = "rolling_stock_type"
 
-    def get_data(self):
+    def get_data(self, request):
         return RollingStockType.objects.all()
 
 
