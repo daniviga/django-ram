@@ -18,7 +18,12 @@
               <li><a class="dropdown-item" href="{% url 'admin:index' %}">Admin</a></li>
               <li><a class="dropdown-item" href="{% url 'admin:portal_siteconfiguration_changelist' %}">Site configuration</a></li>
               <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item text-danger" href="{% url 'admin:logout' %}?next={{ request.path }}">Logout</a></li>
+              <li>
+                <form id="logout-form" method="post" action="{% url 'admin:logout' %}?next={{ request.path }}">
+                  {% csrf_token %}
+                  <button class="btn btn-link dropdown-item text-danger" type="submit">Log out</button>
+                </form>
+              </li>
             </ul>
             {% else %}
             <a class="nav-link" href="{% url 'admin:login' %}?next={{ request.path }}">Log in</a>
