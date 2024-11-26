@@ -40,7 +40,7 @@ class Author(models.Model):
 
 class Book(BaseModel):
     title = models.CharField(max_length=200)
-    authors = models.ManyToManyField(Author)
+    authors = models.ManyToManyField(Author, blank=True)
     publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE)
     ISBN = models.CharField(max_length=17, blank=True)  # 13 + dashes
     language = models.CharField(
