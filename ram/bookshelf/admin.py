@@ -1,11 +1,13 @@
 from django.contrib import admin
 from adminsortable2.admin import SortableAdminBase, SortableInlineAdminMixin
 
-from bookshelf.models import BookProperty, BookImage, Book, Author, Publisher
+from bookshelf.models import (
+    BaseBookProperty, BaseBookImage, Book, Author, Publisher
+)
 
 
 class BookImageInline(SortableInlineAdminMixin, admin.TabularInline):
-    model = BookImage
+    model = BaseBookImage
     min_num = 0
     extra = 0
     readonly_fields = ("image_thumbnail",)
@@ -13,7 +15,7 @@ class BookImageInline(SortableInlineAdminMixin, admin.TabularInline):
 
 
 class BookPropertyInline(admin.TabularInline):
-    model = BookProperty
+    model = BaseBookProperty
     min_num = 0
     extra = 0
     autocomplete_fields = ("property",)
