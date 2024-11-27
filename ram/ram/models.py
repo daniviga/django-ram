@@ -65,6 +65,7 @@ class Image(models.Model):
     class Meta:
         abstract = True
         ordering = ["order"]
+        verbose_name_plural = "Images"
 
     objects = PublicManager()
 
