@@ -2,7 +2,7 @@ from django.contrib import admin
 from adminsortable2.admin import SortableAdminBase, SortableInlineAdminMixin
 
 from bookshelf.models import (
-    BaseBookProperty, BaseBookImage, Book, Author, Publisher
+    BaseBookProperty, BaseBookImage, Book, Author, Publisher, Catalog
 )
 
 
@@ -12,6 +12,7 @@ class BookImageInline(SortableInlineAdminMixin, admin.TabularInline):
     extra = 0
     readonly_fields = ("image_thumbnail",)
     classes = ["collapse"]
+    verbose_name = "Image"
 
 
 class BookPropertyInline(admin.TabularInline):
@@ -19,6 +20,8 @@ class BookPropertyInline(admin.TabularInline):
     min_num = 0
     extra = 0
     autocomplete_fields = ("property",)
+    verbose_name = "Property"
+    verbose_name_plural = "Properties"
 
 
 @admin.register(Book)
@@ -26,11 +29,11 @@ class BookAdmin(SortableAdminBase, admin.ModelAdmin):
     inlines = (BookImageInline, BookPropertyInline,)
     list_display = (
         "title",
-        "published",
         "get_authors",
         "get_publisher",
         "publication_year",
-        "number_of_pages"
+        "number_of_pages",
+        "published",
     )
     readonly_fields = ("creation_time", "updated_time")
     search_fields = ("title", "publisher__name", "authors__last_name")
@@ -87,3 +90,53 @@ class AuthorAdmin(admin.ModelAdmin):
 class PublisherAdmin(admin.ModelAdmin):
     list_display = ("name", "country")
     search_fields = ("name",)
+
+
+@admin.register(Catalog)
+class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
+    inlines = (BookImageInline, BookPropertyInline,)
+    list_display = (
+        "manufacturer",
+        "years",
+        "get_scales",
+        "published",
+    )
+    readonly_fields = ("creation_time", "updated_time")
+    search_fields = ("manufacturer__name", "years", "scales__scale")
+    list_filter = ("manufacturer__name", "publication_year", "scales__scale")
+
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "published",
+                    "manufacturer",
+                    "years",
+                    "scales",
+                    "ISBN",
+                    "language",
+                    "number_of_pages",
+                    "publication_year",
+                    "description",
+                    "purchase_date",
+                    "notes",
+                    "tags",
+                )
+            },
+        ),
+        (
+            "Audit",
+            {
+                "classes": ("collapse",),
+                "fields": (
+                    "creation_time",
+                    "updated_time",
+                ),
+            },
+        ),
+    )
+
+    @admin.display(description="Scales")
+    def get_scales(self, obj):
+        return ", ".join(s.scale for s in obj.scales.all())
