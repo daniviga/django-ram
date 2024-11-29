@@ -139,4 +139,4 @@ class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
 
     @admin.display(description="Scales")
     def get_scales(self, obj):
-        return ", ".join(s.scale for s in obj.scales.all())
+        return "/".join(s.scale for s in obj.scales.all())

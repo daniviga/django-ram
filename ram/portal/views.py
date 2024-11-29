@@ -15,7 +15,7 @@ from portal.utils import get_site_conf
 from portal.models import Flatpage
 from roster.models import RollingStock
 from consist.models import Consist
-from bookshelf.models import Book
+from bookshelf.models import Book, Catalog
 from metadata.models import (
     Company,
     Manufacturer,
@@ -534,6 +534,34 @@ class GetBook(View):
                 "book": book,
             },
         )
+
+
+class Catalogs(GetData):
+    title = "Catalogs"
+    item_type = "book"
+
+    def get_data(self, request):
+        return Catalog.objects.get_published(request.user).all()
+
+
+class GetCatalog(View):
+    def get(self, request, uuid):
+        try:
+            catalog = Catalog.objects.get_published(request.user).get(uuid=uuid)
+        except ObjectDoesNotExist:
+            raise Http404
+
+        catalog_properties = catalog.property.get_public(request.user)
+        return render(
+            request,
+            "bookshelf/book.html",
+            {
+                "title": catalog,
+                "catalog_properties": catalog_properties,
+                "book": catalog,
+            },
+        )
+
 
 
 class GetFlatpage(View):

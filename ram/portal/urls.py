@@ -15,6 +15,8 @@ from portal.views import (
     Types,
     Books,
     GetBook,
+    Catalogs,
+    GetCatalog,
     SearchObjects,
 )
 
@@ -98,6 +100,21 @@ urlpatterns = [
         name="books_pagination"
     ),
     path("bookshelf/book/<uuid:uuid>", GetBook.as_view(), name="book"),
+    path(
+        "bookshelf/catalogs",
+        Catalogs.as_view(template="bookshelf/books.html"),
+        name="catalogs"
+    ),
+    path(
+        "bookshelf/catalogs/page/<int:page>",
+        Catalogs.as_view(template="bookshelf/books.html"),
+        name="catalogs_pagination"
+    ),
+    path(
+        "bookshelf/catalog/<uuid:uuid>",
+        GetCatalog.as_view(),
+        name="catalog"
+    ),
     path(
         "search",
         SearchObjects.as_view(http_method_names=["post"]),

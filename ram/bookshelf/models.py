@@ -54,9 +54,6 @@ class BaseBook(BaseModel):
         Tag, related_name="bookshelf", blank=True
     )
 
-    def get_absolute_url(self):
-        return reverse("book", kwargs={"uuid": self.uuid})
-
     def delete(self, *args, **kwargs):
         shutil.rmtree(
             os.path.join(
@@ -110,6 +107,9 @@ class Book(BaseBook):
     def publisher_name(self):
         return self.publisher.name
 
+    def get_absolute_url(self):
+        return reverse("book", kwargs={"uuid": self.uuid})
+
 
 class Catalog(BaseBook):
     manufacturer = models.ForeignKey(
@@ -127,3 +127,6 @@ class Catalog(BaseBook):
     def __str__(self):
         scales = "/".join([s.scale for s in self.scales.all()])
         return "%s %s %s" % (self.manufacturer.name, self.years, scales)
+
+    def get_absolute_url(self):
+        return reverse("catalog", kwargs={"uuid": self.uuid})
