@@ -4,8 +4,16 @@ import django.db.models.deletion
 from django.db import migrations, models
 
 
-def nil(apps, schema_editor):
-    pass
+def basebook_to_book(apps, schema_editor):
+    basebook = apps.get_model("bookshelf", "BaseBook")
+    book = apps.get_model("bookshelf", "Book")
+    for row in basebook.objects.all():
+        b = book.objects.create(
+            basebook_ptr=row,
+            title=row.old_title,
+            publisher=row.old_publisher,
+        )
+        b.authors.set(row.old_authors.all())
 
 
 class Migration(migrations.Migration):
@@ -16,6 +24,10 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.AlterModelOptions(
+            name="Book",
+            options={"ordering": ["creation_time"]},
+        ),
         migrations.RenameModel(
             old_name="BookImage",
             new_name="BaseBookImage",
@@ -42,6 +54,10 @@ class Migration(migrations.Migration):
             model_name="basebook",
             old_name="publisher",
             new_name="old_publisher",
+        ),
+        migrations.AlterModelOptions(
+            name="basebookimage",
+            options={"ordering": ["order"], "verbose_name_plural": "Images"},
         ),
         migrations.CreateModel(
             name="Book",
@@ -76,7 +92,22 @@ class Migration(migrations.Migration):
             options={
                 "ordering": ["title"],
             },
-            bases=("bookshelf.basebook",),
+        ),
+        migrations.RunPython(
+            basebook_to_book,
+            reverse_code=migrations.RunPython.noop
+        ),
+        migrations.RemoveField(
+            model_name="basebook",
+            name="old_title",
+        ),
+        migrations.RemoveField(
+            model_name="basebook",
+            name="old_authors",
+        ),
+        migrations.RemoveField(
+            model_name="basebook",
+            name="old_publisher",
         ),
         migrations.CreateModel(
             name="Catalog",
@@ -108,21 +139,5 @@ class Migration(migrations.Migration):
                 "ordering": ["manufacturer", "publication_year"],
             },
             bases=("bookshelf.basebook",),
-        ),
-        migrations.RunPython(
-            nil,
-            reverse_code=migrations.RunPython.noop
-        ),
-        migrations.RemoveField(
-            model_name="basebook",
-            name="old_title",
-        ),
-        migrations.RemoveField(
-            model_name="basebook",
-            name="old_authors",
-        ),
-        migrations.RemoveField(
-            model_name="basebook",
-            name="old_publisher",
         ),
     ]
