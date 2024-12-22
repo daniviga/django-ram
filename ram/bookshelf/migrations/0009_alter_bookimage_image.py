@@ -12,7 +12,7 @@ from django.conf import settings
 
 def move_images(apps, schema_editor):
     sys.stdout.write("\n  Processing files. Please await...")
-    for r in bookshelf.models.BookImage.objects.all():
+    for r in bookshelf.models.BaseBookImage.objects.all():
         fname = os.path.basename(r.image.path)
         new_image = bookshelf.models.book_image_upload(r, fname)
         new_path = os.path.join(settings.MEDIA_ROOT, new_image)
@@ -31,19 +31,21 @@ class Migration(migrations.Migration):
         ("bookshelf", "0008_alter_author_options_alter_publisher_options"),
     ]
 
+    # Migration is stale and shouldn't be used since model hes been heavily
+    # modified since then. Leaving it here for reference.
     operations = [
-        migrations.AlterField(
-            model_name="bookimage",
-            name="image",
-            field=models.ImageField(
-                blank=True,
-                null=True,
-                storage=ram.utils.DeduplicatedStorage,
-                upload_to=bookshelf.models.book_image_upload,
-            ),
-        ),
-        migrations.RunPython(
-            move_images,
-            reverse_code=migrations.RunPython.noop
-        ),
+        #     migrations.AlterField(
+        #         model_name="bookimage",
+        #         name="image",
+        #         field=models.ImageField(
+        #             blank=True,
+        #             null=True,
+        #             storage=ram.utils.DeduplicatedStorage,
+        #             upload_to=bookshelf.models.book_image_upload,
+        #         ),
+        #     ),
+        #     migrations.RunPython(
+        #         move_images,
+        #         reverse_code=migrations.RunPython.noop
+        #     ),
     ]

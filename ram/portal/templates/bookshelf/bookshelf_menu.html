@@ -4,7 +4,12 @@
                     Bookshelf
                   </a>
                   <ul class="dropdown-menu" aria-labelledby="bookshelfDropdownMenuLink">
+                    {% if books_menu %}
                     <li><a class="dropdown-item" href="{% url 'books' %}">Books</a></li>
+                    {% endif %}
+                    {% if catalogs_menu %}
+                    <li><a class="dropdown-item" href="{% url 'catalogs' %}">Catalogs</a></li>
+                    {% endif %}
                   </ul>
                 </li>
                 {% endif %}

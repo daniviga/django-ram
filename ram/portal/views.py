@@ -1,5 +1,6 @@
 import base64
 import operator
+from itertools import chain
 from functools import reduce
 from urllib.parse import unquote
 
@@ -15,7 +16,7 @@ from portal.utils import get_site_conf
 from portal.models import Flatpage
 from roster.models import RollingStock
 from consist.models import Consist
-from bookshelf.models import Book
+from bookshelf.models import Book, Catalog
 from metadata.models import (
     Company,
     Manufacturer,
@@ -61,8 +62,8 @@ class Render404(View):
 
 class GetData(View):
     title = "Home"
-    template = "roster.html"
-    item_type = "rolling_stock"
+    template = "pagination.html"
+    item_type = "roster"
     filter = Q()  # empty filter by default
 
     def get_data(self, request):
@@ -97,8 +98,8 @@ class GetData(View):
 
 
 class GetRoster(GetData):
-    title = "Roster"
-    item_type = "rolling_stock"
+    title = "The Roster"
+    item_type = "roster"
 
     def get_data(self, request):
         return RollingStock.objects.get_published(request.user).order_by(
@@ -148,15 +149,18 @@ class SearchObjects(View):
             raise Http404
 
         # FIXME duplicated code!
+        # FIXME see if it makes sense to filter calatogs and books by scale
+        #       and manufacturer as well
         data = []
-        rolling_stock = (
+        roster = (
             RollingStock.objects.get_published(request.user)
             .filter(query)
             .distinct()
             .order_by(*get_order_by_field())
         )
-        for item in rolling_stock:
-            data.append({"type": "rolling_stock", "item": item})
+        for item in roster:
+            data.append({"type": "roster", "item": item})
+
         if _filter is None:
             consists = (
                 Consist.objects.get_published(request.user)
@@ -175,7 +179,12 @@ class SearchObjects(View):
                 .filter(title__icontains=search)
                 .distinct()
             )
-            for item in books:
+            catalogs = (
+                Catalog.objects.get_published(request.user)
+                .filter(manufacturer__name__icontains=search)
+                .distinct()
+            )
+            for item in list(chain(books, catalogs)):
                 data.append({"type": "book", "item": item})
 
         paginator = Paginator(data, get_items_per_page())
@@ -237,7 +246,7 @@ class GetManufacturerItem(View):
         )
 
         if search != "all":
-            rolling_stock = get_list_or_404(
+            roster = get_list_or_404(
                 RollingStock.objects.get_published(request.user).order_by(
                     *get_order_by_field()
                 ),
@@ -250,10 +259,10 @@ class GetManufacturerItem(View):
                 manufacturer,
                 # all returned records must have the same `item_number``;
                 # just pick it up the first result, otherwise `search`
-                rolling_stock[0].item_number if rolling_stock else search,
+                roster.first.item_number if roster else search,
             )
         else:
-            rolling_stock = (
+            roster = (
                 RollingStock.objects.get_published(request.user)
                 .order_by(*get_order_by_field())
                 .filter(
@@ -264,8 +273,8 @@ class GetManufacturerItem(View):
             title = "Manufacturer: {0}".format(manufacturer)
 
         data = []
-        for item in rolling_stock:
-            data.append({"type": "rolling_stock", "item": item})
+        for item in roster:
+            data.append({"type": "roster", "item": item})
 
         paginator = Paginator(data, get_items_per_page())
         data = paginator.get_page(page)
@@ -308,7 +317,7 @@ class GetObjectsFiltered(View):
         else:
             raise Http404
 
-        rolling_stock = (
+        roster = (
             RollingStock.objects.get_published(request.user)
             .filter(query)
             .distinct()
@@ -316,8 +325,8 @@ class GetObjectsFiltered(View):
         )
 
         data = []
-        for item in rolling_stock:
-            data.append({"type": "rolling_stock", "item": item})
+        for item in roster:
+            data.append({"type": "roster", "item": item})
 
         try:  # Execute only if query_2nd is defined
             consists = (
@@ -442,7 +451,7 @@ class GetConsist(View):
             raise Http404
         data = [
             {
-                "type": "rolling_stock",
+                "type": "roster",
                 "item": RollingStock.objects.get_published(request.user).get(
                     uuid=r.rolling_stock_id
                 ),
@@ -517,10 +526,26 @@ class Books(GetData):
         return Book.objects.get_published(request.user).all()
 
 
-class GetBook(View):
-    def get(self, request, uuid):
+class Catalogs(GetData):
+    title = "Catalogs"
+    item_type = "catalog"
+
+    def get_data(self, request):
+        return Catalog.objects.get_published(request.user).all()
+
+
+class GetBookCatalog(View):
+    def get_object(self, request, uuid, selector):
+        if selector == "book":
+            return Book.objects.get_published(request.user).get(uuid=uuid)
+        elif selector == "catalog":
+            return Catalog.objects.get_published(request.user).get(uuid=uuid)
+        else:
+            raise Http404
+
+    def get(self, request, uuid, selector):
         try:
-            book = Book.objects.get_published(request.user).get(uuid=uuid)
+            book = self.get_object(request, uuid, selector)
         except ObjectDoesNotExist:
             raise Http404
 
@@ -532,6 +557,7 @@ class GetBook(View):
                 "title": book,
                 "book_properties": book_properties,
                 "book": book,
+                "type": selector
             },
         )
 

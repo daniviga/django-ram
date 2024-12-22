@@ -9,7 +9,8 @@ from tinymce import models as tinymce
 
 from metadata.models import Tag
 from ram.utils import DeduplicatedStorage
-from ram.models import BaseModel, Image, PropertyInstance
+from ram.models import BaseModel, Image, Document, PropertyInstance
+from metadata.models import Scale, Manufacturer
 
 
 class Publisher(models.Model):
@@ -38,10 +39,7 @@ class Author(models.Model):
         return f"{self.last_name} {self.first_name[0]}."
 
 
-class Book(BaseModel):
-    title = models.CharField(max_length=200)
-    authors = models.ManyToManyField(Author, blank=True)
-    publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE)
+class BaseBook(BaseModel):
     ISBN = models.CharField(max_length=17, blank=True)  # 13 + dashes
     language = models.CharField(
         max_length=7,
@@ -56,18 +54,6 @@ class Book(BaseModel):
         Tag, related_name="bookshelf", blank=True
     )
 
-    class Meta:
-        ordering = ["title"]
-
-    def __str__(self):
-        return self.title
-
-    def publisher_name(self):
-        return self.publisher.name
-
-    def get_absolute_url(self):
-        return reverse("book", kwargs={"uuid": self.uuid})
-
     def delete(self, *args, **kwargs):
         shutil.rmtree(
             os.path.join(
@@ -75,7 +61,7 @@ class Book(BaseModel):
             ),
             ignore_errors=True
         )
-        super(Book, self).delete(*args, **kwargs)
+        super(BaseBook, self).delete(*args, **kwargs)
 
 
 def book_image_upload(instance, filename):
@@ -87,9 +73,9 @@ def book_image_upload(instance, filename):
     )
 
 
-class BookImage(Image):
+class BaseBookImage(Image):
     book = models.ForeignKey(
-        Book, on_delete=models.CASCADE, related_name="image"
+        BaseBook, on_delete=models.CASCADE, related_name="image"
     )
     image = models.ImageField(
         upload_to=book_image_upload,
@@ -97,11 +83,68 @@ class BookImage(Image):
     )
 
 
-class BookProperty(PropertyInstance):
+class BaseBookDocument(Document):
     book = models.ForeignKey(
-        Book,
+        BaseBook, on_delete=models.CASCADE, related_name="document"
+    )
+
+    class Meta:
+        verbose_name_plural = "Documents"
+        unique_together = ("book", "file")
+
+
+class BaseBookProperty(PropertyInstance):
+    book = models.ForeignKey(
+        BaseBook,
         on_delete=models.CASCADE,
         null=False,
         blank=False,
         related_name="property",
     )
+
+
+class Book(BaseBook):
+    title = models.CharField(max_length=200)
+    authors = models.ManyToManyField(Author, blank=True)
+    publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ["title"]
+
+    def __str__(self):
+        return self.title
+
+    def publisher_name(self):
+        return self.publisher.name
+
+    def get_absolute_url(self):
+        return reverse(
+            "bookshelf_item",
+            kwargs={"selector": "book", "uuid": self.uuid}
+        )
+
+
+class Catalog(BaseBook):
+    manufacturer = models.ForeignKey(
+        Manufacturer,
+        on_delete=models.CASCADE,
+    )
+    years = models.CharField(max_length=12)
+    scales = models.ManyToManyField(Scale)
+
+    class Meta:
+        ordering = ["manufacturer", "publication_year"]
+
+    def __str__(self):
+        scales = self.get_scales
+        return "%s %s %s" % (self.manufacturer.name, self.years, scales)
+
+    def get_absolute_url(self):
+        return reverse(
+            "bookshelf_item",
+            kwargs={"selector": "catalog", "uuid": self.uuid}
+        )
+
+    @property
+    def get_scales(self):
+        return "/".join([s.scale for s in self.scales.all()])
