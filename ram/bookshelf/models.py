@@ -9,7 +9,7 @@ from tinymce import models as tinymce
 
 from metadata.models import Tag
 from ram.utils import DeduplicatedStorage
-from ram.models import BaseModel, Image, PropertyInstance
+from ram.models import BaseModel, Image, Document, PropertyInstance
 from metadata.models import Scale, Manufacturer
 
 
@@ -81,6 +81,16 @@ class BaseBookImage(Image):
         upload_to=book_image_upload,
         storage=DeduplicatedStorage,
     )
+
+
+class BaseBookDocument(Document):
+    book = models.ForeignKey(
+        BaseBook, on_delete=models.CASCADE, related_name="document"
+    )
+
+    class Meta:
+        verbose_name_plural = "Documents"
+        unique_together = ("book", "file")
 
 
 class BaseBookProperty(PropertyInstance):

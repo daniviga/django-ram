@@ -2,7 +2,13 @@ from django.contrib import admin
 from adminsortable2.admin import SortableAdminBase, SortableInlineAdminMixin
 
 from bookshelf.models import (
-    BaseBookProperty, BaseBookImage, Book, Author, Publisher, Catalog
+    BaseBookProperty,
+    BaseBookImage,
+    BaseBookDocument,
+    Book,
+    Author,
+    Publisher,
+    Catalog,
 )
 
 
@@ -13,6 +19,13 @@ class BookImageInline(SortableInlineAdminMixin, admin.TabularInline):
     readonly_fields = ("image_thumbnail",)
     classes = ["collapse"]
     verbose_name = "Image"
+
+
+class BookDocInline(admin.TabularInline):
+    model = BaseBookDocument
+    min_num = 0
+    extra = 0
+    classes = ["collapse"]
 
 
 class BookPropertyInline(admin.TabularInline):
@@ -26,7 +39,11 @@ class BookPropertyInline(admin.TabularInline):
 
 @admin.register(Book)
 class BookAdmin(SortableAdminBase, admin.ModelAdmin):
-    inlines = (BookImageInline, BookPropertyInline,)
+    inlines = (
+        BookPropertyInline,
+        BookImageInline,
+        BookDocInline,
+    )
     list_display = (
         "title",
         "get_authors",
@@ -83,7 +100,10 @@ class BookAdmin(SortableAdminBase, admin.ModelAdmin):
 
 @admin.register(Author)
 class AuthorAdmin(admin.ModelAdmin):
-    search_fields = ("first_name", "last_name",)
+    search_fields = (
+        "first_name",
+        "last_name",
+    )
     list_filter = ("last_name",)
 
 
@@ -95,7 +115,11 @@ class PublisherAdmin(admin.ModelAdmin):
 
 @admin.register(Catalog)
 class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
-    inlines = (BookImageInline, BookPropertyInline,)
+    inlines = (
+        BookPropertyInline,
+        BookImageInline,
+        BookDocInline,
+    )
     list_display = (
         "manufacturer",
         "years",
