@@ -136,7 +136,6 @@
                 </div>
               </div>
               <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                FIXME: {{ type }}
                 {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% dynamic_admin_url 'bookshelf' type book.pk %}">Edit</a>{% endif %}
               </div>
             </div>

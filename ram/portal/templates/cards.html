@@ -6,7 +6,7 @@
       <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
       {% block cards %}
         {% for d in data %}
-        {% if d.type == "rolling_stock" %}
+        {% if d.type == "roster" %}
         {% include "cards/roster.html" %}
         {% elif d.type == "company" %}
         {% include "cards/company.html" %}

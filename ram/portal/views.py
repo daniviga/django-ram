@@ -62,8 +62,8 @@ class Render404(View):
 
 class GetData(View):
     title = "Home"
-    template = "roster.html"
-    item_type = "rolling_stock"
+    template = "pagination.html"
+    item_type = "roster"
     filter = Q()  # empty filter by default
 
     def get_data(self, request):
@@ -78,8 +78,7 @@ class GetData(View):
         for item in self.get_data(request):
             data.append({"type": self.item_type, "item": item})
 
-        paginator = Paginator(data, 3)
-        # paginator = Paginator(data, get_items_per_page())
+        paginator = Paginator(data, get_items_per_page())
         data = paginator.get_page(page)
         page_range = paginator.get_elided_page_range(
             data.number, on_each_side=1, on_ends=1
@@ -99,8 +98,8 @@ class GetData(View):
 
 
 class GetRoster(GetData):
-    title = "Roster"
-    item_type = "rolling_stock"
+    title = "The Roster"
+    item_type = "roster"
 
     def get_data(self, request):
         return RollingStock.objects.get_published(request.user).order_by(
@@ -153,14 +152,14 @@ class SearchObjects(View):
         # FIXME see if it makes sense to filter calatogs and books by scale
         #       and manufacturer as well
         data = []
-        rolling_stock = (
+        roster = (
             RollingStock.objects.get_published(request.user)
             .filter(query)
             .distinct()
             .order_by(*get_order_by_field())
         )
-        for item in rolling_stock:
-            data.append({"type": "rolling_stock", "item": item})
+        for item in roster:
+            data.append({"type": "roster", "item": item})
 
         if _filter is None:
             consists = (
@@ -247,7 +246,7 @@ class GetManufacturerItem(View):
         )
 
         if search != "all":
-            rolling_stock = get_list_or_404(
+            roster = get_list_or_404(
                 RollingStock.objects.get_published(request.user).order_by(
                     *get_order_by_field()
                 ),
@@ -260,10 +259,10 @@ class GetManufacturerItem(View):
                 manufacturer,
                 # all returned records must have the same `item_number``;
                 # just pick it up the first result, otherwise `search`
-                rolling_stock[0].item_number if rolling_stock else search,
+                roster.first.item_number if roster else search,
             )
         else:
-            rolling_stock = (
+            roster = (
                 RollingStock.objects.get_published(request.user)
                 .order_by(*get_order_by_field())
                 .filter(
@@ -274,8 +273,8 @@ class GetManufacturerItem(View):
             title = "Manufacturer: {0}".format(manufacturer)
 
         data = []
-        for item in rolling_stock:
-            data.append({"type": "rolling_stock", "item": item})
+        for item in roster:
+            data.append({"type": "roster", "item": item})
 
         paginator = Paginator(data, get_items_per_page())
         data = paginator.get_page(page)
@@ -318,7 +317,7 @@ class GetObjectsFiltered(View):
         else:
             raise Http404
 
-        rolling_stock = (
+        roster = (
             RollingStock.objects.get_published(request.user)
             .filter(query)
             .distinct()
@@ -326,8 +325,8 @@ class GetObjectsFiltered(View):
         )
 
         data = []
-        for item in rolling_stock:
-            data.append({"type": "rolling_stock", "item": item})
+        for item in roster:
+            data.append({"type": "roster", "item": item})
 
         try:  # Execute only if query_2nd is defined
             consists = (
@@ -452,7 +451,7 @@ class GetConsist(View):
             raise Http404
         data = [
             {
-                "type": "rolling_stock",
+                "type": "roster",
                 "item": RollingStock.objects.get_published(request.user).get(
                     uuid=r.rolling_stock_id
                 ),

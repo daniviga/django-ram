@@ -15,5 +15,7 @@ def dynamic_admin_url(app_name, model_name, object_id=None):
 
 
 @register.simple_tag
-def dynamic_pagination(model_name, page):
-    return reverse(f'{model_name}s_pagination', args=[page])
+def dynamic_pagination(reverse_name, page):
+    if reverse_name.endswith('y'):
+        return reverse(f'{reverse_name[:-1]}ies_pagination', args=[page])
+    return reverse(f'{reverse_name}s_pagination', args=[page])

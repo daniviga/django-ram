@@ -25,7 +25,7 @@ urlpatterns = [
     path(
         "roster/page/<int:page>",
         GetRoster.as_view(),
-        name="roster_pagination"
+        name="rosters_pagination"
     ),
     path(
         "page/<str:flatpage>",
@@ -34,12 +34,12 @@ urlpatterns = [
     ),
     path(
         "consists",
-        Consists.as_view(template="consists.html"),
+        Consists.as_view(),
         name="consists"
     ),
     path(
         "consists/page/<int:page>",
-        Consists.as_view(template="consists.html"),
+        Consists.as_view(),
         name="consists_pagination"
     ),
     path("consist/<uuid:uuid>", GetConsist.as_view(), name="consist"),
@@ -50,52 +50,52 @@ urlpatterns = [
     ),
     path(
         "companies",
-        Companies.as_view(template="companies.html"),
+        Companies.as_view(),
         name="companies"
     ),
     path(
         "companies/page/<int:page>",
-        Companies.as_view(template="companies.html"),
+        Companies.as_view(),
         name="companies_pagination",
     ),
     path(
         "manufacturers/<str:category>",
-        Manufacturers.as_view(template="manufacturers.html"),
+        Manufacturers.as_view(template="pagination_manufacturers.html"),
         name="manufacturers"
     ),
     path(
         "manufacturers/<str:category>/page/<int:page>",
-        Manufacturers.as_view(template="manufacturers.html"),
+        Manufacturers.as_view(template="pagination_manufacturers.html"),
         name="manufacturers_pagination",
     ),
     path(
         "scales",
-        Scales.as_view(template="scales.html"),
+        Scales.as_view(),
         name="scales"
     ),
     path(
         "scales/page/<int:page>",
-        Scales.as_view(template="scales.html"),
+        Scales.as_view(),
         name="scales_pagination"
     ),
     path(
         "types",
-        Types.as_view(template="types.html"),
-        name="types"
+        Types.as_view(),
+        name="rolling_stock_types"
     ),
     path(
         "types/page/<int:page>",
-        Types.as_view(template="types.html"),
-        name="types_pagination"
+        Types.as_view(),
+        name="rolling_stock_types_pagination"
     ),
     path(
         "bookshelf/books",
-        Books.as_view(template="bookshelf/books.html"),
+        Books.as_view(),
         name="books"
     ),
     path(
         "bookshelf/books/page/<int:page>",
-        Books.as_view(template="bookshelf/books.html"),
+        Books.as_view(),
         name="books_pagination"
     ),
     path(
@@ -105,12 +105,12 @@ urlpatterns = [
     ),
     path(
         "bookshelf/catalogs",
-        Catalogs.as_view(template="bookshelf/books.html"),
+        Catalogs.as_view(),
         name="catalogs"
     ),
     path(
         "bookshelf/catalogs/page/<int:page>",
-        Catalogs.as_view(template="bookshelf/books.html"),
+        Catalogs.as_view(),
         name="catalogs_pagination"
     ),
     path(
