@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load dynamic_url %}
 
         {% block header %}
         {% if book.tags.all %}
@@ -57,24 +58,39 @@
                     {{ book.description | safe }}
                     <thead>
                       <tr>
+                      {% if type == "catalog" %}
+                        <th colspan="2" scope="row">Catalog</th>
+                      {% elif type == "book" %}
                         <th colspan="2" scope="row">Book</th>
+                      {% endif %}
                       </tr>
                     </thead>
                     <tbody class="table-group-divider">
+                      {% if type == "catalog" %}
+                      <tr>
+                        <th class="w-33" scope="row">Manufacturer</th>
+                        <td>{{ book.manufacturer }}</td>
+                      </tr>
+                      <tr>
+                        <th class="w-33" scope="row">Scales</th>
+                        <td>{{ book.get_scales }}</td>
+                      </tr>
+                      {% elif type == "book" %}
                       <tr>
                         <th class="w-33" scope="row">Title</th>
                         <td>{{ book.title }}</td>
                       </tr>
                       <tr>
-                        <th scope="row">Authors</th>
-                          <td>
-                            <ul class="mb-0 list-unstyled">{% for a in book.authors.all %}<li>{{ a }}</li>{% endfor %}</ul>
-                          </td>
+                        <th class="w-33" scope="row">Authors</th>
+                        <td>
+                          <ul class="mb-0 list-unstyled">{% for a in book.authors.all %}<li>{{ a }}</li>{% endfor %}</ul>
+                        </td>
                       </tr>
                       <tr>
-                        <th scope="row">Publisher</th>
+                        <th class="w-33" scope="row">Publisher</th>
                         <td>{{ book.publisher }}</td>
                       </tr>
+                      {% endif %}
                       <tr>
                         <th scope="row">ISBN</th>
                         <td>{{ book.ISBN|default:"-" }}</td>
@@ -120,7 +136,8 @@
                 </div>
               </div>
               <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% url 'admin:bookshelf_book_change' book.pk %}">Edit</a>{% endif %}
+                FIXME: {{ type }}
+                {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% dynamic_admin_url 'bookshelf' type book.pk %}">Edit</a>{% endif %}
               </div>
             </div>
           </div>

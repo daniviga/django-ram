@@ -18,7 +18,7 @@
         {% include "cards/consist.html" %}
         {% elif d.type == "manufacturer" %}
         {% include "cards/manufacturer.html" %}
-        {% elif d.type == "book" %}
+        {% elif d.type == "book" or d.type == "catalog" %}
         {% include "cards/book.html" %}
         {% endif %}
         {% endfor %}

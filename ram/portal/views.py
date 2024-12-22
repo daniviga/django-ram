@@ -1,5 +1,6 @@
 import base64
 import operator
+from itertools import chain
 from functools import reduce
 from urllib.parse import unquote
 
@@ -77,7 +78,8 @@ class GetData(View):
         for item in self.get_data(request):
             data.append({"type": self.item_type, "item": item})
 
-        paginator = Paginator(data, get_items_per_page())
+        paginator = Paginator(data, 3)
+        # paginator = Paginator(data, get_items_per_page())
         data = paginator.get_page(page)
         page_range = paginator.get_elided_page_range(
             data.number, on_each_side=1, on_ends=1
@@ -148,6 +150,8 @@ class SearchObjects(View):
             raise Http404
 
         # FIXME duplicated code!
+        # FIXME see if it makes sense to filter calatogs and books by scale
+        #       and manufacturer as well
         data = []
         rolling_stock = (
             RollingStock.objects.get_published(request.user)
@@ -157,6 +161,7 @@ class SearchObjects(View):
         )
         for item in rolling_stock:
             data.append({"type": "rolling_stock", "item": item})
+
         if _filter is None:
             consists = (
                 Consist.objects.get_published(request.user)
@@ -175,7 +180,12 @@ class SearchObjects(View):
                 .filter(title__icontains=search)
                 .distinct()
             )
-            for item in books:
+            catalogs = (
+                Catalog.objects.get_published(request.user)
+                .filter(manufacturer__name__icontains=search)
+                .distinct()
+            )
+            for item in list(chain(books, catalogs)):
                 data.append({"type": "book", "item": item})
 
         paginator = Paginator(data, get_items_per_page())
@@ -517,10 +527,26 @@ class Books(GetData):
         return Book.objects.get_published(request.user).all()
 
 
-class GetBook(View):
-    def get(self, request, uuid):
+class Catalogs(GetData):
+    title = "Catalogs"
+    item_type = "catalog"
+
+    def get_data(self, request):
+        return Catalog.objects.get_published(request.user).all()
+
+
+class GetBookCatalog(View):
+    def get_object(self, request, uuid, selector):
+        if selector == "book":
+            return Book.objects.get_published(request.user).get(uuid=uuid)
+        elif selector == "catalog":
+            return Catalog.objects.get_published(request.user).get(uuid=uuid)
+        else:
+            raise Http404
+
+    def get(self, request, uuid, selector):
         try:
-            book = Book.objects.get_published(request.user).get(uuid=uuid)
+            book = self.get_object(request, uuid, selector)
         except ObjectDoesNotExist:
             raise Http404
 
@@ -532,36 +558,9 @@ class GetBook(View):
                 "title": book,
                 "book_properties": book_properties,
                 "book": book,
+                "type": selector
             },
         )
-
-
-class Catalogs(GetData):
-    title = "Catalogs"
-    item_type = "book"
-
-    def get_data(self, request):
-        return Catalog.objects.get_published(request.user).all()
-
-
-class GetCatalog(View):
-    def get(self, request, uuid):
-        try:
-            catalog = Catalog.objects.get_published(request.user).get(uuid=uuid)
-        except ObjectDoesNotExist:
-            raise Http404
-
-        catalog_properties = catalog.property.get_public(request.user)
-        return render(
-            request,
-            "bookshelf/book.html",
-            {
-                "title": catalog,
-                "catalog_properties": catalog_properties,
-                "book": catalog,
-            },
-        )
-
 
 
 class GetFlatpage(View):

@@ -35,6 +35,7 @@ class BookAdmin(SortableAdminBase, admin.ModelAdmin):
         "number_of_pages",
         "published",
     )
+    autocomplete_fields = ("authors", "publisher")
     readonly_fields = ("creation_time", "updated_time")
     search_fields = ("title", "publisher__name", "authors__last_name")
     list_filter = ("publisher__name", "authors")
@@ -101,6 +102,7 @@ class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
         "get_scales",
         "published",
     )
+    autocomplete_fields = ("manufacturer",)
     readonly_fields = ("creation_time", "updated_time")
     search_fields = ("manufacturer__name", "years", "scales__scale")
     list_filter = ("manufacturer__name", "publication_year", "scales__scale")

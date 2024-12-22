@@ -14,9 +14,8 @@ from portal.views import (
     Scales,
     Types,
     Books,
-    GetBook,
     Catalogs,
-    GetCatalog,
+    GetBookCatalog,
     SearchObjects,
 )
 
@@ -99,7 +98,11 @@ urlpatterns = [
         Books.as_view(template="bookshelf/books.html"),
         name="books_pagination"
     ),
-    path("bookshelf/book/<uuid:uuid>", GetBook.as_view(), name="book"),
+    path(
+        "bookshelf/<str:selector>/<uuid:uuid>",
+        GetBookCatalog.as_view(),
+        name="bookshelf_item"
+    ),
     path(
         "bookshelf/catalogs",
         Catalogs.as_view(template="bookshelf/books.html"),
@@ -109,11 +112,6 @@ urlpatterns = [
         "bookshelf/catalogs/page/<int:page>",
         Catalogs.as_view(template="bookshelf/books.html"),
         name="catalogs_pagination"
-    ),
-    path(
-        "bookshelf/catalog/<uuid:uuid>",
-        GetCatalog.as_view(),
-        name="catalog"
     ),
     path(
         "search",

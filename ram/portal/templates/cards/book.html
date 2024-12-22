@@ -1,3 +1,4 @@
+{% load dynamic_url %}
         <div class="col">
           <div class="card shadow-sm">
             {% if d.item.image.exists %}
@@ -18,10 +19,24 @@
               <table class="table table-striped">
                 <thead>
                   <tr>
+                    {% if d.type == "catalog" %}
+                    <th colspan="2" scope="row">Catalog</th>
+                    {% elif d.type == "book" %}
                     <th colspan="2" scope="row">Book</th>
+                    {% endif %}
                   </tr>
                 </thead>
                 <tbody class="table-group-divider">
+                  {% if d.type == "catalog" %}
+                  <tr>
+                    <th class="w-33" scope="row">Manufacturer</th>
+                    <td>{{ d.item.manufacturer }}</td>
+                  </tr>
+                  <tr>
+                    <th class="w-33" scope="row">Scales</th>
+                    <td>{{ d.item.get_scales }}</td>
+                  </tr>
+                  {% elif d.type == "book" %}
                   <tr>
                     <th class="w-33" scope="row">Authors</th>
                     <td>
@@ -32,6 +47,7 @@
                     <th class="w-33" scope="row">Publisher</th>
                     <td>{{ d.item.publisher }}</td>
                   </tr>
+                  {% endif %}
                   <tr>
                     <th scope="row">Language</th>
                     <td>{{ d.item.get_language_display }}</td>
@@ -48,7 +64,7 @@
               </table>
               <div class="d-grid gap-2 mb-1 d-md-block">
                 <a class="btn btn-sm btn-outline-primary" href="{{ d.item.get_absolute_url }}">Show all data</a>
-                {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% url 'admin:bookshelf_book_change' d.item.pk %}">Edit</a>{% endif %}
+                {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% dynamic_admin_url 'bookshelf' d.type d.item.pk %}">Edit</a>{% endif %}
               </div>
             </div>
           </div>

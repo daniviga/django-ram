@@ -108,15 +108,16 @@ class Book(BaseBook):
         return self.publisher.name
 
     def get_absolute_url(self):
-        return reverse("book", kwargs={"uuid": self.uuid})
+        return reverse(
+            "bookshelf_item",
+            kwargs={"selector": "book", "uuid": self.uuid}
+        )
 
 
 class Catalog(BaseBook):
     manufacturer = models.ForeignKey(
         Manufacturer,
         on_delete=models.CASCADE,
-        null=True,
-        blank=True,
     )
     years = models.CharField(max_length=12)
     scales = models.ManyToManyField(Scale)
@@ -125,8 +126,15 @@ class Catalog(BaseBook):
         ordering = ["manufacturer", "publication_year"]
 
     def __str__(self):
-        scales = "/".join([s.scale for s in self.scales.all()])
+        scales = self.get_scales
         return "%s %s %s" % (self.manufacturer.name, self.years, scales)
 
     def get_absolute_url(self):
-        return reverse("catalog", kwargs={"uuid": self.uuid})
+        return reverse(
+            "bookshelf_item",
+            kwargs={"selector": "catalog", "uuid": self.uuid}
+        )
+
+    @property
+    def get_scales(self):
+        return "/".join([s.scale for s in self.scales.all()])
