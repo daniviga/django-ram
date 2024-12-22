@@ -12,7 +12,7 @@ from django.conf import settings
 
 def move_images(apps, schema_editor):
     sys.stdout.write("\n  Processing files. Please await...")
-    for r in bookshelf.models.BookImage.objects.all():
+    for r in bookshelf.models.BaseBookImage.objects.all():
         fname = os.path.basename(r.image.path)
         new_image = bookshelf.models.book_image_upload(r, fname)
         new_path = os.path.join(settings.MEDIA_ROOT, new_image)
