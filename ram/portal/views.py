@@ -344,6 +344,13 @@ class GetObjectsFiltered(View):
                 )
                 for item in books:
                     data.append({"type": "book", "item": item})
+                catalogs = (
+                    Catalog.objects.get_published(request.user)
+                    .filter(query_2nd)
+                    .distinct()
+                )
+                for item in catalogs:
+                    data.append({"type": "catalog", "item": item})
         except NameError:
             pass
 
