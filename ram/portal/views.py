@@ -7,7 +7,7 @@ from urllib.parse import unquote
 from django.views import View
 from django.http import Http404, HttpResponseBadRequest
 from django.db.utils import OperationalError, ProgrammingError
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.shortcuts import render, get_object_or_404, get_list_or_404
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
@@ -507,7 +507,9 @@ class Scales(GetData):
     queryset = Scale.objects.all()
 
     def get_data(self, request):
-        return Scale.objects.all()
+        return Scale.objects.annotate(
+            num_items=Count("rollingstock")
+        )  # .filter(num_items__gt=0) to filter data with no items
 
 
 class Types(GetData):
