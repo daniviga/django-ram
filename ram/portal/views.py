@@ -549,14 +549,16 @@ class GetBookCatalog(View):
         except ObjectDoesNotExist:
             raise Http404
 
-        book_properties = book.property.get_public(request.user)
+        properties = book.property.get_public(request.user)
+        documents = book.document.get_public(request.user)
         return render(
             request,
             "bookshelf/book.html",
             {
                 "title": book,
-                "book_properties": book_properties,
                 "book": book,
+                "documents": documents,
+                "properties": properties,
                 "type": selector
             },
         )

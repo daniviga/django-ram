@@ -46,10 +46,12 @@
             <div class="mx-auto">
               <nav class="nav nav-tabs d-none d-lg-flex flex-row mb-2" id="nav-tab" role="tablist">
                 <button class="nav-link active" id="nav-summary-tab" data-bs-toggle="tab" data-bs-target="#nav-summary" type="button" role="tab" aria-controls="nav-summary" aria-selected="true">Summary</button>
+                {% if documents %}<button class="nav-link" id="nav-documents-tab" data-bs-toggle="tab" data-bs-target="#nav-documents" type="button" role="tab" aria-controls="nav-documents" aria-selected="false">Documents</button>{% endif %}
                 {% if book.notes %}<button class="nav-link" id="nav-notes-tab" data-bs-toggle="tab" data-bs-target="#nav-notes" type="button" role="tab" aria-controls="nav-notes" aria-selected="false">Notes</button>{% endif %}
               </nav>
               <select class="form-select d-lg-none mb-2" id="tabSelector" aria-label="Tab selector">
                 <option value="nav-summary" selected>Summary</option>
+                {% if documents %}<option value="nav-documents">Documents</option>{% endif %}
                 {% if book.notes %}<option value="nav-notes">Notes</option>{% endif %}
               </select>
               <div class="tab-content" id="nav-tabContent">
@@ -130,6 +132,24 @@
                     </tbody>
                   </table>
                   {% endif %}
+                </div>
+                <div class="tab-pane" id="nav-documents" role="tabpanel" aria-labelledby="nav-documents-tab">
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th colspan="3" scope="row">Documents</th>
+                      </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                    {% for d in documents.all %}
+                      <tr>
+                        <td class="w-33">{{ d.description }}</td>
+                        <td><a href="{{ d.file.url }}" target="_blank">{{ d.filename }}</a></td>
+                        <td class="text-end">{{ d.file.size | filesizeformat }}</td>
+                      </tr>
+                    {% endfor %}
+                    </tbody>
+                  </table>
                 </div>
                 <div class="tab-pane" id="nav-notes" role="tabpanel" aria-labelledby="nav-notes-tab">
                   {{ book.notes | safe }}

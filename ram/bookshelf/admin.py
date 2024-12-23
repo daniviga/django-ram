@@ -121,6 +121,7 @@ class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
         BookDocInline,
     )
     list_display = (
+        "__str__",
         "manufacturer",
         "years",
         "get_scales",
