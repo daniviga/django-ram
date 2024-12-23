@@ -259,7 +259,7 @@ class GetManufacturerItem(View):
                 manufacturer,
                 # all returned records must have the same `item_number``;
                 # just pick it up the first result, otherwise `search`
-                roster.first.item_number if roster else search,
+                roster[0].item_number if roster else search,
             )
         else:
             roster = (
