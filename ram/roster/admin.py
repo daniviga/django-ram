@@ -2,12 +2,12 @@ import csv
 import html
 import locale
 
-from django.http import HttpResponse
 from django.contrib import admin
 from django.utils.html import strip_tags
 
 from adminsortable2.admin import SortableAdminBase, SortableInlineAdminMixin
 
+from ram.utils import generate_csv
 from roster.models import (
     RollingClass,
     RollingClassProperty,
@@ -188,72 +188,53 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
     )
 
     def download_csv(modeladmin, request, queryset):
-        response = HttpResponse(content_type="text/csv")
-        response["Content-Disposition"] = (
-            'attachment; filename="rolling_stock.csv"'
-        )
-        writer = csv.writer(response)
-        writer.writerow(
-            [
-                "Identifier",
-                "Company",
-                "Manufacturer",
-                "Scale",
-                "Item Number",
-                "Road Number",
-                "Set",
-                "Era",
-                "Description",
-                "Production Year",
-                "Purchase Date",
-                "Notes",
-                "Tags",
-                "Decoder Interface",
-                "Decoder",
-                "Address",
-                "Properties",
-                "Price",
-            ]
-        )
+        SPLITTER = ";"
+        header = [
+            "Company",
+            "Identifier",
+            "Road Number",
+            "Manufacturer",
+            "Scale",
+            "Item Number",
+            "Set",
+            "Era",
+            "Description",
+            "Production Year",
+            "Purchase Date",
+            "Notes",
+            "Tags",
+            "Decoder Interface",
+            "Decoder",
+            "Address",
+            "Properties",
+        ]
+        data = []
         for obj in queryset:
-            properties = obj.property.exclude(
-                property__name__icontains="price"
+            properties = SPLITTER.join(
+                "{}:{}".format(property.property.name, property.value)
+                for property in obj.property.all()
             )
-            properties_str = ""
-            for property in properties:
-                properties_str = ",".join(
-                    ("{}:{}".format(property.property.name, property.value),)
-                )
+            data.append([
+                obj.rolling_class.company.name,
+                obj.rolling_class.identifier,
+                obj.road_number,
+                obj.manufacturer.name,
+                obj.scale.scale,
+                obj.item_number,
+                obj.set,
+                obj.era,
+                html.unescape(strip_tags(obj.description)),
+                obj.production_year,
+                obj.purchase_date,
+                html.unescape(strip_tags(obj.notes)),
+                SPLITTER.join(t.name for t in obj.tags.all()),
+                obj.decoder_interface,
+                obj.decoder,
+                obj.address,
+                properties,
+            ])
 
-            prices = obj.property.filter(property__name__icontains="price")
-
-            price = 0.00
-            for p in prices:
-                price += locale.atof(p.value)
-
-            writer.writerow(
-                [
-                    obj.rolling_class.identifier,
-                    obj.rolling_class.company.name,
-                    obj.manufacturer.name,
-                    obj.scale,
-                    obj.item_number,
-                    obj.road_number,
-                    obj.set,
-                    obj.era,
-                    html.unescape(strip_tags(obj.description)),
-                    obj.production_year,
-                    obj.purchase_date,
-                    html.unescape(strip_tags(obj.notes)),
-                    ",".join(t.name for t in obj.tags.all()),
-                    obj.decoder_interface,
-                    obj.decoder,
-                    obj.address,
-                    properties_str,
-                    price if price > 0 else None,
-                ]
-            )
-        return response
+        return generate_csv(header, data, "rolling_stock.csv")
 
     download_csv.short_description = "Download selected items as CSV"
     actions = [download_csv]
