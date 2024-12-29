@@ -3,6 +3,7 @@ import csv
 import hashlib
 import subprocess
 
+from django.conf import settings
 from django.http import HttpResponse
 from django.utils.html import format_html
 from django.utils.text import slugify as django_slugify
@@ -61,9 +62,11 @@ def slugify(string, custom_separator=None):
     return string
 
 
-def generate_csv(header, data, filename, separator=","):
+def generate_csv(header, data, filename, separator=settings.CSV_SEPARATOR):
     response = HttpResponse(content_type="text/csv")
-    response["Content-Disposition"] = 'attachment; filename="{}"'.format(filename)
+    response["Content-Disposition"] = 'attachment; filename="{}"'.format(
+        filename
+    )
     writer = csv.writer(response)
     writer.writerow(header)
     for row in data:

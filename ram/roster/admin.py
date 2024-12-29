@@ -1,5 +1,6 @@
 import html
 
+from django.conf import settings
 from django.contrib import admin
 from django.utils.html import strip_tags
 
@@ -210,7 +211,6 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
         return form
 
     def download_csv(modeladmin, request, queryset):
-        SPLITTER = ";"
         header = [
             "Company",
             "Identifier",
@@ -233,7 +233,7 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
         ]
         data = []
         for obj in queryset:
-            properties = SPLITTER.join(
+            properties = settings.CSV_SEPARATOR_ALT.join(
                 "{}:{}".format(property.property.name, property.value)
                 for property in obj.property.all()
             )
@@ -249,7 +249,9 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
                 html.unescape(strip_tags(obj.description)),
                 obj.production_year,
                 html.unescape(strip_tags(obj.notes)),
-                SPLITTER.join(t.name for t in obj.tags.all()),
+                settings.CSV_SEPARATOR_ALT.join(
+                    t.name for t in obj.tags.all()
+                ),
                 obj.decoder_interface,
                 obj.decoder,
                 obj.address,

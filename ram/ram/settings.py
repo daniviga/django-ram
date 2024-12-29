@@ -170,6 +170,9 @@ SITE_NAME = "Railroad Assets Manger"
 # The file must be placed in the root of the 'static' folder
 DEFAULT_CARD_IMAGE = "coming_soon.svg"
 
+CSV_SEPARATOR = ","
+CSV_SEPARATOR_ALT = ";"
+
 DECODER_INTERFACES = [
     (0, "Built-in"),
     (1, "NEM651"),

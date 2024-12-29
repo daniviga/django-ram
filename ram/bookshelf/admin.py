@@ -127,7 +127,6 @@ class BookAdmin(SortableAdminBase, admin.ModelAdmin):
         return obj.authors_list
 
     def download_csv(modeladmin, request, queryset):
-        SPLITTER = ";"
         header = [
             "Title",
             "Authors",
@@ -146,20 +145,22 @@ class BookAdmin(SortableAdminBase, admin.ModelAdmin):
 
         data = []
         for obj in queryset:
-            properties = SPLITTER.join(
+            properties = settings.CSV_SEPARATOR_ALT.join(
                 "{}:{}".format(property.property.name, property.value)
                 for property in obj.property.all()
             )
             data.append([
                 obj.title,
-                obj.authors_list.replace(",", SPLITTER),
+                obj.authors_list.replace(",", settings.CSV_SEPARATOR_ALT),
                 obj.publisher.name,
                 obj.ISBN,
                 dict(settings.LANGUAGES)[obj.language],
                 obj.number_of_pages,
                 obj.publication_year,
                 html.unescape(strip_tags(obj.description)),
-                SPLITTER.join(t.name for t in obj.tags.all()),
+                settings.CSV_SEPARATOR_ALT.join(
+                    t.name for t in obj.tags.all()
+                ),
                 obj.purchase_date,
                 obj.price,
                 html.unescape(strip_tags(obj.notes)),
@@ -266,7 +267,6 @@ class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
         return "/".join(s.scale for s in obj.scales.all())
 
     def download_csv(modeladmin, request, queryset):
-        SPLITTER = ";"
         header = [
             "Catalog",
             "Manufacturer",
@@ -286,7 +286,7 @@ class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
 
         data = []
         for obj in queryset:
-            properties = SPLITTER.join(
+            properties = settings.CSV_SEPARATOR_ALT.join(
                 "{}:{}".format(property.property.name, property.value)
                 for property in obj.property.all()
             )
@@ -300,7 +300,9 @@ class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
                 obj.number_of_pages,
                 obj.publication_year,
                 html.unescape(strip_tags(obj.description)),
-                SPLITTER.join(t.name for t in obj.tags.all()),
+                settings.CSV_SEPARATOR_ALT.join(
+                    t.name for t in obj.tags.all()
+                ),
                 obj.purchase_date,
                 obj.price,
                 html.unescape(strip_tags(obj.notes)),
