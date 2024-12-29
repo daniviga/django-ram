@@ -118,13 +118,13 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
     readonly_fields = ("preview", "creation_time", "updated_time")
     list_display = (
         "__str__",
-        "published",
         "address",
         "manufacturer",
         "scale",
         "item_number",
         "company",
         "country",
+        "published",
     )
     list_filter = (
         "rolling_class__type__category",
