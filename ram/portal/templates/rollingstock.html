@@ -187,6 +187,12 @@
                         <th scope="row">Purchase date</th>
                         <td>{{ rolling_stock.purchase_date|default:"-" }}</td>
                       </tr>
+                      {% if request.user.is_staff %}
+                      <tr>
+                        <th scope="row">Price ({{ site_conf.currency }})</th>
+                        <td>{{ rolling_stock.price|default:"-" }}</td>
+                      </tr>
+                      {% endif %}
                     </tbody>
                   </table>
                   {% if properties %}

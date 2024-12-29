@@ -307,7 +307,7 @@ class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
                 properties,
             ])
 
-        return generate_csv(header, data, "bookshelf_books.csv")
+        return generate_csv(header, data, "bookshelf_catalogs.csv")
 
     download_csv.short_description = "Download selected items as CSV"
     actions = [download_csv]
