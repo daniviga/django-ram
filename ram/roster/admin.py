@@ -1,6 +1,4 @@
-import csv
 import html
-import locale
 
 from django.contrib import admin
 from django.utils.html import strip_tags
@@ -8,6 +6,7 @@ from django.utils.html import strip_tags
 from adminsortable2.admin import SortableAdminBase, SortableInlineAdminMixin
 
 from ram.utils import generate_csv
+from portal.utils import get_site_conf
 from roster.models import (
     RollingClass,
     RollingClassProperty,
@@ -159,8 +158,6 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
                     "era",
                     "description",
                     "production_year",
-                    "purchase_date",
-                    "notes",
                     "tags",
                 )
             },
@@ -176,6 +173,24 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
             },
         ),
         (
+            "Purchase data",
+            {
+                "fields": (
+                    "purchase_date",
+                    "price",
+                )
+            },
+        ),
+        (
+            "Notes",
+            {
+                "classes": ("collapse",),
+                "fields": (
+                    "notes",
+                )
+            },
+        ),
+        (
             "Audit",
             {
                 "classes": ("collapse",),
@@ -186,6 +201,13 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
             },
         ),
     )
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        form.base_fields["price"].label = "Price ({})".format(
+            get_site_conf().currency
+        )
+        return form
 
     def download_csv(modeladmin, request, queryset):
         SPLITTER = ";"
@@ -200,12 +222,13 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
             "Era",
             "Description",
             "Production Year",
-            "Purchase Date",
             "Notes",
             "Tags",
             "Decoder Interface",
             "Decoder",
             "Address",
+            "Purchase Date",
+            "Price ({})".format(get_site_conf().currency),
             "Properties",
         ]
         data = []
@@ -225,12 +248,13 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
                 obj.era,
                 html.unescape(strip_tags(obj.description)),
                 obj.production_year,
-                obj.purchase_date,
                 html.unescape(strip_tags(obj.notes)),
                 SPLITTER.join(t.name for t in obj.tags.all()),
                 obj.decoder_interface,
                 obj.decoder,
                 obj.address,
+                obj.purchase_date,
+                obj.price,
                 properties,
             ])
 

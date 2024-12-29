@@ -1,6 +1,12 @@
+import html
+
+from django.conf import settings
 from django.contrib import admin
+from django.utils.html import strip_tags
 from adminsortable2.admin import SortableAdminBase, SortableInlineAdminMixin
 
+from ram.utils import generate_csv
+from portal.utils import get_site_conf
 from bookshelf.models import (
     BaseBookProperty,
     BaseBookImage,
@@ -71,9 +77,25 @@ class BookAdmin(SortableAdminBase, admin.ModelAdmin):
                     "number_of_pages",
                     "publication_year",
                     "description",
-                    "purchase_date",
-                    "notes",
                     "tags",
+                )
+            },
+        ),
+        (
+            "Purchase data",
+            {
+                "fields": (
+                    "purchase_date",
+                    "price",
+                )
+            },
+        ),
+        (
+            "Notes",
+            {
+                "classes": ("collapse",),
+                "fields": (
+                    "notes",
                 )
             },
         ),
@@ -89,13 +111,65 @@ class BookAdmin(SortableAdminBase, admin.ModelAdmin):
         ),
     )
 
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        form.base_fields["price"].label = "Price ({})".format(
+            get_site_conf().currency
+        )
+        return form
+
     @admin.display(description="Publisher")
     def get_publisher(self, obj):
         return obj.publisher.name
 
     @admin.display(description="Authors")
     def get_authors(self, obj):
-        return ", ".join(a.short_name() for a in obj.authors.all())
+        return obj.authors_list
+
+    def download_csv(modeladmin, request, queryset):
+        SPLITTER = ";"
+        header = [
+            "Title",
+            "Authors",
+            "Publisher",
+            "ISBN",
+            "Language",
+            "Number of Pages",
+            "Publication Year",
+            "Description",
+            "Tags",
+            "Purchase Date",
+            "Price ({})".format(get_site_conf().currency),
+            "Notes",
+            "Properties",
+        ]
+
+        data = []
+        for obj in queryset:
+            properties = SPLITTER.join(
+                "{}:{}".format(property.property.name, property.value)
+                for property in obj.property.all()
+            )
+            data.append([
+                obj.title,
+                obj.authors_list.replace(",", SPLITTER),
+                obj.publisher.name,
+                obj.ISBN,
+                dict(settings.LANGUAGES)[obj.language],
+                obj.number_of_pages,
+                obj.publication_year,
+                html.unescape(strip_tags(obj.description)),
+                SPLITTER.join(t.name for t in obj.tags.all()),
+                obj.purchase_date,
+                obj.price,
+                html.unescape(strip_tags(obj.notes)),
+                properties,
+            ])
+
+        return generate_csv(header, data, "bookshelf_books.csv")
+
+    download_csv.short_description = "Download selected items as CSV"
+    actions = [download_csv]
 
 
 @admin.register(Author)
@@ -146,9 +220,25 @@ class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
                     "number_of_pages",
                     "publication_year",
                     "description",
-                    "purchase_date",
-                    "notes",
                     "tags",
+                )
+            },
+        ),
+        (
+            "Purchase data",
+            {
+                "fields": (
+                    "purchase_date",
+                    "price",
+                )
+            },
+        ),
+        (
+            "Notes",
+            {
+                "classes": ("collapse",),
+                "fields": (
+                    "notes",
                 )
             },
         ),
@@ -164,6 +254,60 @@ class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
         ),
     )
 
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        form.base_fields["price"].label = "Price ({})".format(
+            get_site_conf().currency
+        )
+        return form
+
     @admin.display(description="Scales")
     def get_scales(self, obj):
         return "/".join(s.scale for s in obj.scales.all())
+
+    def download_csv(modeladmin, request, queryset):
+        SPLITTER = ";"
+        header = [
+            "Catalog",
+            "Manufacturer",
+            "Years",
+            "Scales",
+            "ISBN",
+            "Language",
+            "Number of Pages",
+            "Publication Year",
+            "Description",
+            "Tags",
+            "Purchase Date",
+            "Price ({})".format(get_site_conf().currency),
+            "Notes",
+            "Properties",
+        ]
+
+        data = []
+        for obj in queryset:
+            properties = SPLITTER.join(
+                "{}:{}".format(property.property.name, property.value)
+                for property in obj.property.all()
+            )
+            data.append([
+                obj.__str__,
+                obj.manufacturer.name,
+                obj.years,
+                obj.get_scales,
+                obj.ISBN,
+                dict(settings.LANGUAGES)[obj.language],
+                obj.number_of_pages,
+                obj.publication_year,
+                html.unescape(strip_tags(obj.description)),
+                SPLITTER.join(t.name for t in obj.tags.all()),
+                obj.purchase_date,
+                obj.price,
+                html.unescape(strip_tags(obj.notes)),
+                properties,
+            ])
+
+        return generate_csv(header, data, "bookshelf_books.csv")
+
+    download_csv.short_description = "Download selected items as CSV"
+    actions = [download_csv]
