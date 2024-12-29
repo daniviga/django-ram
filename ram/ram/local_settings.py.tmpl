@@ -15,6 +15,7 @@ DEBUG = False
 
 # SECURITY WARNING: cache middlewares must be loaded before cookies one
 MIDDLEWARE = [
+    "ram.middleware.DisableClientSideCachingMiddleware",
     "django.middleware.cache.UpdateCacheMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.cache.FetchFromCacheMiddleware",
@@ -22,8 +23,8 @@ MIDDLEWARE = [
 
 CACHES = {
     "default": {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379",
+        "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+        "LOCATION": settings.STORAGE_DIR / "cache",
     }
 }
 
