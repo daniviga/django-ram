@@ -101,6 +101,12 @@ class RollingStock(BaseModel):
     )
     production_year = models.SmallIntegerField(null=True, blank=True)
     purchase_date = models.DateField(null=True, blank=True)
+    price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True,
+    )
     description = tinymce.HTMLField(blank=True)
     tags = models.ManyToManyField(
         Tag, related_name="rolling_stock", blank=True

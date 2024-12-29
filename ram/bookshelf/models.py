@@ -49,6 +49,12 @@ class BaseBook(BaseModel):
     number_of_pages = models.SmallIntegerField(null=True, blank=True)
     publication_year = models.SmallIntegerField(null=True, blank=True)
     description = tinymce.HTMLField(blank=True)
+    price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True,
+    )
     purchase_date = models.DateField(null=True, blank=True)
     tags = models.ManyToManyField(
         Tag, related_name="bookshelf", blank=True
@@ -114,8 +120,13 @@ class Book(BaseBook):
     def __str__(self):
         return self.title
 
+    @property
     def publisher_name(self):
         return self.publisher.name
+
+    @property
+    def authors_list(self):
+        return ", ".join(a.short_name() for a in self.authors.all())
 
     def get_absolute_url(self):
         return reverse(

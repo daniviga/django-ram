@@ -30,6 +30,7 @@ class SiteConfiguration(SingletonModel):
         ],
         default="type",
     )
+    currency = models.CharField(max_length=3, default="EUR")
     footer = tinymce.HTMLField(blank=True)
     footer_extended = tinymce.HTMLField(blank=True)
     show_version = models.BooleanField(default=True)
