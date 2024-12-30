@@ -151,7 +151,6 @@
                   {% endif %}
                 </div>
                 <div class="tab-pane" id="nav-model" role="tabpanel" aria-labelledby="nav-model-tab">
-                  {{ rolling_stock.description | safe }}
                   <table class="table table-striped">
                     <thead>
                       <tr>
@@ -193,6 +192,12 @@
                         <td>{{ rolling_stock.price|default:"-" }}</td>
                       </tr>
                       {% endif %}
+                      {% if rolling_stock.description %}
+                      <tr>
+                        <th class="w-33" scope="row">Description</th>
+                        <td>{{ rolling_stock.description | safe }}</td>
+                      </tr>
+                      {% endif %}
                     </tbody>
                   </table>
                   {% if properties %}
@@ -214,7 +219,6 @@
                   {% endif %}
                 </div>
                 <div class="tab-pane" id="nav-class" role="tabpanel" aria-labelledby="nav-class-tab">
-                  {{ class.description | safe }}
                   <table class="table table-striped">
                     <thead>
                       <tr>
@@ -238,6 +242,12 @@
                           {% else %}-{% endif %}
                         </td>
                       </tr>
+                      {% if class.description %}
+                      <tr>
+                        <th class="w-33" scope="row">Description</th>
+                        <td>{{ class.description | safe }}</td>
+                      </tr>
+                      {% endif %}
                     </tbody>
                   </table>
                   {% if class_properties %}

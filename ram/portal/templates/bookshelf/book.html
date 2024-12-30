@@ -57,7 +57,6 @@
               <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane show active" id="nav-summary" role="tabpanel" aria-labelledby="nav-summary-tab">
                   <table class="table table-striped">
-                    {{ book.description | safe }}
                     <thead>
                       <tr>
                       {% if type == "catalog" %}
@@ -117,6 +116,12 @@
                       <tr>
                         <th scope="row">Price ({{ site_conf.currency }})</th>
                         <td>{{ book.price|default:"-" }}</td>
+                      </tr>
+                      {% endif %}
+                      {% if book.description %}
+                      <tr>
+                        <th class="w-33" scope="row">Description</th>
+                        <td>{{ book.description | safe }}</td>
                       </tr>
                       {% endif %}
                     </tbody>
