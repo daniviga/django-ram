@@ -182,11 +182,11 @@
                         <th scope="row">Production year</th>
                         <td>{{ rolling_stock.production_year|default:"-" }}</td>
                       </tr>
+                      {% if request.user.is_staff %}
                       <tr>
                         <th scope="row">Purchase date</th>
                         <td>{{ rolling_stock.purchase_date|default:"-" }}</td>
                       </tr>
-                      {% if request.user.is_staff %}
                       <tr>
                         <th scope="row">Price ({{ site_conf.currency }})</th>
                         <td>{{ rolling_stock.price|default:"-" }}</td>

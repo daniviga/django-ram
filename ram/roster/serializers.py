@@ -28,5 +28,5 @@ class RollingStockSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = RollingStock
-        exclude = ("price",)
+        exclude = ("purchase_date", "price",)
         read_only_fields = ("creation_time", "updated_time")
