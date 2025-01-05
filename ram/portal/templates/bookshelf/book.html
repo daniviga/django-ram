@@ -108,16 +108,6 @@
                         <th scope="row">Publication year</th>
                         <td>{{ book.publication_year|default:"-" }}</td>
                       </tr>
-                      {% if request.user.is_staff %}
-                      <tr>
-                        <th scope="row">Purchase date</th>
-                        <td>{{ book.purchase_date|default:"-" }}</td>
-                      </tr>
-                      <tr>
-                        <th scope="row">Price ({{ site_conf.currency }})</th>
-                        <td>{{ book.price|default:"-" }}</td>
-                      </tr>
-                      {% endif %}
                       {% if book.description %}
                       <tr>
                         <th class="w-33" scope="row">Description</th>
@@ -126,6 +116,25 @@
                       {% endif %}
                     </tbody>
                   </table>
+                  {% if request.user.is_staff %}
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th colspan="2" scope="row">Purchase</th>
+                      </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                      <tr>
+                        <th class="w-33" scope="row">Purchase date</th>
+                        <td>{{ book.purchase_date|default:"-" }}</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Price ({{ site_conf.currency }})</th>
+                        <td>{{ book.price|default:"-" }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  {% endif %}
                   {% if properties %}
                   <table class="table table-striped">
                     <thead>
