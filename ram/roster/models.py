@@ -156,8 +156,13 @@ class RollingStockDocument(Document):
         RollingStock, on_delete=models.CASCADE, related_name="document"
     )
 
-    class Meta(object):
-        unique_together = ("rolling_stock", "file")
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["rolling_stock", "file"],
+                name="unique_stock_file"
+            )
+        ]
 
 
 def rolling_stock_image_upload(instance, filename):

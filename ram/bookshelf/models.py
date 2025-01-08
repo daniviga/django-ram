@@ -96,7 +96,12 @@ class BaseBookDocument(Document):
 
     class Meta:
         verbose_name_plural = "Documents"
-        unique_together = ("book", "file")
+        constraints = [
+            models.UniqueConstraint(
+                fields=["book", "file"],
+                name="unique_book_file"
+            )
+        ]
 
 
 class BaseBookProperty(PropertyInstance):

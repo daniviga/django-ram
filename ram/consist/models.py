@@ -54,10 +54,20 @@ class ConsistItem(models.Model):
         Consist, on_delete=models.CASCADE, related_name="consist_item"
     )
     rolling_stock = models.ForeignKey(RollingStock, on_delete=models.CASCADE)
-    order = models.PositiveIntegerField(default=0, blank=False, null=False)
+    order = models.PositiveIntegerField(
+        default=1000,  # make sure it is always added at the end
+        blank=False,
+        null=False
+    )
 
-    class Meta(object):
+    class Meta:
         ordering = ["order"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["consist", "rolling_stock"],
+                name="one_stock_per_consist"
+            )
+        ]
 
     def __str__(self):
         return "{0}".format(self.rolling_stock)

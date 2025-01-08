@@ -117,7 +117,7 @@ class Decoder(models.Model):
         blank=True,
     )
 
-    class Meta(object):
+    class Meta:
         ordering = ["manufacturer__name", "name"]
 
     def __str__(self):
@@ -135,7 +135,12 @@ class DecoderDocument(Document):
     )
 
     class Meta:
-        unique_together = ("decoder", "file")
+        constraints = [
+            models.UniqueConstraint(
+                fields=["decoder", "file"],
+                name="unique_decoder_file"
+            )
+        ]
 
 
 def calculate_ratio(ratio):
@@ -189,8 +194,13 @@ class RollingStockType(models.Model):
     )
     slug = models.CharField(max_length=128, unique=True, editable=False)
 
-    class Meta(object):
-        unique_together = ("category", "type")
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["category", "type"],
+                name="unique_category_type"
+            )
+        ]
         ordering = ["order"]
 
     def get_absolute_url(self):
@@ -210,7 +220,7 @@ class Tag(models.Model):
     name = models.CharField(max_length=128, unique=True)
     slug = models.CharField(max_length=128, unique=True)
 
-    class Meta(object):
+    class Meta:
         ordering = ["name"]
 
     def __str__(self):
