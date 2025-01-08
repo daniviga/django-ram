@@ -5,6 +5,7 @@ from django.contrib import admin
 from django.utils.html import strip_tags
 from adminsortable2.admin import SortableAdminBase, SortableInlineAdminMixin
 
+from ram.admin import publish, unpublish
 from ram.utils import generate_csv
 from portal.utils import get_site_conf
 from bookshelf.models import (
@@ -170,7 +171,7 @@ class BookAdmin(SortableAdminBase, admin.ModelAdmin):
         return generate_csv(header, data, "bookshelf_books.csv")
 
     download_csv.short_description = "Download selected items as CSV"
-    actions = [download_csv]
+    actions = [publish, unpublish, download_csv]
 
 
 @admin.register(Author)
@@ -312,4 +313,4 @@ class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
         return generate_csv(header, data, "bookshelf_catalogs.csv")
 
     download_csv.short_description = "Download selected items as CSV"
-    actions = [download_csv]
+    actions = [publish, unpublish, download_csv]

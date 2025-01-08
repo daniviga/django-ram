@@ -6,6 +6,7 @@ from django.utils.html import strip_tags
 
 from adminsortable2.admin import SortableAdminBase, SortableInlineAdminMixin
 
+from ram.admin import publish, unpublish
 from ram.utils import generate_csv
 from portal.utils import get_site_conf
 from roster.models import (
@@ -263,4 +264,4 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
         return generate_csv(header, data, "rolling_stock.csv")
 
     download_csv.short_description = "Download selected items as CSV"
-    actions = [download_csv]
+    actions = [publish, unpublish, download_csv]

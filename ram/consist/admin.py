@@ -1,6 +1,7 @@
 from django.contrib import admin
 from adminsortable2.admin import SortableAdminBase, SortableInlineAdminMixin
 
+from ram.admin import publish, unpublish
 from consist.models import Consist, ConsistItem
 
 
@@ -58,3 +59,4 @@ class ConsistAdmin(SortableAdminBase, admin.ModelAdmin):
             },
         ),
     )
+    actions = [publish, unpublish]

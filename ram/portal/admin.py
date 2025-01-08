@@ -1,6 +1,7 @@
 from django.contrib import admin
 from solo.admin import SingletonModelAdmin
 
+from ram.admin import publish, unpublish
 from portal.models import SiteConfiguration, Flatpage
 
 
@@ -67,3 +68,4 @@ class FlatpageAdmin(admin.ModelAdmin):
             },
         ),
     )
+    actions = [publish, unpublish]
