@@ -41,17 +41,14 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "health_check",
-    "health_check.db",
     "adminsortable2",
     "django_countries",
     "solo",
-    "ckeditor",
-    "ckeditor_uploader",
+    "tinymce",
     "rest_framework",
     "ram",
     "portal",
-    "driver",
+    # "driver",  # uncomment this to enable the "driver" API
     "metadata",
     "roster",
     "consist",
@@ -62,7 +59,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
-    # 'django.middleware.csrf.CsrfViewMiddleware',
+    "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -144,17 +141,40 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 MEDIA_URL = "media/"
 MEDIA_ROOT = STORAGE_DIR / "media"
-CKEDITOR_UPLOAD_PATH = "uploads/"
+
+TINYMCE_DEFAULT_CONFIG = {
+    "height": "500px",
+    "menubar": False,
+    "plugins": "autolink lists link image charmap preview anchor "
+    "searchreplace visualblocks code fullscreen insertdatetime media "
+    "table paste code",
+    "toolbar": "undo redo | "
+    "bold italic underline strikethrough removeformat | "
+    "fontsizeselect formatselect | "
+    "alignleft aligncenter alignright alignjustify | "
+    "outdent indent numlist bullist | "
+    "insertfile image media pageembed template link anchor codesample | "
+    "charmap | "
+    "fullscreen preview code",
+    "images_upload_url": "/tinymce/upload_image",
+}
 
 COUNTRIES_OVERRIDE = {
-    "ZZ": "Freelance",
+    "EU": "Europe",
+    "XX": "None",
 }
+
+SITE_NAME = "Railroad Assets Manger"
 
 # Image used on cards without a custom image uploaded.
 # The file must be placed in the root of the 'static' folder
 DEFAULT_CARD_IMAGE = "coming_soon.svg"
 
+# Second level ALT separator for CSV files (e.g. for properties)
+CSV_SEPARATOR_ALT = ";"
+
 DECODER_INTERFACES = [
+    (0, "Built-in"),
     (1, "NEM651"),
     (2, "NEM652"),
     (3, "PluX"),

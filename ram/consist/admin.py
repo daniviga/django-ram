@@ -1,6 +1,7 @@
 from django.contrib import admin
 from adminsortable2.admin import SortableAdminBase, SortableInlineAdminMixin
 
+from ram.admin import publish, unpublish
 from consist.models import Consist, ConsistItem
 
 
@@ -8,7 +9,15 @@ class ConsistItemInline(SortableInlineAdminMixin, admin.TabularInline):
     model = ConsistItem
     min_num = 1
     extra = 0
-    readonly_fields = ("address", "type", "company", "era")
+    autocomplete_fields = ("rolling_stock",)
+    readonly_fields = (
+        "preview",
+        "published",
+        "address",
+        "type",
+        "company",
+        "era",
+    )
 
 
 @admin.register(Consist)
@@ -18,9 +27,9 @@ class ConsistAdmin(SortableAdminBase, admin.ModelAdmin):
         "creation_time",
         "updated_time",
     )
-    list_display = ("identifier", "company", "era")
-    list_filter = list_display
-    search_fields = list_display
+    list_filter = ("company", "era", "published")
+    list_display = ("__str__",) + list_filter
+    search_fields = ("identifier",) + list_filter
     save_as = True
 
     fieldsets = (
@@ -28,6 +37,7 @@ class ConsistAdmin(SortableAdminBase, admin.ModelAdmin):
             None,
             {
                 "fields": (
+                    "published",
                     "identifier",
                     "consist_address",
                     "company",
@@ -49,3 +59,4 @@ class ConsistAdmin(SortableAdminBase, admin.ModelAdmin):
             },
         ),
     )
+    actions = [publish, unpublish]

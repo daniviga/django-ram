@@ -1,9 +1,25 @@
 import os
+from uuid import uuid4
 
 from django.db import models
 from django.utils.safestring import mark_safe
+from tinymce import models as tinymce
 
 from ram.utils import DeduplicatedStorage, get_image_preview
+from ram.managers import PublicManager
+
+
+class BaseModel(models.Model):
+    uuid = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    notes = tinymce.HTMLField(blank=True)
+    creation_time = models.DateTimeField(auto_now_add=True)
+    updated_time = models.DateTimeField(auto_now=True)
+    published = models.BooleanField(default=True)
+
+    class Meta:
+        abstract = True
+
+    objects = PublicManager()
 
 
 class Document(models.Model):
@@ -11,12 +27,12 @@ class Document(models.Model):
     file = models.FileField(
         upload_to="files/",
         storage=DeduplicatedStorage(),
-        null=True,
-        blank=True,
     )
+    private = models.BooleanField(default=False)
 
     class Meta:
         abstract = True
+        verbose_name_plural = "Documents"
 
     def __str__(self):
         return "{0}".format(os.path.basename(self.file.name))
@@ -29,15 +45,18 @@ class Document(models.Model):
             '<a href="{0}" target="_blank">Link</a>'.format(self.file.url)
         )
 
+    objects = PublicManager()
+
 
 class Image(models.Model):
     order = models.PositiveIntegerField(default=0, blank=False, null=False)
     image = models.ImageField(
-        upload_to="images/", storage=DeduplicatedStorage, null=True, blank=True
+        upload_to="images/",
+        storage=DeduplicatedStorage,
     )
 
-    def image_thumbnail(self):
-        return get_image_preview(self.image.url)
+    def image_thumbnail(self, max_size=150):
+        return get_image_preview(self.image.url, max_size)
 
     image_thumbnail.short_description = "Preview"
 
@@ -47,6 +66,9 @@ class Image(models.Model):
     class Meta:
         abstract = True
         ordering = ["order"]
+        verbose_name_plural = "Images"
+
+    objects = PublicManager()
 
 
 class PropertyInstance(models.Model):
@@ -62,3 +84,5 @@ class PropertyInstance(models.Model):
     class Meta:
         abstract = True
         verbose_name_plural = "Properties"
+
+    objects = PublicManager()

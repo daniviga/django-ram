@@ -1,14 +1,16 @@
+import os
 import re
-from uuid import uuid4
+import shutil
 from django.db import models
 from django.urls import reverse
 from django.conf import settings
 from django.dispatch import receiver
 
-from ckeditor_uploader.fields import RichTextUploadingField
+from tinymce import models as tinymce
 
-from ram.models import Document, Image, PropertyInstance
-from ram.utils import get_image_preview
+from ram.models import BaseModel, Document, Image, PropertyInstance
+from ram.utils import DeduplicatedStorage
+from ram.managers import PublicManager
 from metadata.models import (
     Scale,
     Manufacturer,
@@ -23,7 +25,7 @@ class RollingClass(models.Model):
     identifier = models.CharField(max_length=128, unique=False)
     type = models.ForeignKey(RollingStockType, on_delete=models.CASCADE)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
-    description = models.CharField(max_length=256, blank=True)
+    description = tinymce.HTMLField(blank=True)
     manufacturer = models.ForeignKey(
         Manufacturer,
         on_delete=models.CASCADE,
@@ -52,8 +54,7 @@ class RollingClassProperty(PropertyInstance):
     )
 
 
-class RollingStock(models.Model):
-    uuid = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+class RollingStock(BaseModel):
     rolling_class = models.ForeignKey(
         RollingClass,
         on_delete=models.CASCADE,
@@ -72,7 +73,20 @@ class RollingStock(models.Model):
         limit_choices_to={"category": "model"},
     )
     scale = models.ForeignKey(Scale, on_delete=models.CASCADE)
-    item_number = models.CharField(max_length=32, blank=True)
+    item_number = models.CharField(
+        max_length=32,
+        blank=True,
+        help_text="Catalog item number or code",
+    )
+    item_number_slug = models.CharField(
+        max_length=32,
+        blank=True,
+        editable=False
+    )
+    set = models.BooleanField(
+        default=False,
+        help_text="Part of a set",
+    )
     decoder_interface = models.PositiveSmallIntegerField(
         choices=settings.DECODER_INTERFACES, null=True, blank=True
     )
@@ -80,15 +94,23 @@ class RollingStock(models.Model):
         Decoder, on_delete=models.CASCADE, null=True, blank=True
     )
     address = models.SmallIntegerField(default=None, null=True, blank=True)
-    era = models.CharField(max_length=32, blank=True)
+    era = models.CharField(
+        max_length=32,
+        blank=True,
+        help_text="Era or epoch of the model",
+    )
     production_year = models.SmallIntegerField(null=True, blank=True)
     purchase_date = models.DateField(null=True, blank=True)
-    notes = RichTextUploadingField(blank=True)
+    price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True,
+    )
+    description = tinymce.HTMLField(blank=True)
     tags = models.ManyToManyField(
         Tag, related_name="rolling_stock", blank=True
     )
-    creation_time = models.DateTimeField(auto_now_add=True)
-    updated_time = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ["rolling_class", "road_number_int"]
@@ -100,11 +122,23 @@ class RollingStock(models.Model):
     def get_absolute_url(self):
         return reverse("rolling_stock", kwargs={"uuid": self.uuid})
 
+    def preview(self):
+        return self.image.first().image_thumbnail(350)
+
     def country(self):
         return str(self.rolling_class.company.country)
 
     def company(self):
         return str(self.rolling_class.company)
+
+    def delete(self, *args, **kwargs):
+        shutil.rmtree(
+            os.path.join(
+                settings.MEDIA_ROOT, "images", "rollingstock", str(self.uuid)
+            ),
+            ignore_errors=True
+        )
+        super(RollingStock, self).delete(*args, **kwargs)
 
 
 @receiver(models.signals.pre_save, sender=RollingStock)
@@ -122,13 +156,31 @@ class RollingStockDocument(Document):
         RollingStock, on_delete=models.CASCADE, related_name="document"
     )
 
-    class Meta(object):
-        unique_together = ("rolling_stock", "file")
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["rolling_stock", "file"],
+                name="unique_stock_file"
+            )
+        ]
+
+
+def rolling_stock_image_upload(instance, filename):
+    return os.path.join(
+        "images",
+        "rollingstock",
+        str(instance.rolling_stock.uuid),
+        filename
+    )
 
 
 class RollingStockImage(Image):
     rolling_stock = models.ForeignKey(
         RollingStock, on_delete=models.CASCADE, related_name="image"
+    )
+    image = models.ImageField(
+        upload_to=rolling_stock_image_upload,
+        storage=DeduplicatedStorage,
     )
 
 
@@ -151,8 +203,11 @@ class RollingStockJournal(models.Model):
         blank=False,
     )
     date = models.DateField()
-    log = RichTextUploadingField()
-    private = models.BooleanField(default=False)
+    log = tinymce.HTMLField()
+    private = models.BooleanField(
+        default=False,
+        help_text="Journal log will be visible only to logged users",
+    )
     creation_time = models.DateTimeField(auto_now_add=True)
     updated_time = models.DateTimeField(auto_now=True)
 
@@ -161,6 +216,8 @@ class RollingStockJournal(models.Model):
 
     class Meta:
         ordering = ["date", "rolling_stock"]
+
+    objects = PublicManager()
 
 
 # @receiver(models.signals.post_delete, sender=Cab)

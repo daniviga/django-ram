@@ -1,4 +1,4 @@
-          <form class="d-flex needs-validation" action="{% url 'search' %}" method="post" novalidate>
+          <form class="d-flex needs-validation" action="{% url 'search' %}" method="post" novalidate>{% csrf_token %}
             <div class="input-group has-validation">
               <input class="form-control" type="search" list="datalistOptions" placeholder="Search" aria-label="Search" name="search" id="searchValidation" required>
               <datalist id="datalistOptions">

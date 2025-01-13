@@ -1,11 +1,11 @@
 {% load static %}
         <div class="col">
           <div class="card shadow-sm">
-            {% if d.item.image.count > 0 %}
-            <a href="{{d.item.get_absolute_url}}"><img class="card-img-top" src="{{ d.item.image.first.image.url }}" alt="{{ d }}"></a>
+            {% if d.item.image.exists %}
+            <a href="{{d.item.get_absolute_url}}"><img class="card-img-top" src="{{ d.item.image.first.image.url }}" alt="{{ d.item }}"></a>
             {% else %}
             <!-- Do not show the "Coming soon" image when running in a single card column mode (e.g. on mobile) -->
-            <a href="{{d.item.get_absolute_url}}"><img class="card-img-top d-none d-sm-block" src="{% static DEFAULT_CARD_IMAGE %}" alt="{{ d }}"></a>
+            <a href="{{d.item.get_absolute_url}}"><img class="card-img-top d-none d-sm-block" src="{% static DEFAULT_CARD_IMAGE %}" alt="{{ d.item }}"></a>
             {% endif %}
             <div class="card-body">
               <p class="card-text" style="position: relative;">
@@ -56,11 +56,11 @@
                   </tr>
                   <tr>
                     <th scope="row">Scale</th>
-                    <td><a href="{% url 'filtered' _filter="scale" search=d.item.scale.slug %}"><abbr title="{{ d.item.scale.ratio }} - {{ d.item.scale.tracks }}">{{ d.item.scale }}</abbr></a></td>
+                    <td><a href="{% url 'filtered' _filter="scale" search=d.item.scale.slug %}"><abbr title="{{ d.item.scale.ratio }} - {{ d.item.scale.tracks }} mm">{{ d.item.scale }}</abbr></a></td>
                   </tr>
                   <tr>
                     <th scope="row">Item number</th>
-                    <td>{{ d.item.item_number }}</td>
+                    <td>{{ d.item.item_number }}{%if d.item.set %} | <a class="badge text-bg-primary" href="{% url 'manufacturer' manufacturer=d.item.manufacturer.slug search=d.item.item_number_slug %}">SET</a>{% endif %}</td>
                   </tr>
                 </tbody>
               </table>

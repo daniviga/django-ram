@@ -18,17 +18,17 @@
                   <td>{{ d.item.ratio }}</td>
                 </tr>
                 <tr>
-                  <th class="w-33" scope="row">Gauge</th>
-                  <td>{{ d.item.gauge }}</td>
+                  <th class="w-33" scope="row">Tracks</th>
+                  <td>{{ d.item.tracks }} mm</td>
                 </tr>
                 <tr>
-                  <th class="w-33" scope="row">Tracks</th>
-                  <td>{{ d.item.tracks }}</td>
+                  <th class="w-33" scope="row">Gauge</th>
+                  <td>{{ d.item.gauge }}</td>
                 </tr>
               </tbody>
             </table>
             <div class="d-grid gap-2 mb-1 d-md-block">
-              <a class="btn btn-sm btn-outline-primary" href="{% url 'filtered' _filter="scale" search=d.item.slug %}">Show all rolling stock</a>
+              <a class="btn btn-sm btn-outline-primary{% if d.item.num_items == 0 %} disabled{% endif %}" href="{% url 'filtered' _filter="scale" search=d.item.slug %}">Show all rolling stock</a>
               {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% url 'admin:metadata_scale_change' d.item.pk %}">Edit</a>{% endif %}
             </div>
           </div>

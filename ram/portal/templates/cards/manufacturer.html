@@ -14,7 +14,7 @@
                   {% if d.item.logo %}
                   <tr>
                     <th class="w-33" scope="row">Logo</th>
-                    <td><img style="max-height: 48px" src="{{ d.item.logo.url }}" /></td>
+                    <td><img class="logo" src="{{ d.item.logo.url }}" alt="{{ d.item.name }} logo"></td>
                   </tr>
                   {% endif %}
                   {% if d.item.website %}

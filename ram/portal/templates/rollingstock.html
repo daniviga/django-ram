@@ -27,11 +27,11 @@
             {% if rolling_stock.image.count > 1 %}
             <button class="carousel-control-prev" type="button" data-bs-target="#carouselControls" data-bs-slide="prev">
               <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-              <span class="visually-hidden">Previous</span>
+              <span class="visually-hidden"><i class="bi bi-chevron-left"></i></span>
             </button>
             <button class="carousel-control-next" type="button" data-bs-target="#carouselControls" data-bs-slide="next">
               <span class="carousel-control-next-icon" aria-hidden="true"></span>
-              <span class="visually-hidden">Next</span>
+              <span class="visually-hidden"><i class="bi bi-chevron-right"></i></span>
             </button>
             {% endif %}
           </div>
@@ -43,37 +43,53 @@
         <section class="py-4 text-start container">
           <div class="row">
             <div class="mx-auto">
-              <nav class="nav nav-tabs flex-column flex-md-row mb-2" id="nav-tab">
+              <nav class="nav nav-tabs d-none d-lg-flex flex-row mb-2" id="nav-tab" role="tablist">
                 <button class="nav-link active" id="nav-summary-tab" data-bs-toggle="tab" data-bs-target="#nav-summary" type="button" role="tab" aria-controls="nav-summary" aria-selected="true">Summary</button>
-                <button class="nav-link" id="nav-model-tab" data-bs-toggle="tab" data-bs-target="#nav-model" type="button" role="tab" aria-controls="nav-model" aria-selected="false">Model data</button>
-                <button class="nav-link" id="nav-class-tab" data-bs-toggle="tab" data-bs-target="#nav-class" type="button" role="tab" aria-controls="nav-class" aria-selected="false">Class data</button>
+                <button class="nav-link" id="nav-model-tab" data-bs-toggle="tab" data-bs-target="#nav-model" type="button" role="tab" aria-controls="nav-model" aria-selected="false">Model</button>
+                <button class="nav-link" id="nav-class-tab" data-bs-toggle="tab" data-bs-target="#nav-class" type="button" role="tab" aria-controls="nav-class" aria-selected="false">Class</button>
+                <button class="nav-link" id="nav-company-tab" data-bs-toggle="tab" data-bs-target="#nav-company" type="button" role="tab" aria-controls="nav-company" aria-selected="false">Company</button>
                 {% if rolling_stock.decoder %}<button class="nav-link" id="nav-dcc-tab" data-bs-toggle="tab" data-bs-target="#nav-dcc" type="button" role="tab" aria-controls="nav-dcc" aria-selected="false">DCC</button>{% endif %}
-                {% if rolling_stock.document.count > 0 or rolling_stock.decoder.document.count > 0 %}<button class="nav-link" id="nav-documents-tab" data-bs-toggle="tab" data-bs-target="#nav-documents" type="button" role="tab" aria-controls="nav-documents" aria-selected="false">Documents</button>{% endif %}
-                {% if rolling_stock_journal.count > 0 %}<button class="nav-link" id="nav-journal-tab" data-bs-toggle="tab" data-bs-target="#nav-journal" type="button" role="tab" aria-controls="nav-journal" aria-selected="false">Journal</button>{% endif %}
+                {% if documents or decoder_documents %}<button class="nav-link" id="nav-documents-tab" data-bs-toggle="tab" data-bs-target="#nav-documents" type="button" role="tab" aria-controls="nav-documents" aria-selected="false">Documents</button>{% endif %}
+                {% if journal %}<button class="nav-link" id="nav-journal-tab" data-bs-toggle="tab" data-bs-target="#nav-journal" type="button" role="tab" aria-controls="nav-journal" aria-selected="false">Journal</button>{% endif %}
                 {% if rolling_stock.notes %}<button class="nav-link" id="nav-notes-tab" data-bs-toggle="tab" data-bs-target="#nav-notes" type="button" role="tab" aria-controls="nav-notes" aria-selected="false">Notes</button>{% endif %}
+                {% if set %}<button class="nav-link" id="nav-set-tab" data-bs-toggle="tab" data-bs-target="#nav-set" type="button" role="tab" aria-controls="nav-set" aria-selected="false">Set</button>{% endif %}
+                {% if consists %}<button class="nav-link" id="nav-consists-tab" data-bs-toggle="tab" data-bs-target="#nav-consists" type="button" role="tab" aria-controls="nav-consists" aria-selected="false">Consists</button>{% endif %}
               </nav>
+              <select class="form-select d-lg-none mb-2" id="tabSelector" aria-label="Tab selector">
+                <option value="nav-summary" selected>Summary</option>
+                <option value="nav-model">Model</option>
+                <option value="nav-class">Class</option>
+                <option value="nav-company">Company</option>
+                {% if rolling_stock.decoder %}<option value="nav-dcc">DCC</option>{% endif %}
+                {% if documents or decoder_documents %}<option value="nav-documents">Documents</option>{% endif %}
+                {% if journal %}<option value="nav-journal">Journal</option>{% endif %}
+                {% if rolling_stock.notes %}<option value="nav-notes">Notes</option>{% endif %}
+                {% if set %}<option value="nav-set">Set</option>{% endif %}
+                {% if consists %}<option value="nav-consists">Consists</option>{% endif %}
+              </select>
+              {% with class=rolling_stock.rolling_class company=rolling_stock.rolling_class.company %}
               <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane show active" id="nav-summary" role="tabpanel" aria-labelledby="nav-summary-tab">
                   <table class="table table-striped">
                     <thead>
                       <tr>
-                        <th colspan="2" scope="row">Data</th>
+                        <th colspan="2" scope="row">Rolling stock</th>
                       </tr>
                     </thead>
                     <tbody class="table-group-divider">
                       <tr>
                         <th class="w-33" scope="row">Type</th>
-                        <td>{{ rolling_stock.rolling_class.type }}</td>
+                        <td>{{ class.type }}</td>
                       </tr>
                       <tr>
                         <th scope="row">Company</th>
                         <td>
-                            <a href="{% url 'filtered' _filter="company" search=rolling_stock.rolling_class.company.slug %}"><abbr title="{{ rolling_stock.rolling_class.company.extended_name }}">{{ rolling_stock.rolling_class.company }}</abbr></a>
+                            <a href="{% url 'filtered' _filter="company" search=company.slug %}">{{ company }}</a> {{ company.extended_name_pp }}
                         </td>
                       </tr>
                       <tr>
                         <th scope="row">Class</th>
-                        <td>{{ rolling_stock.rolling_class.identifier }}</td>
+                        <td>{{ class.identifier }}</td>
                       </tr>
                       <tr>
                         <th scope="row">Road number</th>
@@ -95,16 +111,16 @@
                       <tr>
                         <th class="w-33" scope="row">Manufacturer</th>
                         <td>{%if rolling_stock.manufacturer %}
-                          <a href="{% url 'filtered' _filter="manufacturer" search=rolling_stock.manufacturer.slug %}">{{ rolling_stock.manufacturer }}{% if rolling_stock.manufacturer.website %}</a> <a href="{{ rolling_stock.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
+                          <a href="{% url 'filtered' _filter="manufacturer" search=rolling_stock.manufacturer.slug %}">{{ rolling_stock.manufacturer }}</a>{% if rolling_stock.manufacturer.website %} <a href="{{ rolling_stock.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
                         {% endif %}</td>
                       </tr>
                       <tr>
                         <th scope="row">Scale</th>
-                        <td><a href="{% url 'filtered' _filter="scale" search=rolling_stock.scale %}"><abbr title="{{ rolling_stock.scale.ratio }} - {{ rolling_stock.scale.tracks }}">{{ rolling_stock.scale }}</abbr></a></td>
+                        <td><a href="{% url 'filtered' _filter="scale" search=rolling_stock.scale %}"><abbr title="{{ rolling_stock.scale.ratio }} - {{ rolling_stock.scale.tracks }} mm">{{ rolling_stock.scale }}</abbr></a></td>
                       </tr>
                       <tr>
                         <th scope="row">Item number</th>
-                        <td>{{ rolling_stock.item_number }}</td>
+                        <td>{{ rolling_stock.item_number }}{%if rolling_stock.set %} | <a class="badge text-bg-primary" href="{% url 'manufacturer' manufacturer=rolling_stock.manufacturer.slug search=rolling_stock.item_number_slug %}">SET</a>{% endif %}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -144,17 +160,19 @@
                     <tbody class="table-group-divider">
                       <tr>
                         <th class="w-33" scope="row">Manufacturer</th>
-                        <td>{%if rolling_stock.manufacturer %}
-                          <a href="{% url 'filtered' _filter="manufacturer" search=rolling_stock.manufacturer.slug %}">{{ rolling_stock.manufacturer }}{% if rolling_stock.manufacturer.website %}</a> <a href="{{ rolling_stock.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
-                        {% endif %}</td>
+                        <td>
+                          {%if rolling_stock.manufacturer %}
+                          <a href="{% url 'filtered' _filter="manufacturer" search=rolling_stock.manufacturer.slug %}">{{ rolling_stock.manufacturer }}</a>{% if rolling_stock.manufacturer.website %} <a href="{{ rolling_stock.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
+                          {% else %}-{% endif %}
+                        </td>
                       </tr>
                       <tr>
                         <th scope="row">Scale</th>
-                        <td><a href="{% url 'filtered' _filter="scale" search=rolling_stock.scale %}"><abbr title="{{ rolling_stock.scale.ratio }} - {{ rolling_stock.scale.tracks }}">{{ rolling_stock.scale }}</abbr></a></td>
+                        <td><a href="{% url 'filtered' _filter="scale" search=rolling_stock.scale %}"><abbr title="{{ rolling_stock.scale.ratio }} - {{ rolling_stock.scale.tracks }} mm">{{ rolling_stock.scale }}</abbr></a></td>
                       </tr>
                       <tr>
                         <th scope="row">Item number</th>
-                        <td>{{ rolling_stock.item_number }}</td>
+                        <td>{{ rolling_stock.item_number }}{%if rolling_stock.set %} | <a class="badge text-bg-primary" href="{% url 'manufacturer' manufacturer=rolling_stock.manufacturer.slug search=rolling_stock.item_number_slug %}">SET</a>{% endif %}</td>
                       </tr>
                       <tr>
                         <th scope="row">Era</th>
@@ -164,13 +182,34 @@
                         <th scope="row">Production year</th>
                         <td>{{ rolling_stock.production_year|default:"-" }}</td>
                       </tr>
+                      {% if rolling_stock.description %}
                       <tr>
-                        <th scope="row">Purchase date</th>
+                        <th class="w-33" scope="row">Description</th>
+                        <td>{{ rolling_stock.description | safe }}</td>
+                      </tr>
+                      {% endif %}
+                    </tbody>
+                  </table>
+                  {% if request.user.is_staff %}
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th colspan="2" scope="row">Purchase</th>
+                      </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                      <tr>
+                        <th class="w-33" scope="row">Purchase date</th>
                         <td>{{ rolling_stock.purchase_date|default:"-" }}</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Price ({{ site_conf.currency }})</th>
+                        <td>{{ rolling_stock.price|default:"-" }}</td>
                       </tr>
                     </tbody>
                   </table>
-                  {% if rolling_stock_properties %}
+                  {% endif %}
+                  {% if properties %}
                   <table class="table table-striped">
                     <thead>
                       <tr>
@@ -178,7 +217,7 @@
                       </tr>
                     </thead>
                     <tbody class="table-group-divider">
-                    {% for p in rolling_stock_properties %}
+                    {% for p in properties %}
                       <tr>
                         <th class="w-33" scope="row">{{ p.property }}</th>
                         <td>{{ p.value }}</td>
@@ -198,28 +237,26 @@
                     <tbody class="table-group-divider">
                       <tr>
                         <th class="w-33" scope="row">Class</th>
-                        <td>{{ rolling_stock.rolling_class.identifier }}</td>
+                        <td>{{ class.identifier }}</td>
                       </tr>
                       <tr>
                         <th scope="row">Type</th>
-                        <td>{{ rolling_stock.rolling_class.type }}</td>
-                      </tr>
-                      <tr>
-                        <th scope="row">Company</th>
-                        <td>
-                            <a href="{% url 'filtered' _filter="company" search=rolling_stock.rolling_class.company.slug %}">{{ rolling_stock.rolling_class.company }}</a> ({{ rolling_stock.rolling_class.company.extended_name }})
-                        </td>
-                      </tr>
-                      <tr>
-                        <th scope="row">Country</th>
-                        <td>{{ rolling_stock.rolling_class.company.country.name }}</td>
+                        <td>{{ class.type }}</td>
                       </tr>
                       <tr>
                         <th scope="row">Manufacturer</th>
-                        <td>{%if rolling_stock.rolling_class.manufacturer %}
-                          <a href="{% url 'filtered' _filter="manufacturer" search=rolling_stock.rolling_class.manufacturer.slug %}">{{ rolling_stock.rolling_class.manufacturer }}{% if rolling_stock.rolling_class.manufacturer.website %}</a> <a href="{{ rolling_stock.rolling_class.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
-                        {% endif %}</td>
+                        <td>
+                          {%if class.manufacturer %}
+                          <a href="{% url 'filtered' _filter="manufacturer" search=class.manufacturer.slug %}">{{ class.manufacturer }}</a>{% if class.manufacturer.website %} <a href="{{ class.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
+                          {% else %}-{% endif %}
+                        </td>
                       </tr>
+                      {% if class.description %}
+                      <tr>
+                        <th class="w-33" scope="row">Description</th>
+                        <td>{{ class.description | safe }}</td>
+                      </tr>
+                      {% endif %}
                     </tbody>
                   </table>
                   {% if class_properties %}
@@ -240,11 +277,42 @@
                   </table>
                   {% endif %}
                 </div>
+                <div class="tab-pane" id="nav-company" role="tabpanel" aria-labelledby="nav-company-tab">
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th colspan="2" scope="row">Company data</th>
+                      </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                      {% if company.logo %}
+                      <tr>
+                        <th class="w-33" scope="row">Logo</th>
+                        <td><img class="logo-xl" src="{{ company.logo.url }}" alt="{{ company }} logo"></td>
+                      </tr>
+                      {% endif %}
+                      <tr>
+                        <th class="w-33" scope="row">Name</th>
+                        <td><a href="{% url 'filtered' _filter="company" search=company.slug %}">{{ company.name }}</a> {{ company.extended_name_pp }}</td>
+                      </tr>
+                      <tr>
+                        <th class="w-33" scope="row">Country</th>
+                        <td>{{ company.country.name }} <img src="{{ company.country.flag }}" alt="{{ company.country }}">
+                      </tr>
+                      {% if company.freelance %}
+                      <tr>
+                        <th class="w-33" scope="row">Notes</th>
+                        <td>A <em>freelance</em> company</td>
+                      </tr>
+                      {% endif %}
+                    </tbody>
+                  </table>
+                </div>
                 <div class="tab-pane" id="nav-dcc" role="tabpanel" aria-labelledby="nav-dcc-tab">
                   <table class="table table-striped">
                     <thead>
                       <tr>
-                        <th colspan="2" scope="row">DCC data</th>
+                        <th colspan="2" scope="row">Decoder data</th>
                       </tr>
                     </thead>
                     <tbody class="table-group-divider">
@@ -276,7 +344,7 @@
                   </table>
                 </div>
                 <div class="tab-pane" id="nav-documents" role="tabpanel" aria-labelledby="nav-documents-tab">
-                  {% if rolling_stock.document.count > 0 %}
+                  {% if documents %}
                   <table class="table table-striped">
                     <thead>
                       <tr>
@@ -284,7 +352,7 @@
                       </tr>
                     </thead>
                     <tbody class="table-group-divider">
-                    {% for d in rolling_stock.document.all %}
+                    {% for d in documents.all %}
                       <tr>
                         <td class="w-33">{{ d.description }}</td>
                         <td><a href="{{ d.file.url }}" target="_blank">{{ d.filename }}</a></td>
@@ -294,7 +362,7 @@
                     </tbody>
                   </table>
                   {% endif %}
-                  {% if rolling_stock.decoder.document.count > 0 %}
+                  {% if decoder_documents %}
                   <table class="table table-striped">
                     <thead>
                       <tr>
@@ -302,7 +370,7 @@
                       </tr>
                     </thead>
                     <tbody class="table-group-divider">
-                    {% for d in rolling_stock.decoder.document.all %}
+                    {% for d in decoder_documents.all %}
                       <tr>
                         <td class="w-33">{{ d.description }}</td>
                         <td><a href="{{ d.file.url }}" target="_blank">{{ d.filename }}</a></td>
@@ -317,14 +385,14 @@
                   <table class="table table-striped">
                     <thead>
                       <tr>
-                        <th colspan="3" scope="row">Journal</th>
+                        <th colspan="2" scope="row">Journal</th>
                       </tr>
                     </thead>
                     <tbody class="table-group-divider">
-                    {% for j in rolling_stock_journal %}
+                    {% for j in journal %}
                       <tr>
                         <th class="w-33" scope="row">{{ j.date }}</th>
-                        <td>{{ j.log | safe }}</a></td>
+                        <td>{{ j.log | safe }}</td>
                       </tr>
                     {% endfor %}
                     </tbody>
@@ -333,7 +401,22 @@
                 <div class="tab-pane" id="nav-notes" role="tabpanel" aria-labelledby="nav-notes-tab">
                   {{ rolling_stock.notes | safe }}
                 </div>
+                <div class="tab-pane" id="nav-set" role="tabpanel" aria-labelledby="nav-set-tab">
+                  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 mb-3">
+                  {% for d in set %}
+                  {% include "cards/roster.html" %}
+                  {% endfor %}
+                  </div>
+                </div>
+                <div class="tab-pane" id="nav-consists" role="tabpanel" aria-labelledby="nav-cosists-tab">
+                  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 mb-3">
+                  {% for d in consists %}
+                  {% include "cards/consist.html" %}
+                  {% endfor %}
+                  </div>
+                </div>
               </div>
+              {% endwith %}
               <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                 {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% url 'admin:roster_rollingstock_change' rolling_stock.pk %}">Edit</a>{% endif %}
               </div>

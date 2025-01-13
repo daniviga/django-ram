@@ -5,11 +5,15 @@ from consist.serializers import ConsistSerializer
 
 
 class ConsistList(ListAPIView):
-    queryset = Consist.objects.all()
     serializer_class = ConsistSerializer
+
+    def get_queryset(self):
+        return Consist.objects.get_published(self.request.user)
 
 
 class ConsistGet(RetrieveAPIView):
-    queryset = Consist.objects.all()
     serializer_class = ConsistSerializer
     lookup_field = "uuid"
+
+    def get_queryset(self):
+        return Consist.objects.get_published(self.request.user)

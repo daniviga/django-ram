@@ -1,11 +1,13 @@
 from django.contrib import admin
 from solo.admin import SingletonModelAdmin
 
+from ram.admin import publish, unpublish
 from portal.models import SiteConfiguration, Flatpage
 
 
 @admin.register(SiteConfiguration)
 class SiteConfigurationAdmin(SingletonModelAdmin):
+    readonly_fields = ("site_name",)
     fieldsets = (
         (
             None,
@@ -16,6 +18,7 @@ class SiteConfigurationAdmin(SingletonModelAdmin):
                     "about",
                     "items_per_page",
                     "items_ordering",
+                    "currency",
                     "footer",
                     "footer_extended",
                 )
@@ -65,3 +68,4 @@ class FlatpageAdmin(admin.ModelAdmin):
             },
         ),
     )
+    actions = [publish, unpublish]

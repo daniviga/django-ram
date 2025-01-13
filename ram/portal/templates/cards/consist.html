@@ -2,12 +2,10 @@
         <div class="card shadow-sm">
           <a href="{{ d.item.get_absolute_url }}">
           {% if d.item.image %}
-            <img src="{{ d.item.image.url }}" alt="Card image cap">
+            <img class="card-img-top" src="{{ d.item.image.url }}" alt="{{ d.item }}">
           {% else %}
             {% with d.item.consist_item.first.rolling_stock as r %}
-            {% for i in r.image.all %}
-              {% if forloop.first %}<img src="{{ i.image.url }}" alt="Card image cap">{% endif %}
-            {% endfor %}
+            <img class="card-img-top" src="{{ r.image.first.image.url }}" alt="{{ d.item }}">
             {% endwith %}
           {% endif %}
           </a>
@@ -26,7 +24,7 @@
             <table class="table table-striped">
               <thead>
                 <tr>
-                  <th colspan="2" scope="row">Consist data</th>
+                  <th colspan="2" scope="row">Consist</th>
                 </tr>
               </thead>
               <tbody class="table-group-divider">
@@ -46,7 +44,7 @@
                 </tr>
                 <tr>
                   <th scope="row">Length</th>
-                  <td>{{ d.item.consist_item.all | length }}</td>
+                  <td>{{ d.item.consist_item.count }}</td>
                 </tr>
               </tbody>
             </table>

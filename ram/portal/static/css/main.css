@@ -7,6 +7,21 @@ html[data-bs-theme='dark'] .navbar svg {
   width: 100%;
 }
 
+td > img.logo {
+  max-width: 200px;
+  max-height: 48px;
+}
+
+td > img.logo-xl {
+  max-width: 400px;
+  max-height: 96px;
+}
+
+/* Disable margin on last <p> in a <td> */
+td > p:last-child {
+  margin-bottom: 0;
+}
+
 .btn > span {
   display: inline-block;
 }
@@ -26,10 +41,6 @@ a.badge, a.badge:hover {
 
 .table-group-divider {
   border-top: calc(var(--bs-border-width) * 3) solid var(--bs-border-color);
-}
-
-#nav-notes > p {
-  padding: .5rem;
 }
 
 #nav-journal ul, #nav-journal ol {

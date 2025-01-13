@@ -1,10 +1,22 @@
 from django.contrib import admin
-from django.db.utils import OperationalError, ProgrammingError
-from portal.utils import get_site_conf
+from django.conf import settings
 
-try:
-    site_name = get_site_conf().site_name
-except (OperationalError, ProgrammingError):
-    site_name = "Train Assets Manager"
+admin.site.site_header = settings.SITE_NAME
 
-admin.site.site_header = site_name
+
+def publish(modeladmin, request, queryset):
+    for obj in queryset:
+        obj.published = True
+        obj.save()
+
+
+publish.short_description = "Publish selected items"
+
+
+def unpublish(modeladmin, request, queryset):
+    for obj in queryset:
+        obj.published = False
+        obj.save()
+
+
+unpublish.short_description = "Unpublish selected items"
