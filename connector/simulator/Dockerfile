@@ -1,6 +1,7 @@
-FROM dcc/net-to-serial
+FROM dcc/bridge
 
-RUN apk update && apk add qemu-system-avr && mkdir /io
+RUN apk update && apk add --no-cache qemu-system-avr \
+    && mkdir /io
 ADD start.sh /usr/local/bin
 ADD CommandStation-EX*.elf /io
 
