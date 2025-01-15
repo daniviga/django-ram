@@ -7,7 +7,5 @@ if [ -c /dev/pts/0 ]; then
     PTY=1
 fi
 
-sed -i "s/ttyACM0/pts\/${PTY}/" /opt/dcc/config.ini
-
 qemu-system-avr -machine uno -bios /io/CommandStation-EX*.elf -serial pty -daemonize
-/opt/dcc/net-to-serial.py
+ncat -n -k -l 2560 -o /dev/stderr </dev/pts/${PTY} >/dev/pts/${PTY}
