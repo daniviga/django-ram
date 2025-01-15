@@ -1,6 +1,6 @@
 # Use a container to implement a serial to net bridge
 
-This uses `ncat` by [namp](https://nmap.org/ncat/) to bridge a serial port to a network port. The serial port is passed to the Podman command (eg. `/dev/ttyUSB0`) and the network port is `2560`.
+This uses `ncat` from [nmap](https://nmap.org/ncat/) to bridge a serial port to a network port. The serial port is passed to the Podman command (eg. `/dev/ttyUSB0`) and the network port is `2560`.
 
 > [!IMPORTANT]
 > Other variants of `nc` or `ncat` may not work as expected.
