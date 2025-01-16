@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import admin
 from solo.admin import SingletonModelAdmin
 
@@ -7,7 +8,7 @@ from portal.models import SiteConfiguration, Flatpage
 
 @admin.register(SiteConfiguration)
 class SiteConfigurationAdmin(SingletonModelAdmin):
-    readonly_fields = ("site_name",)
+    readonly_fields = ("site_name", "rest_api")
     fieldsets = (
         (
             None,
@@ -21,6 +22,7 @@ class SiteConfigurationAdmin(SingletonModelAdmin):
                     "currency",
                     "footer",
                     "footer_extended",
+                    "rest_api",
                 )
             },
         ),
@@ -36,6 +38,10 @@ class SiteConfigurationAdmin(SingletonModelAdmin):
             },
         ),
     )
+
+    @admin.display(description="REST API enabled", boolean=True)
+    def rest_api(self, obj):
+        return settings.REST_ENABLED
 
 
 @admin.register(Flatpage)
