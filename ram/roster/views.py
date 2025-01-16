@@ -1,12 +1,14 @@
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.schemas.openapi import AutoSchema
 
+from ram.views import CustomLimitOffsetPagination
 from roster.models import RollingStock
 from roster.serializers import RollingStockSerializer
 
 
 class RosterList(ListAPIView):
     serializer_class = RollingStockSerializer
+    pagination_class = CustomLimitOffsetPagination
 
     def get_queryset(self):
         return RollingStock.objects.get_published(self.request.user)
@@ -23,6 +25,7 @@ class RosterGet(RetrieveAPIView):
 
 class RosterAddress(ListAPIView):
     serializer_class = RollingStockSerializer
+    pagination_class = CustomLimitOffsetPagination
     schema = AutoSchema(operation_id_base="retrieveRollingStockByAddress")
 
     def get_queryset(self):
@@ -34,6 +37,7 @@ class RosterAddress(ListAPIView):
 
 class RosterClass(ListAPIView):
     serializer_class = RollingStockSerializer
+    pagination_class = CustomLimitOffsetPagination
 
     schema = AutoSchema(operation_id_base="retrieveRollingStockByClass")
 

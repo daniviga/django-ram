@@ -16,6 +16,13 @@ from django.utils.text import slugify as slugify
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
+from rest_framework.pagination import LimitOffsetPagination
+
+
+class CustomLimitOffsetPagination(LimitOffsetPagination):
+    default_limit = 10
+    max_limit = 25
+
 
 @method_decorator(csrf_exempt, name="dispatch")
 class UploadImage(View):
