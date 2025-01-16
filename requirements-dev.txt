@@ -3,4 +3,7 @@ pdbpp
 ipython
 flake8
 pyinstrument
+pyyaml
+uritemplate
+inflection
 django-debug-toolbar
