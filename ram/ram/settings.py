@@ -142,6 +142,12 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 MEDIA_URL = "media/"
 MEDIA_ROOT = STORAGE_DIR / "media"
 
+REST_ENABLED = False  # Set to True to enable the REST API
+REST_FRAMEWORK = {
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    "PAGE_SIZE": 5,
+}
+
 TINYMCE_DEFAULT_CONFIG = {
     "height": "500px",
     "menubar": False,
