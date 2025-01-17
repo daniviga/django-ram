@@ -37,8 +37,18 @@ class Document(models.Model):
     def __str__(self):
         return "{0}".format(os.path.basename(self.file.name))
 
+    @property
     def filename(self):
         return self.__str__()
+
+    @property
+    def size(self):
+        kb = self.file.size / 1024.0
+        if kb < 1024:
+            size = "{0} KB".format(round(kb))
+        else:
+            size = "{0} MB".format(round(kb / 1024.0))
+        return size
 
     def download(self):
         return mark_safe(

@@ -236,6 +236,13 @@ class Tag(models.Model):
         )
 
 
+class GenericDocument(Document):
+    tags = models.ManyToManyField(Tag, blank=True)
+
+    class Meta:
+        verbose_name_plural = "Generic Documents"
+
+
 @receiver(models.signals.pre_save, sender=Manufacturer)
 @receiver(models.signals.pre_save, sender=Company)
 @receiver(models.signals.pre_save, sender=Scale)

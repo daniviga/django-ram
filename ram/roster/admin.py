@@ -72,11 +72,13 @@ class RollingStockJournalInline(admin.TabularInline):
 
 @admin.register(RollingStockDocument)
 class RollingStockDocumentAdmin(admin.ModelAdmin):
+    readonly_fields = ("size",)
     list_display = (
         "__str__",
         "rolling_stock",
         "description",
         "private",
+        "size",
         "download",
     )
     search_fields = (

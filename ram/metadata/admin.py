@@ -10,6 +10,7 @@ from metadata.models import (
     Company,
     Tag,
     RollingStockType,
+    GenericDocument,
 )
 
 
@@ -70,3 +71,19 @@ class RollingStockTypeAdmin(SortableAdminMixin, admin.ModelAdmin):
     list_display = ("__str__",)
     list_filter = ("type", "category")
     search_fields = ("type", "category")
+
+
+@admin.register(GenericDocument)
+class GenericDocumentAdmin(admin.ModelAdmin):
+    readonly_fields = ("size",)
+    list_display = (
+        "__str__",
+        "description",
+        "private",
+        "size",
+        "download",
+    )
+    search_fields = (
+        "description",
+        "file",
+    )
