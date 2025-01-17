@@ -263,10 +263,6 @@ class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
         )
         return form
 
-    @admin.display(description="Scales")
-    def get_scales(self, obj):
-        return "/".join(s.scale for s in obj.scales.all())
-
     def download_csv(modeladmin, request, queryset):
         header = [
             "Catalog",
@@ -292,10 +288,10 @@ class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
                 for property in obj.property.all()
             )
             data.append([
-                obj.__str__,
+                obj.__str__(),
                 obj.manufacturer.name,
                 obj.years,
-                obj.get_scales,
+                obj.get_scales(),
                 obj.ISBN,
                 dict(settings.LANGUAGES)[obj.language],
                 obj.number_of_pages,

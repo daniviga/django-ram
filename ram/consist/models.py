@@ -79,15 +79,19 @@ class ConsistItem(models.Model):
     def preview(self):
         return self.rolling_stock.image.first().image_thumbnail(100)
 
+    @property
     def type(self):
         return self.rolling_stock.rolling_class.type
 
+    @property
     def address(self):
         return self.rolling_stock.address
 
+    @property
     def company(self):
-        return self.rolling_stock.company()
+        return self.rolling_stock.company
 
+    @property
     def era(self):
         return self.rolling_stock.era
 

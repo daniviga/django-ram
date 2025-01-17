@@ -35,6 +35,7 @@ class Author(models.Model):
     def __str__(self):
         return f"{self.last_name}, {self.first_name}"
 
+    @property
     def short_name(self):
         return f"{self.last_name} {self.first_name[0]}."
 
@@ -131,7 +132,7 @@ class Book(BaseBook):
 
     @property
     def authors_list(self):
-        return ", ".join(a.short_name() for a in self.authors.all())
+        return ", ".join(a.short_name for a in self.authors.all())
 
     def get_absolute_url(self):
         return reverse(
@@ -152,7 +153,7 @@ class Catalog(BaseBook):
         ordering = ["manufacturer", "publication_year"]
 
     def __str__(self):
-        scales = self.get_scales
+        scales = self.get_scales()
         return "%s %s %s" % (self.manufacturer.name, self.years, scales)
 
     def get_absolute_url(self):
@@ -161,6 +162,6 @@ class Catalog(BaseBook):
             kwargs={"selector": "catalog", "uuid": self.uuid}
         )
 
-    @property
     def get_scales(self):
         return "/".join([s.scale for s in self.scales.all()])
+    get_scales.short_description = "Scales"
