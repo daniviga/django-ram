@@ -1,6 +1,7 @@
 from django.contrib import admin
 from adminsortable2.admin import SortableAdminMixin
 
+from ram.admin import publish, unpublish
 from metadata.models import (
     Property,
     Decoder,
@@ -87,3 +88,4 @@ class GenericDocumentAdmin(admin.ModelAdmin):
         "description",
         "file",
     )
+    actions = [publish, unpublish]
