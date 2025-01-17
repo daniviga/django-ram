@@ -72,11 +72,13 @@ class RollingStockJournalInline(admin.TabularInline):
 
 @admin.register(RollingStockDocument)
 class RollingStockDocumentAdmin(admin.ModelAdmin):
+    readonly_fields = ("size",)
     list_display = (
         "__str__",
         "rolling_stock",
         "description",
         "private",
+        "size",
         "download",
     )
     search_fields = (
@@ -213,6 +215,7 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
 
     def download_csv(modeladmin, request, queryset):
         header = [
+            "Name",
             "Company",
             "Identifier",
             "Road Number",
@@ -239,6 +242,7 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
                 for property in obj.property.all()
             )
             data.append([
+                obj.__str__(),
                 obj.rolling_class.company.name,
                 obj.rolling_class.identifier,
                 obj.road_number,

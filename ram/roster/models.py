@@ -125,9 +125,11 @@ class RollingStock(BaseModel):
     def preview(self):
         return self.image.first().image_thumbnail(350)
 
+    @property
     def country(self):
         return str(self.rolling_class.company.country)
 
+    @property
     def company(self):
         return str(self.rolling_class.company)
 
