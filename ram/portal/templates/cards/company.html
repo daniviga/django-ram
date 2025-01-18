@@ -7,10 +7,12 @@
             <table class="table table-striped">
               <thead>
                 <tr>
-                  <th scope="row">Company</th>
-                  {% if d.item.freelance %}
-                  <th class="text-end" scope="row"><span class="badge text-bg-secondary">Freelance</span></th>
-                  {% endif %}
+                  <th colspan="2" scope="row">
+                    Company
+                    {% if d.item.freelance %}
+                    <span class="mt-1 float-end badge text-bg-secondary">Freelance</span>
+                    {% endif %}
+                  </th>
                 </tr>
               </thead>
               <tbody class="table-group-divider">
@@ -32,12 +34,6 @@
                   <th class="w-33" scope="row">Country</th>
                   <td><img src="{{ d.item.country.flag }}" alt="{{ d.item.country }}"> {{ d.item.country.name }}</td>
                 </tr>
-               {% if d.item.freelance %}
-               <tr>
-                  <th class="w-33" scope="row">Notes</th>
-                  <td>A <em>freelance</em> company</td>
-                </tr>
-               {% endif %}
               </tbody>
             </table>
             <div class="d-grid gap-2 mb-1 d-md-block">

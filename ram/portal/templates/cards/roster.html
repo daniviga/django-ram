@@ -22,10 +22,12 @@
               <table class="table table-striped">
                 <thead>
                   <tr>
-                    <th scope="row">Rolling stock</th>
-                    {% if d.item.rolling_class.company.freelance %}
-                    <th class="text-end" scope="row"><span class="badge text-bg-secondary">Freelance</span></th>
-                    {% endif %}
+                    <th colspan="2" scope="row">
+                      Rolling stock
+                      {% if d.item.rolling_class.company.freelance %}
+                      <span class="mt-1 float-end badge text-bg-secondary">Freelance</span>
+                      {% endif %}
+                    </th>
                   </tr>
                 </thead>
                 <tbody class="table-group-divider">

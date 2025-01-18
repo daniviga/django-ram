@@ -24,10 +24,12 @@
             <table class="table table-striped">
               <thead>
                 <tr>
-                  <th scope="row">Consist</th>
-                  {% if d.item.company.freelance %}
-                  <th class="text-end" scope="row"><span class="badge text-bg-secondary">Freelance</span></th>
-                  {% endif %}
+                  <th colspan="2" scope="row">
+                    Consist
+                    {% if d.item.company.freelance %}
+                    <span class="mt-1 float-end badge text-bg-secondary">Freelance</span>
+                    {% endif %}
+                  </th>
                 </tr>
               </thead>
               <tbody class="table-group-divider">

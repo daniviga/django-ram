@@ -73,10 +73,12 @@
                   <table class="table table-striped">
                     <thead>
                       <tr>
-                        <th scope="row">Rolling stock</th>
-                        {% if company.freelance %}
-                        <th class="text-end" scope="row"><span class="badge text-bg-secondary">Freelance</span></th>
-                        {% endif %}
+                        <th colspan="2" scope="row">
+                          Rolling stock
+                          {% if company.freelance %}
+                          <span class="mt-1 float-end badge text-bg-secondary">Freelance</span>
+                          {% endif %}
+                        </th>
                       </tr>
                     </thead>
                     <tbody class="table-group-divider">
@@ -290,10 +292,12 @@
                   <table class="table table-striped">
                     <thead>
                       <tr>
-                        <th scope="row">Company data</th>
-                        {% if company.freelance %}
-                        <th class="text-end" scope="row"><span class="badge text-bg-secondary">Freelance</th>
-                        {% endif %}
+                        <th colspan="2" scope="row">
+                          Company data
+                          {% if company.freelance %}
+                          <span class="mt-1 float-end badge text-bg-secondary">Freelance</span>
+                          {% endif %}
+                        </th>
                       </tr>
                     </thead>
                     <tbody class="table-group-divider">
