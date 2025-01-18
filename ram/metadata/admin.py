@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.html import format_html
 from adminsortable2.admin import SortableAdminMixin
 
 from ram.admin import publish, unpublish
@@ -47,17 +48,29 @@ class ScaleAdmin(admin.ModelAdmin):
 @admin.register(Company)
 class CompanyAdmin(admin.ModelAdmin):
     readonly_fields = ("logo_thumbnail",)
-    list_display = ("name", "country")
-    list_filter = list_display
+    list_display = ("name", "country_flag")
+    list_filter = ("name", "country")
     search_fields = ("name",)
+
+    @admin.display(description="Country")
+    def country_flag(self, obj):
+        return format_html(
+            '<img src="{}" /> {}'.format(obj.country.flag, obj.country.name)
+        )
 
 
 @admin.register(Manufacturer)
 class ManufacturerAdmin(admin.ModelAdmin):
     readonly_fields = ("logo_thumbnail",)
-    list_display = ("name", "category")
+    list_display = ("name", "category", "country_flag")
     list_filter = ("category",)
     search_fields = ("name",)
+
+    @admin.display(description="Country")
+    def country_flag(self, obj):
+        return format_html(
+            '<img src="{}" /> {}'.format(obj.country.flag, obj.country.name)
+        )
 
 
 @admin.register(Tag)
@@ -76,7 +89,7 @@ class RollingStockTypeAdmin(SortableAdminMixin, admin.ModelAdmin):
 
 @admin.register(GenericDocument)
 class GenericDocumentAdmin(admin.ModelAdmin):
-    readonly_fields = ("size",)
+    readonly_fields = ("size", "creation_time", "updated_time")
     list_display = (
         "__str__",
         "description",
@@ -87,5 +100,33 @@ class GenericDocumentAdmin(admin.ModelAdmin):
     search_fields = (
         "description",
         "file",
+    )
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "private",
+                    "description",
+                    "file",
+                    "size",
+                    "tags",
+                )
+            },
+        ),
+        (
+            "Notes",
+            {"classes": ("collapse",), "fields": ("notes",)},
+        ),
+        (
+            "Audit",
+            {
+                "classes": ("collapse",),
+                "fields": (
+                    "creation_time",
+                    "updated_time",
+                ),
+            },
+        ),
     )
     actions = [publish, unpublish]

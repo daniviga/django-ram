@@ -2,7 +2,7 @@ import html
 
 from django.conf import settings
 from django.contrib import admin
-from django.utils.html import strip_tags
+from django.utils.html import format_html, strip_tags
 
 from adminsortable2.admin import SortableAdminBase, SortableInlineAdminMixin
 
@@ -31,7 +31,7 @@ class RollingClassPropertyInline(admin.TabularInline):
 class RollingClass(admin.ModelAdmin):
     inlines = (RollingClassPropertyInline,)
     autocomplete_fields = ("manufacturer",)
-    list_display = ("__str__", "type", "company")
+    list_display = ("__str__", "type", "company", "country_flag")
     list_filter = ("company", "type__category", "type")
     search_fields = (
         "identifier",
@@ -39,6 +39,12 @@ class RollingClass(admin.ModelAdmin):
         "type__type",
     )
     save_as = True
+
+    @admin.display(description="Country")
+    def country_flag(self, obj):
+        return format_html(
+            '<img src="{}" /> {}'.format(obj.country.flag, obj.country)
+        )
 
 
 class RollingStockDocInline(admin.TabularInline):
@@ -87,6 +93,21 @@ class RollingStockDocumentAdmin(admin.ModelAdmin):
         "description",
         "file",
     )
+    autocomplete_fields = ("rolling_stock",)
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "private",
+                    "rolling_stock",
+                    "description",
+                    "file",
+                    "size",
+                )
+            },
+        ),
+    )
 
 
 @admin.register(RollingStockJournal)
@@ -94,18 +115,31 @@ class RollingJournalDocumentAdmin(admin.ModelAdmin):
     list_display = (
         "__str__",
         "date",
-        "rolling_stock",
         "private",
     )
     list_filter = (
         "date",
         "private",
     )
+    autocomplete_fields = ("rolling_stock",)
     search_fields = (
         "rolling_stock__rolling_class__identifier",
         "rolling_stock__road_number",
         "rolling_stock__item_number",
         "log",
+    )
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "private",
+                    "rolling_stock",
+                    "log",
+                    "date",
+                )
+            },
+        ),
     )
 
 
@@ -126,7 +160,7 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
         "scale",
         "item_number",
         "company",
-        "country",
+        "country_flag",
         "published",
     )
     list_filter = (
@@ -145,6 +179,12 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
         "item_number",
     )
     save_as = True
+
+    @admin.display(description="Country")
+    def country_flag(self, obj):
+        return format_html(
+            '<img src="{}" /> {}'.format(obj.country.flag, obj.country)
+        )
 
     fieldsets = (
         (
@@ -187,12 +227,7 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
         ),
         (
             "Notes",
-            {
-                "classes": ("collapse",),
-                "fields": (
-                    "notes",
-                )
-            },
+            {"classes": ("collapse",), "fields": ("notes",)},
         ),
         (
             "Audit",
@@ -241,29 +276,31 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
                 "{}:{}".format(property.property.name, property.value)
                 for property in obj.property.all()
             )
-            data.append([
-                obj.__str__(),
-                obj.rolling_class.company.name,
-                obj.rolling_class.identifier,
-                obj.road_number,
-                obj.manufacturer.name,
-                obj.scale.scale,
-                obj.item_number,
-                obj.set,
-                obj.era,
-                html.unescape(strip_tags(obj.description)),
-                obj.production_year,
-                html.unescape(strip_tags(obj.notes)),
-                settings.CSV_SEPARATOR_ALT.join(
-                    t.name for t in obj.tags.all()
-                ),
-                obj.decoder_interface,
-                obj.decoder,
-                obj.address,
-                obj.purchase_date,
-                obj.price,
-                properties,
-            ])
+            data.append(
+                [
+                    obj.__str__(),
+                    obj.rolling_class.company.name,
+                    obj.rolling_class.identifier,
+                    obj.road_number,
+                    obj.manufacturer.name,
+                    obj.scale.scale,
+                    obj.item_number,
+                    obj.set,
+                    obj.era,
+                    html.unescape(strip_tags(obj.description)),
+                    obj.production_year,
+                    html.unescape(strip_tags(obj.notes)),
+                    settings.CSV_SEPARATOR_ALT.join(
+                        t.name for t in obj.tags.all()
+                    ),
+                    obj.decoder_interface,
+                    obj.decoder,
+                    obj.address,
+                    obj.purchase_date,
+                    obj.price,
+                    properties,
+                ]
+            )
 
         return generate_csv(header, data, "rolling_stock.csv")
 

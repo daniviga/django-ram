@@ -39,6 +39,10 @@ class Consist(BaseModel):
     def get_absolute_url(self):
         return reverse("consist", kwargs={"uuid": self.uuid})
 
+    @property
+    def country(self):
+        return self.company.country
+
     def clean(self):
         if self.consist_item.filter(rolling_stock__published=False).exists():
             raise ValidationError(

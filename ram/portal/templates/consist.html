@@ -79,7 +79,10 @@
                 <table class="table table-striped">
                   <thead>
                     <tr>
-                      <th colspan="2" scope="row">Data</th>
+                      <th scope="row">Consist</th>
+                      {% if consist.company.freelance %}
+                      <th class="text-end" scope="row"><span class="badge text-bg-secondary">Freelance</span></th>
+                      {% endif %}
                     </tr>
                   </thead>
                   <tbody class="table-group-divider">
