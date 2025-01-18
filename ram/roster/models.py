@@ -42,6 +42,10 @@ class RollingClass(models.Model):
     def __str__(self):
         return "{0} {1}".format(self.company, self.identifier)
 
+    @property
+    def country(self):
+        return self.company.country
+
 
 class RollingClassProperty(PropertyInstance):
     rolling_class = models.ForeignKey(
@@ -127,7 +131,7 @@ class RollingStock(BaseModel):
 
     @property
     def country(self):
-        return str(self.rolling_class.company.country)
+        return self.rolling_class.company.country
 
     @property
     def company(self):

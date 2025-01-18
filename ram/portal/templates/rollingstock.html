@@ -73,7 +73,10 @@
                   <table class="table table-striped">
                     <thead>
                       <tr>
-                        <th colspan="2" scope="row">Rolling stock</th>
+                        <th scope="row">Rolling stock</th>
+                        {% if company.freelance %}
+                        <th class="text-end" scope="row"><span class="badge text-bg-secondary">Freelance</span></th>
+                        {% endif %}
                       </tr>
                     </thead>
                     <tbody class="table-group-divider">
@@ -84,7 +87,13 @@
                       <tr>
                         <th scope="row">Company</th>
                         <td>
-                            <a href="{% url 'filtered' _filter="company" search=company.slug %}">{{ company }}</a> {{ company.extended_name_pp }}
+                          <a href="{% url 'filtered' _filter="company" search=company.slug %}">{{ company }}</a> {{ company.extended_name_pp }}
+                        </td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Country</th>
+                        <td>
+                          <img src="{{ company.country.flag }}" alt="{{ company.country }}"> {{ company.country.name }}
                         </td>
                       </tr>
                       <tr>
@@ -281,7 +290,10 @@
                   <table class="table table-striped">
                     <thead>
                       <tr>
-                        <th colspan="2" scope="row">Company data</th>
+                        <th scope="row">Company data</th>
+                        {% if company.freelance %}
+                        <th class="text-end" scope="row"><span class="badge text-bg-secondary">Freelance</th>
+                        {% endif %}
                       </tr>
                     </thead>
                     <tbody class="table-group-divider">
@@ -293,18 +305,16 @@
                       {% endif %}
                       <tr>
                         <th class="w-33" scope="row">Name</th>
-                        <td><a href="{% url 'filtered' _filter="company" search=company.slug %}">{{ company.name }}</a> {{ company.extended_name_pp }}</td>
+                        <td>
+                          <a href="{% url 'filtered' _filter="company" search=company.slug %}">{{ company.name }}</a> {{ company.extended_name_pp }}
+                        </td>
                       </tr>
                       <tr>
                         <th class="w-33" scope="row">Country</th>
-                        <td>{{ company.country.name }} <img src="{{ company.country.flag }}" alt="{{ company.country }}">
+                        <td>
+                          <img src="{{ company.country.flag }}" alt="{{ company.country }}"> {{ company.country.name }}
+                        </td>
                       </tr>
-                      {% if company.freelance %}
-                      <tr>
-                        <th class="w-33" scope="row">Notes</th>
-                        <td>A <em>freelance</em> company</td>
-                      </tr>
-                      {% endif %}
                     </tbody>
                   </table>
                 </div>

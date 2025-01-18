@@ -28,7 +28,12 @@ class Document(models.Model):
         upload_to="files/",
         storage=DeduplicatedStorage(),
     )
-    private = models.BooleanField(default=False)
+    private = models.BooleanField(
+        default=False,
+        help_text="Document will be visible only to logged users",
+    )
+    creation_time = models.DateTimeField(auto_now_add=True)
+    updated_time = models.DateTimeField(auto_now=True)
 
     class Meta:
         abstract = True

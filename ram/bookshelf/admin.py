@@ -2,7 +2,7 @@ import html
 
 from django.conf import settings
 from django.contrib import admin
-from django.utils.html import strip_tags
+from django.utils.html import format_html, strip_tags
 from adminsortable2.admin import SortableAdminBase, SortableInlineAdminMixin
 
 from ram.admin import publish, unpublish
@@ -93,12 +93,7 @@ class BookAdmin(SortableAdminBase, admin.ModelAdmin):
         ),
         (
             "Notes",
-            {
-                "classes": ("collapse",),
-                "fields": (
-                    "notes",
-                )
-            },
+            {"classes": ("collapse",), "fields": ("notes",)},
         ),
         (
             "Audit",
@@ -150,23 +145,25 @@ class BookAdmin(SortableAdminBase, admin.ModelAdmin):
                 "{}:{}".format(property.property.name, property.value)
                 for property in obj.property.all()
             )
-            data.append([
-                obj.title,
-                obj.authors_list.replace(",", settings.CSV_SEPARATOR_ALT),
-                obj.publisher.name,
-                obj.ISBN,
-                dict(settings.LANGUAGES)[obj.language],
-                obj.number_of_pages,
-                obj.publication_year,
-                html.unescape(strip_tags(obj.description)),
-                settings.CSV_SEPARATOR_ALT.join(
-                    t.name for t in obj.tags.all()
-                ),
-                obj.purchase_date,
-                obj.price,
-                html.unescape(strip_tags(obj.notes)),
-                properties,
-            ])
+            data.append(
+                [
+                    obj.title,
+                    obj.authors_list.replace(",", settings.CSV_SEPARATOR_ALT),
+                    obj.publisher.name,
+                    obj.ISBN,
+                    dict(settings.LANGUAGES)[obj.language],
+                    obj.number_of_pages,
+                    obj.publication_year,
+                    html.unescape(strip_tags(obj.description)),
+                    settings.CSV_SEPARATOR_ALT.join(
+                        t.name for t in obj.tags.all()
+                    ),
+                    obj.purchase_date,
+                    obj.price,
+                    html.unescape(strip_tags(obj.notes)),
+                    properties,
+                ]
+            )
 
         return generate_csv(header, data, "bookshelf_books.csv")
 
@@ -185,8 +182,14 @@ class AuthorAdmin(admin.ModelAdmin):
 
 @admin.register(Publisher)
 class PublisherAdmin(admin.ModelAdmin):
-    list_display = ("name", "country")
+    list_display = ("name", "country_flag")
     search_fields = ("name",)
+
+    @admin.display(description="Country")
+    def country_flag(self, obj):
+        return format_html(
+            '<img src="{}" /> {}'.format(obj.country.flag, obj.country.name)
+        )
 
 
 @admin.register(Catalog)
@@ -237,12 +240,7 @@ class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
         ),
         (
             "Notes",
-            {
-                "classes": ("collapse",),
-                "fields": (
-                    "notes",
-                )
-            },
+            {"classes": ("collapse",), "fields": ("notes",)},
         ),
         (
             "Audit",
@@ -287,24 +285,26 @@ class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
                 "{}:{}".format(property.property.name, property.value)
                 for property in obj.property.all()
             )
-            data.append([
-                obj.__str__(),
-                obj.manufacturer.name,
-                obj.years,
-                obj.get_scales(),
-                obj.ISBN,
-                dict(settings.LANGUAGES)[obj.language],
-                obj.number_of_pages,
-                obj.publication_year,
-                html.unescape(strip_tags(obj.description)),
-                settings.CSV_SEPARATOR_ALT.join(
-                    t.name for t in obj.tags.all()
-                ),
-                obj.purchase_date,
-                obj.price,
-                html.unescape(strip_tags(obj.notes)),
-                properties,
-            ])
+            data.append(
+                [
+                    obj.__str__(),
+                    obj.manufacturer.name,
+                    obj.years,
+                    obj.get_scales(),
+                    obj.ISBN,
+                    dict(settings.LANGUAGES)[obj.language],
+                    obj.number_of_pages,
+                    obj.publication_year,
+                    html.unescape(strip_tags(obj.description)),
+                    settings.CSV_SEPARATOR_ALT.join(
+                        t.name for t in obj.tags.all()
+                    ),
+                    obj.purchase_date,
+                    obj.price,
+                    html.unescape(strip_tags(obj.notes)),
+                    properties,
+                ]
+            )
 
         return generate_csv(header, data, "bookshelf_catalogs.csv")
 

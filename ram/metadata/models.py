@@ -6,6 +6,8 @@ from django.dispatch.dispatcher import receiver
 from django.core.exceptions import ValidationError
 from django_countries.fields import CountryField
 
+from tinymce import models as tinymce
+
 from ram.models import Document
 from ram.utils import DeduplicatedStorage, get_image_preview, slugify
 from ram.managers import PublicManager
@@ -34,6 +36,7 @@ class Manufacturer(models.Model):
     category = models.CharField(
         max_length=64, choices=settings.MANUFACTURER_TYPES
     )
+    country = CountryField(blank=True)
     website = models.URLField(blank=True)
     logo = models.ImageField(
         upload_to=os.path.join("images", "manufacturers"),
@@ -237,6 +240,7 @@ class Tag(models.Model):
 
 
 class GenericDocument(Document):
+    notes = tinymce.HTMLField(blank=True)
     tags = models.ManyToManyField(Tag, blank=True)
 
     class Meta:

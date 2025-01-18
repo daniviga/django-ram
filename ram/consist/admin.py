@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.html import format_html
 from adminsortable2.admin import SortableAdminBase, SortableInlineAdminMixin
 
 from ram.admin import publish, unpublish
@@ -28,9 +29,15 @@ class ConsistAdmin(SortableAdminBase, admin.ModelAdmin):
         "updated_time",
     )
     list_filter = ("company", "era", "published")
-    list_display = ("__str__",) + list_filter
+    list_display = ("__str__",) + list_filter + ("country_flag",)
     search_fields = ("identifier",) + list_filter
     save_as = True
+
+    @admin.display(description="Country")
+    def country_flag(self, obj):
+        return format_html(
+            '<img src="{}" /> {}'.format(obj.country.flag, obj.country)
+        )
 
     fieldsets = (
         (
