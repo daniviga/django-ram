@@ -9,7 +9,7 @@ from django.dispatch import receiver
 from tinymce import models as tinymce
 
 from ram.models import BaseModel, Document, Image, PropertyInstance
-from ram.utils import DeduplicatedStorage
+from ram.utils import DeduplicatedStorage, slugify
 from ram.managers import PublicManager
 from metadata.models import (
     Scale,
@@ -148,13 +148,16 @@ class RollingStock(BaseModel):
 
 
 @receiver(models.signals.pre_save, sender=RollingStock)
-def pre_save_running_number(sender, instance, *args, **kwargs):
+def pre_save_internal_fields(sender, instance, *args, **kwargs):
+    # Extract road number integer from road number
     try:
         instance.road_number_int = int(
             re.findall(r"\d+", instance.road_number)[0]
         )
     except IndexError:
         pass
+    # Generate a machine-friendly item number from original item number
+    instance.item_number_slug = slugify(instance.item_number)
 
 
 class RollingStockDocument(Document):
