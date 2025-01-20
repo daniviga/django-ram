@@ -26,10 +26,8 @@ class RollingClass(models.Model):
     type = models.ForeignKey(RollingStockType, on_delete=models.CASCADE)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     description = tinymce.HTMLField(blank=True)
-    manufacturer = models.ForeignKey(
+    manufacturer = models.ManyToManyField(
         Manufacturer,
-        on_delete=models.CASCADE,
-        null=True,
         blank=True,
         limit_choices_to={"category": "real"},
     )

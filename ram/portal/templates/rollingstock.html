@@ -262,9 +262,12 @@
                       <tr>
                         <th scope="row">Manufacturer</th>
                         <td>
-                          {%if class.manufacturer %}
-                          <a href="{% url 'filtered' _filter="manufacturer" search=class.manufacturer.slug %}">{{ class.manufacturer }}</a>{% if class.manufacturer.website %} <a href="{{ class.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
-                          {% else %}-{% endif %}
+                          {% for m in class.manufacturer.all %}
+                          {% if not forloop.first %} / {% endif %}
+                          <a href="{% url 'filtered' _filter="manufacturer" search=m.slug %}">{{ m }}</a>{% if m.website %} <a href="{{ m.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
+                          {% empty %}
+                          -
+                          {% endfor %}
                         </td>
                       </tr>
                       {% if class.description %}
