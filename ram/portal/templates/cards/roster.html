@@ -24,9 +24,14 @@
                   <tr>
                     <th colspan="2" scope="row">
                       Rolling stock
-                      {% if d.item.rolling_class.company.freelance %}
-                      <span class="mt-1 float-end badge text-bg-secondary">Freelance</span>
-                      {% endif %}
+                      <div class="float-end">
+                        {% if d.item.company.freelance %}
+                        <span class="badge text-bg-secondary">Freelance</span>
+                        {% endif %}
+                        {% if not d.item.published %}
+                        <span class="badge text-bg-warning">Draft</span>
+                        {% endif %}
+                      </div>
                     </th>
                   </tr>
                 </thead>
@@ -38,7 +43,7 @@
                   <tr>
                     <th scope="row">Company</th>
                     <td>
-                      <a href="{% url 'filtered' _filter="company" search=d.item.rolling_class.company.slug %}"><abbr title="{{ d.item.rolling_class.company.extended_name }}">{{ d.item.rolling_class.company }}</abbr></a>
+                      <a href="{% url 'filtered' _filter="company" search=d.item.company.slug %}"><abbr title="{{ d.item.company.extended_name }}">{{ d.item.company }}</abbr></a>
                     </td>
                   </tr>
                   <tr>
@@ -69,7 +74,7 @@
                   </tr>
                 </tbody>
               </table>
-              {% if d.item.decoder %}
+              {% if d.item.decoder or d.item.decoder_interface %}
               <table class="table table-striped">
                 <thead>
                   <tr>
@@ -78,13 +83,19 @@
                 </thead>
                 <tbody class="table-group-divider">
                   <tr>
-                    <th class="w-33" scope="row">Decoder</th>
+                    <th class="w-33" scope="row">Interface</th>
+                    <td>{{ d.item.get_decoder_interface }}</td>
+                  </tr>
+                  {% if d.item.decoder %}
+                  <tr>
+                    <th scope="row">Decoder</th>
                     <td>{{ d.item.decoder }}</td>
                   </tr>
                   <tr>
                     <th scope="row">Address</th>
                     <td>{{ d.item.address }}</td>
                   </tr>
+                  {% endif %}
                 </tbody>
               </table>
               {% endif %}

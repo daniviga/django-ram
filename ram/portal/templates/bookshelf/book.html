@@ -59,11 +59,15 @@
                   <table class="table table-striped">
                     <thead>
                       <tr>
-                      {% if type == "catalog" %}
-                        <th colspan="2" scope="row">Catalog</th>
-                      {% elif type == "book" %}
-                        <th colspan="2" scope="row">Book</th>
-                      {% endif %}
+                        <th colspan="2" scope="row">
+                          {% if type == "catalog" %}Catalog
+                          {% elif type == "book" %}Book{% endif %}
+                          <div class="float-end">
+                            {% if not book.published %}
+                            <span class="badge text-bg-warning">Draft</span>
+                            {% endif %}
+                          </div>
+                        </th>
                       </tr>
                     </thead>
                     <tbody class="table-group-divider">

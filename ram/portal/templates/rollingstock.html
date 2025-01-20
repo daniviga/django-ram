@@ -75,9 +75,14 @@
                       <tr>
                         <th colspan="2" scope="row">
                           Rolling stock
-                          {% if company.freelance %}
-                          <span class="mt-1 float-end badge text-bg-secondary">Freelance</span>
-                          {% endif %}
+                          <div class="mt-1 float-end">
+                            {% if company.freelance %}
+                            <span class="badge text-bg-secondary">Freelance</span>
+                            {% endif %}
+                            {% if not rolling_stock.published %}
+                            <span class="badge text-bg-warning">Draft</span>
+                            {% endif %}
+                          </div>
                         </th>
                       </tr>
                     </thead>
@@ -145,7 +150,7 @@
                     <tbody class="table-group-divider">
                       <tr>
                         <th class="w-33" scope="row">Interface</th>
-                        <td>{{ rolling_stock.get_decoder_interface_display }}</td>
+                        <td>{{ rolling_stock.get_decoder_interface }}</td>
                       </tr>
                       {% if rolling_stock.decoder %}
                       <tr>
@@ -332,7 +337,7 @@
                     <tbody class="table-group-divider">
                       <tr>
                         <th scope="row">Interface</th>
-                        <td>{{ rolling_stock.get_decoder_interface_display }}</td>
+                        <td>{{ rolling_stock.get_decoder_interface }}</td>
                       </tr>
                       <tr>
                         <th class="w-33" scope="row">Address</th>
