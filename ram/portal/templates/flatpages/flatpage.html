@@ -3,10 +3,17 @@
         {% block header %}
         <small class="text-muted">Updated {{ flatpage.updated_time | date:"M d, Y H:i" }}</small>
         {% endblock %}
+        {% block carousel %}
+        {% endblock %}
         {% block extra_content %}
         <section class="py-4 text-start container">
           <div class="row">
             <div class="mx-auto">
+              {% if not flatpage.published %}
+              <div class="alert alert-warning" role="alert">
+                ⚠️ This page is a <strong>draft</strong> and is not published.
+              </div>
+              {% endif %}
               <div>{{ flatpage.content | safe }} </div>
               <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                 {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% url 'admin:portal_flatpage_change' flatpage.pk %}">Edit</a>{% endif %}

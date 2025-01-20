@@ -26,9 +26,14 @@
                 <tr>
                   <th colspan="2" scope="row">
                     Consist
-                    {% if d.item.company.freelance %}
-                    <span class="mt-1 float-end badge text-bg-secondary">Freelance</span>
-                    {% endif %}
+                    <div class="float-end">
+                      {% if d.item.company.freelance %}
+                      <span class="badge text-bg-secondary">Freelance</span>
+                      {% endif %}
+                      {% if not d.item.published %}
+                      <span class="badge text-bg-warning">Draft</span>
+                      {% endif %}
+                    </div>
                   </th>
                 </tr>
               </thead>

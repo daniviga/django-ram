@@ -135,7 +135,7 @@ class RollingStock(BaseModel):
 
     @property
     def company(self):
-        return str(self.rolling_class.company)
+        return self.rolling_class.company
 
     def delete(self, *args, **kwargs):
         shutil.rmtree(

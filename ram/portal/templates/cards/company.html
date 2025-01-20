@@ -9,9 +9,11 @@
                 <tr>
                   <th colspan="2" scope="row">
                     Company
-                    {% if d.item.freelance %}
-                    <span class="mt-1 float-end badge text-bg-secondary">Freelance</span>
-                    {% endif %}
+                    <div class="float-end">
+                      {% if d.item.freelance %}
+                      <span class="badge text-bg-secondary">Freelance</span>
+                      {% endif %}
+                    </div>
                   </th>
                 </tr>
               </thead>

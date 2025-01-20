@@ -24,9 +24,14 @@
                   <tr>
                     <th colspan="2" scope="row">
                       Rolling stock
-                      {% if d.item.rolling_class.company.freelance %}
-                      <span class="mt-1 float-end badge text-bg-secondary">Freelance</span>
-                      {% endif %}
+                      <div class="float-end">
+                        {% if d.item.company.freelance %}
+                        <span class="badge text-bg-secondary">Freelance</span>
+                        {% endif %}
+                        {% if not d.item.published %}
+                        <span class="badge text-bg-warning">Draft</span>
+                        {% endif %}
+                      </div>
                     </th>
                   </tr>
                 </thead>
@@ -38,7 +43,7 @@
                   <tr>
                     <th scope="row">Company</th>
                     <td>
-                      <a href="{% url 'filtered' _filter="company" search=d.item.rolling_class.company.slug %}"><abbr title="{{ d.item.rolling_class.company.extended_name }}">{{ d.item.rolling_class.company }}</abbr></a>
+                      <a href="{% url 'filtered' _filter="company" search=d.item.company.slug %}"><abbr title="{{ d.item.company.extended_name }}">{{ d.item.company }}</abbr></a>
                     </td>
                   </tr>
                   <tr>
