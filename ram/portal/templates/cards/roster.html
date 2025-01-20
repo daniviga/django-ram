@@ -74,7 +74,7 @@
                   </tr>
                 </tbody>
               </table>
-              {% if d.item.decoder %}
+              {% if d.item.decoder or d.item.decoder_interface %}
               <table class="table table-striped">
                 <thead>
                   <tr>
@@ -83,13 +83,19 @@
                 </thead>
                 <tbody class="table-group-divider">
                   <tr>
-                    <th class="w-33" scope="row">Decoder</th>
+                    <th class="w-33" scope="row">Interface</th>
+                    <td>{{ d.item.get_decoder_interface_display }}</td>
+                  </tr>
+                  {% if d.item.decoder %}
+                  <tr>
+                    <th scope="row">Decoder</th>
                     <td>{{ d.item.decoder }}</td>
                   </tr>
                   <tr>
                     <th scope="row">Address</th>
                     <td>{{ d.item.address }}</td>
                   </tr>
+                  {% endif %}
                 </tbody>
               </table>
               {% endif %}
