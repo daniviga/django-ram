@@ -11,6 +11,7 @@ from metadata.serializers import (
 
 
 class RollingClassSerializer(serializers.ModelSerializer):
+    manufacturer = ManufacturerSerializer(many=True)
     company = CompanySerializer()
     type = RollingStockTypeSerializer()
 
