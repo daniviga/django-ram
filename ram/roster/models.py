@@ -129,6 +129,14 @@ class RollingStock(BaseModel):
     def preview(self):
         return self.image.first().image_thumbnail(350)
 
+    # similar to get_decoder_interface_display in template render,
+    # but returns "-" if no decoder interface is set
+    def get_decoder_interface(self):
+        return str(
+            dict(settings.DECODER_INTERFACES).get(self.decoder_interface)
+            or "-"
+        )
+
     @property
     def country(self):
         return self.rolling_class.company.country
