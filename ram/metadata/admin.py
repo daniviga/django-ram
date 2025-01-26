@@ -8,6 +8,7 @@ from metadata.models import (
     Decoder,
     DecoderDocument,
     Scale,
+    Shop,
     Manufacturer,
     Company,
     Tag,
@@ -130,3 +131,10 @@ class GenericDocumentAdmin(admin.ModelAdmin):
         ),
     )
     actions = [publish, unpublish]
+
+
+@admin.register(Shop)
+class ShopAdmin(admin.ModelAdmin):
+    list_display = ("name", "on_line", "active")
+    list_filter = ("on_line", "active")
+    search_fields = ("name",)

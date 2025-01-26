@@ -129,6 +129,13 @@
                     </thead>
                     <tbody class="table-group-divider">
                       <tr>
+                        <th class="w-33" scope="row">Shop</th>
+                        <td>
+                          {{ book.shop|default:"-" }}
+                          {% if book.shop.website %} <a href="{{ book.shop.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
+                        </td>
+                      </tr>
+                      <tr>
                         <th class="w-33" scope="row">Purchase date</th>
                         <td>{{ book.purchase_date|default:"-" }}</td>
                       </tr>

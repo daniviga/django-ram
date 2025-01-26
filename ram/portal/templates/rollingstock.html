@@ -215,6 +215,13 @@
                     </thead>
                     <tbody class="table-group-divider">
                       <tr>
+                        <th class="w-33" scope="row">Shop</th>
+                        <td>
+                          {{ rolling_stock.shop|default:"-" }}
+                          {% if rolling_stock.shop.website %} <a href="{{ rolling_stock.shop.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
+                        </td>
+                      </tr>
+                      <tr>
                         <th class="w-33" scope="row">Purchase date</th>
                         <td>{{ rolling_stock.purchase_date|default:"-" }}</td>
                       </tr>
