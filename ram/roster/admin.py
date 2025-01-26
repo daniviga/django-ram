@@ -151,7 +151,7 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
         RollingStockDocInline,
         RollingStockJournalInline,
     )
-    autocomplete_fields = ("rolling_class",)
+    autocomplete_fields = ("rolling_class", "shop")
     readonly_fields = ("preview", "creation_time", "updated_time")
     list_display = (
         "__str__",
@@ -220,6 +220,7 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
             "Purchase data",
             {
                 "fields": (
+                    "shop",
                     "purchase_date",
                     "price",
                 )
@@ -266,6 +267,7 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
             "Decoder Interface",
             "Decoder",
             "Address",
+            "Shop",
             "Purchase Date",
             "Price ({})".format(get_site_conf().currency),
             "Properties",
@@ -297,6 +299,7 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
                     obj.decoder,
                     obj.address,
                     obj.purchase_date,
+                    obj.shop,
                     obj.price,
                     properties,
                 ]

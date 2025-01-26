@@ -59,7 +59,7 @@ class BookAdmin(SortableAdminBase, admin.ModelAdmin):
         "number_of_pages",
         "published",
     )
-    autocomplete_fields = ("authors", "publisher")
+    autocomplete_fields = ("authors", "publisher", "shop")
     readonly_fields = ("creation_time", "updated_time")
     search_fields = ("title", "publisher__name", "authors__last_name")
     list_filter = ("publisher__name", "authors")
@@ -86,6 +86,7 @@ class BookAdmin(SortableAdminBase, admin.ModelAdmin):
             "Purchase data",
             {
                 "fields": (
+                    "shop",
                     "purchase_date",
                     "price",
                 )
@@ -133,6 +134,7 @@ class BookAdmin(SortableAdminBase, admin.ModelAdmin):
             "Publication Year",
             "Description",
             "Tags",
+            "Shop",
             "Purchase Date",
             "Price ({})".format(get_site_conf().currency),
             "Notes",
@@ -158,6 +160,7 @@ class BookAdmin(SortableAdminBase, admin.ModelAdmin):
                     settings.CSV_SEPARATOR_ALT.join(
                         t.name for t in obj.tags.all()
                     ),
+                    obj.shop,
                     obj.purchase_date,
                     obj.price,
                     html.unescape(strip_tags(obj.notes)),
@@ -274,6 +277,7 @@ class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
             "Description",
             "Tags",
             "Purchase Date",
+            "Shop",
             "Price ({})".format(get_site_conf().currency),
             "Notes",
             "Properties",
@@ -299,6 +303,7 @@ class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
                     settings.CSV_SEPARATOR_ALT.join(
                         t.name for t in obj.tags.all()
                     ),
+                    obj.shop,
                     obj.purchase_date,
                     obj.price,
                     html.unescape(strip_tags(obj.notes)),

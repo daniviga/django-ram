@@ -247,6 +247,20 @@ class GenericDocument(Document):
         verbose_name_plural = "Generic Documents"
 
 
+class Shop(models.Model):
+    name = models.CharField(max_length=128, unique=True)
+    country = CountryField(blank=True)
+    website = models.URLField(blank=True)
+    on_line = models.BooleanField(default=True)
+    active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = [models.functions.Lower("name"),]
+
+    def __str__(self):
+        return self.name
+
+
 @receiver(models.signals.pre_save, sender=Manufacturer)
 @receiver(models.signals.pre_save, sender=Company)
 @receiver(models.signals.pre_save, sender=Scale)

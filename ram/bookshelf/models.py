@@ -7,10 +7,9 @@ from django_countries.fields import CountryField
 
 from tinymce import models as tinymce
 
-from metadata.models import Tag
 from ram.utils import DeduplicatedStorage
 from ram.models import BaseModel, Image, Document, PropertyInstance
-from metadata.models import Scale, Manufacturer
+from metadata.models import Scale, Manufacturer, Shop, Tag
 
 
 class Publisher(models.Model):
@@ -50,6 +49,9 @@ class BaseBook(BaseModel):
     number_of_pages = models.SmallIntegerField(null=True, blank=True)
     publication_year = models.SmallIntegerField(null=True, blank=True)
     description = tinymce.HTMLField(blank=True)
+    shop = models.ForeignKey(
+        Shop, on_delete=models.CASCADE, null=True, blank=True
+    )
     price = models.DecimalField(
         max_digits=10,
         decimal_places=2,

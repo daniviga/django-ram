@@ -14,6 +14,7 @@ from ram.managers import PublicManager
 from metadata.models import (
     Scale,
     Manufacturer,
+    Shop,
     Decoder,
     Company,
     Tag,
@@ -102,6 +103,9 @@ class RollingStock(BaseModel):
         help_text="Era or epoch of the model",
     )
     production_year = models.SmallIntegerField(null=True, blank=True)
+    shop = models.ForeignKey(
+        Shop, on_delete=models.CASCADE, null=True, blank=True
+    )
     purchase_date = models.DateField(null=True, blank=True)
     price = models.DecimalField(
         max_digits=10,
