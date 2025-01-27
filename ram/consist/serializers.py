@@ -21,4 +21,5 @@ class ConsistSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Consist
-        fields = "__all__"
+        exclude = ("notes",)
+        read_only_fields = ("creation_time", "updated_time")
