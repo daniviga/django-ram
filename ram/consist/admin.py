@@ -49,11 +49,15 @@ class ConsistAdmin(SortableAdminBase, admin.ModelAdmin):
                     "consist_address",
                     "company",
                     "era",
+                    "description",
                     "image",
-                    "notes",
                     "tags",
                 )
             },
+        ),
+        (
+            "Notes",
+            {"classes": ("collapse",), "fields": ("notes",)},
         ),
         (
             "Audit",

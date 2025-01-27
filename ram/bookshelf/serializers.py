@@ -26,7 +26,12 @@ class BookSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Book
-        exclude = ("shop", "purchase_date", "price",)
+        exclude = (
+            "notes",
+            "shop",
+            "purchase_date",
+            "price",
+        )
         read_only_fields = ("creation_time", "updated_time")
 
 
@@ -37,5 +42,10 @@ class CatalogSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Catalog
-        exclude = ("purchase_date", "price",)
+        exclude = (
+            "notes",
+            "shop",
+            "purchase_date",
+            "price",
+        )
         read_only_fields = ("creation_time", "updated_time")

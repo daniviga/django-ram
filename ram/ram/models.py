@@ -11,6 +11,7 @@ from ram.managers import PublicManager
 
 class BaseModel(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    description = tinymce.HTMLField(blank=True)
     notes = tinymce.HTMLField(blank=True)
     creation_time = models.DateTimeField(auto_now_add=True)
     updated_time = models.DateTimeField(auto_now=True)

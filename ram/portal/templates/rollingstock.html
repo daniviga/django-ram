@@ -51,7 +51,6 @@
                 {% if rolling_stock.decoder %}<button class="nav-link" id="nav-dcc-tab" data-bs-toggle="tab" data-bs-target="#nav-dcc" type="button" role="tab" aria-controls="nav-dcc" aria-selected="false">DCC</button>{% endif %}
                 {% if documents or decoder_documents %}<button class="nav-link" id="nav-documents-tab" data-bs-toggle="tab" data-bs-target="#nav-documents" type="button" role="tab" aria-controls="nav-documents" aria-selected="false">Documents</button>{% endif %}
                 {% if journal %}<button class="nav-link" id="nav-journal-tab" data-bs-toggle="tab" data-bs-target="#nav-journal" type="button" role="tab" aria-controls="nav-journal" aria-selected="false">Journal</button>{% endif %}
-                {% if rolling_stock.notes %}<button class="nav-link" id="nav-notes-tab" data-bs-toggle="tab" data-bs-target="#nav-notes" type="button" role="tab" aria-controls="nav-notes" aria-selected="false">Notes</button>{% endif %}
                 {% if set %}<button class="nav-link" id="nav-set-tab" data-bs-toggle="tab" data-bs-target="#nav-set" type="button" role="tab" aria-controls="nav-set" aria-selected="false">Set</button>{% endif %}
                 {% if consists %}<button class="nav-link" id="nav-consists-tab" data-bs-toggle="tab" data-bs-target="#nav-consists" type="button" role="tab" aria-controls="nav-consists" aria-selected="false">Consists</button>{% endif %}
               </nav>
@@ -63,7 +62,6 @@
                 {% if rolling_stock.decoder %}<option value="nav-dcc">DCC</option>{% endif %}
                 {% if documents or decoder_documents %}<option value="nav-documents">Documents</option>{% endif %}
                 {% if journal %}<option value="nav-journal">Journal</option>{% endif %}
-                {% if rolling_stock.notes %}<option value="nav-notes">Notes</option>{% endif %}
                 {% if set %}<option value="nav-set">Set</option>{% endif %}
                 {% if consists %}<option value="nav-consists">Consists</option>{% endif %}
               </select>
@@ -426,9 +424,6 @@
                     {% endfor %}
                     </tbody>
                   </table>
-                </div>
-                <div class="tab-pane" id="nav-notes" role="tabpanel" aria-labelledby="nav-notes-tab">
-                  {{ rolling_stock.notes | safe }}
                 </div>
                 <div class="tab-pane" id="nav-set" role="tabpanel" aria-labelledby="nav-set-tab">
                   <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 mb-3">

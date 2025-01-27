@@ -47,12 +47,10 @@
               <nav class="nav nav-tabs d-none d-lg-flex flex-row mb-2" id="nav-tab" role="tablist">
                 <button class="nav-link active" id="nav-summary-tab" data-bs-toggle="tab" data-bs-target="#nav-summary" type="button" role="tab" aria-controls="nav-summary" aria-selected="true">Summary</button>
                 {% if documents %}<button class="nav-link" id="nav-documents-tab" data-bs-toggle="tab" data-bs-target="#nav-documents" type="button" role="tab" aria-controls="nav-documents" aria-selected="false">Documents</button>{% endif %}
-                {% if book.notes %}<button class="nav-link" id="nav-notes-tab" data-bs-toggle="tab" data-bs-target="#nav-notes" type="button" role="tab" aria-controls="nav-notes" aria-selected="false">Notes</button>{% endif %}
               </nav>
               <select class="form-select d-lg-none mb-2" id="tabSelector" aria-label="Tab selector">
                 <option value="nav-summary" selected>Summary</option>
                 {% if documents %}<option value="nav-documents">Documents</option>{% endif %}
-                {% if book.notes %}<option value="nav-notes">Notes</option>{% endif %}
               </select>
               <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane show active" id="nav-summary" role="tabpanel" aria-labelledby="nav-summary-tab">
@@ -181,9 +179,6 @@
                     {% endfor %}
                     </tbody>
                   </table>
-                </div>
-                <div class="tab-pane" id="nav-notes" role="tabpanel" aria-labelledby="nav-notes-tab">
-                  {{ book.notes | safe }}
                 </div>
               </div>
               <div class="d-grid gap-2 d-md-flex justify-content-md-end">

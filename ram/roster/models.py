@@ -113,7 +113,6 @@ class RollingStock(BaseModel):
         null=True,
         blank=True,
     )
-    description = tinymce.HTMLField(blank=True)
     tags = models.ManyToManyField(
         Tag, related_name="rolling_stock", blank=True
     )
