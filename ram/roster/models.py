@@ -104,7 +104,7 @@ class RollingStock(BaseModel):
     )
     production_year = models.SmallIntegerField(null=True, blank=True)
     shop = models.ForeignKey(
-        Shop, on_delete=models.CASCADE, null=True, blank=True
+        Shop, on_delete=models.SET_NULL, null=True, blank=True
     )
     purchase_date = models.DateField(null=True, blank=True)
     price = models.DecimalField(
