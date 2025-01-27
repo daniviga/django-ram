@@ -105,7 +105,8 @@ class ConsistItem(models.Model):
 # it is hosted here to avoid circular imports
 @receiver(models.signals.post_save, sender=RollingStock)
 def post_save_unpublish_consist(sender, instance, *args, **kwargs):
-    consists = Consist.objects.filter(consist_item__rolling_stock=instance)
-    for consist in consists:
-        consist.published = False
-        consist.save()
+    if not instance.published:
+        consists = Consist.objects.filter(consist_item__rolling_stock=instance)
+        for consist in consists:
+            consist.published = False
+            consist.save()
