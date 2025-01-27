@@ -278,7 +278,6 @@ class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
             "Tags",
             "Shop",
             "Purchase Date",
-            "Shop",
             "Price ({})".format(get_site_conf().currency),
             "Notes",
             "Properties",
