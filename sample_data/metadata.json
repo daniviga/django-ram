@@ -3,14 +3,104 @@
     "model": "metadata.property",
     "pk": 1,
     "fields": {
-        "name": "Wheel arrangement"
+        "name": "Wheel arrangement",
+        "private": false
     }
 },
 {
     "model": "metadata.property",
     "pk": 2,
     "fields": {
-        "name": "Trucks"
+        "name": "Trucks",
+        "private": false
+    }
+},
+{
+    "model": "metadata.property",
+    "pk": 4,
+    "fields": {
+        "name": "Weathered",
+        "private": false
+    }
+},
+{
+    "model": "metadata.property",
+    "pk": 5,
+    "fields": {
+        "name": "Herald",
+        "private": false
+    }
+},
+{
+    "model": "metadata.property",
+    "pk": 6,
+    "fields": {
+        "name": "Name",
+        "private": false
+    }
+},
+{
+    "model": "metadata.property",
+    "pk": 8,
+    "fields": {
+        "name": "Stack",
+        "private": false
+    }
+},
+{
+    "model": "metadata.property",
+    "pk": 9,
+    "fields": {
+        "name": "Cab",
+        "private": false
+    }
+},
+{
+    "model": "metadata.property",
+    "pk": 10,
+    "fields": {
+        "name": "Load",
+        "private": false
+    }
+},
+{
+    "model": "metadata.property",
+    "pk": 11,
+    "fields": {
+        "name": "Livery",
+        "private": false
+    }
+},
+{
+    "model": "metadata.property",
+    "pk": 12,
+    "fields": {
+        "name": "Pantograph",
+        "private": false
+    }
+},
+{
+    "model": "metadata.property",
+    "pk": 15,
+    "fields": {
+        "name": "Format",
+        "private": false
+    }
+},
+{
+    "model": "metadata.property",
+    "pk": 16,
+    "fields": {
+        "name": "Logo",
+        "private": false
+    }
+},
+{
+    "model": "metadata.property",
+    "pk": 17,
+    "fields": {
+        "name": "Purchase condition",
+        "private": true
     }
 },
 {
@@ -18,9 +108,11 @@
     "pk": 1,
     "fields": {
         "name": "Roco",
+        "slug": "roco",
         "category": "model",
+        "country": "AT",
         "website": "https://www.roco.cc/",
-        "logo": "images/roco_logo.png"
+        "logo": "images/manufacturers/roco_logo.png"
     }
 },
 {
@@ -28,9 +120,11 @@
     "pk": 2,
     "fields": {
         "name": "Liliput",
+        "slug": "liliput",
         "category": "model",
+        "country": "DE",
         "website": "https://liliput.de/",
-        "logo": "images/liliput_logo.png"
+        "logo": "images/manufacturers/liliput_logo.png"
     }
 },
 {
@@ -38,9 +132,11 @@
     "pk": 3,
     "fields": {
         "name": "Stängl",
+        "slug": "stangl",
         "category": "model",
-        "website": "https://www.halling.at/",
-        "logo": "images/staengl_logo.png"
+        "country": "AT",
+        "website": "",
+        "logo": "images/manufacturers/staengl_logo.png"
     }
 },
 {
@@ -48,9 +144,11 @@
     "pk": 4,
     "fields": {
         "name": "Ferro-Train",
+        "slug": "ferro-train",
         "category": "model",
+        "country": "AT",
         "website": "https://www.halling.at/",
-        "logo": "images/ferro_logo.png"
+        "logo": "images/manufacturers/ferro_logo.png"
     }
 },
 {
@@ -58,9 +156,11 @@
     "pk": 5,
     "fields": {
         "name": "Bachmann",
+        "slug": "bachmann",
         "category": "model",
+        "country": "US",
         "website": "https://bachmanntrains.com/",
-        "logo": "images/bachmann_logo.png"
+        "logo": "images/manufacturers/bachmann_logo.png"
     }
 },
 {
@@ -68,7 +168,9 @@
     "pk": 6,
     "fields": {
         "name": "ESU",
-        "category": "model",
+        "slug": "esu",
+        "category": "accessory",
+        "country": "DE",
         "website": "https://www.esu.eu/",
         "logo": ""
     }
@@ -78,7 +180,9 @@
     "pk": 7,
     "fields": {
         "name": "Soundtraxx",
-        "category": "model",
+        "slug": "soundtraxx",
+        "category": "accessory",
+        "country": "US",
         "website": "https://soundtraxx.com/",
         "logo": ""
     }
@@ -88,8 +192,10 @@
     "pk": 8,
     "fields": {
         "name": "Lima Locomotive Works",
+        "slug": "lima-locomotive-works",
         "category": "real",
-        "website": "",
+        "country": "US",
+        "website": "https://en.wikipedia.org/wiki/Lima_Locomotive_Works",
         "logo": ""
     }
 },
@@ -98,9 +204,11 @@
     "pk": 9,
     "fields": {
         "name": "Baldwin Locomotive Works",
+        "slug": "baldwin-locomotive-works",
         "category": "real",
-        "website": "",
-        "logo": ""
+        "country": "US",
+        "website": "https://en.wikipedia.org/wiki/Baldwin_Locomotive_Works",
+        "logo": "images/manufacturers/baldwin.png"
     }
 },
 {
@@ -108,8 +216,10 @@
     "pk": 10,
     "fields": {
         "name": "Rogers Locomotive and Machine Works",
+        "slug": "rogers-locomotive-and-machine-works",
         "category": "real",
-        "website": "",
+        "country": "US",
+        "website": "https://en.wikipedia.org/wiki/Rogers_Locomotive_and_Machine_Works",
         "logo": ""
     }
 },
@@ -117,30 +227,36 @@
     "model": "metadata.manufacturer",
     "pk": 11,
     "fields": {
-        "name": "Porter Locomotive Works",
+        "name": "H.K. Porter Locomotive Works",
+        "slug": "hk-porter-locomotive-works",
         "category": "real",
-        "website": "",
-        "logo": ""
+        "country": "US",
+        "website": "https://en.wikipedia.org/wiki/H.K._Porter,_Inc.",
+        "logo": "images/manufacturers/porter.png"
     }
 },
 {
     "model": "metadata.manufacturer",
     "pk": 12,
     "fields": {
-        "name": "Krauss & Comp. / Österreichische Siemens-Schuckert Werke",
+        "name": "Österreichische Siemens-Schuckert Werke (ÖSSW)",
+        "slug": "osterreichische-siemens-schuckert-werke-ossw",
         "category": "real",
+        "country": "AT",
         "website": "",
-        "logo": ""
+        "logo": "images/manufacturers/siemens.png"
     }
 },
 {
     "model": "metadata.manufacturer",
     "pk": 13,
     "fields": {
-        "name": "Simmering-Graz-Pauker",
+        "name": "Simmering-Graz-Pauker (SGP)",
+        "slug": "simmering-graz-pauker-sgp",
         "category": "real",
+        "country": "AT",
         "website": "",
-        "logo": ""
+        "logo": "images/manufacturers/sgp.png"
     }
 },
 {
@@ -148,9 +264,455 @@
     "pk": 14,
     "fields": {
         "name": "Davenport Locomotive Works",
+        "slug": "davenport-locomotive-works",
         "category": "real",
+        "country": "US",
+        "website": "https://en.wikipedia.org/wiki/Davenport_Locomotive_Works",
+        "logo": ""
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 15,
+    "fields": {
+        "name": "Kuehn",
+        "slug": "kuehn",
+        "category": "accessory",
+        "country": "DE",
+        "website": "https://kuehn-digital.de/",
+        "logo": ""
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 16,
+    "fields": {
+        "name": "Zimo",
+        "slug": "zimo",
+        "category": "accessory",
+        "country": "AT",
+        "website": "http://www.zimo.at/",
+        "logo": ""
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 17,
+    "fields": {
+        "name": "Bombardier Wien Schienenfahrzeuge (BWS)",
+        "slug": "bombardier-wien-schienenfahrzeuge-bws",
+        "category": "real",
+        "country": "AT",
         "website": "",
         "logo": ""
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 18,
+    "fields": {
+        "name": "Leopold Halling",
+        "slug": "leopold-halling",
+        "category": "model",
+        "country": "AT",
+        "website": "https://halling.at",
+        "logo": "images/manufacturers/LeopoldHalling.png"
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 19,
+    "fields": {
+        "name": "Schweizerische Lokomotiv- und Maschinenfabrik (SLM)",
+        "slug": "schweizerische-lokomotiv-und-maschinenfabrik-slm",
+        "category": "real",
+        "country": "CH",
+        "website": "",
+        "logo": ""
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 20,
+    "fields": {
+        "name": "Schweizerische Wagons Schlieren (SWS)",
+        "slug": "schweizerische-wagons-schlieren-sws",
+        "category": "real",
+        "country": "CH",
+        "website": "",
+        "logo": "images/manufacturers/Schlieren_Logo.jpg"
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 21,
+    "fields": {
+        "name": "BEMO",
+        "slug": "bemo",
+        "category": "model",
+        "country": "DE",
+        "website": "https://www.bemo-modellbahn.de/",
+        "logo": "images/manufacturers/BEMO_Modelleisenbahn_Logo_1mls1lZ.png"
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 22,
+    "fields": {
+        "name": "Blackstone Models",
+        "slug": "blackstone-models",
+        "category": "model",
+        "country": "US",
+        "website": "http://blackstonemodels.com/",
+        "logo": "images/manufacturers/blackstone.png"
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 23,
+    "fields": {
+        "name": "Micro-Trains Line Co.",
+        "slug": "micro-trains-line-co",
+        "category": "model",
+        "country": "US",
+        "website": "https://www.micro-trains.com/",
+        "logo": "images/manufacturers/micro-trains.png"
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 24,
+    "fields": {
+        "name": "Precision Scale Co.",
+        "slug": "precision-scale-co",
+        "category": "model",
+        "country": "US",
+        "website": "https://www.precisionscaleco.com/",
+        "logo": "images/manufacturers/precision-scale-co-logo-160h2.jpg"
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 25,
+    "fields": {
+        "name": "Waggonfabrik Simmering",
+        "slug": "waggonfabrik-simmering",
+        "category": "real",
+        "country": "AT",
+        "website": "",
+        "logo": ""
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 26,
+    "fields": {
+        "name": "Mountain Model Imports",
+        "slug": "mountain-model-imports",
+        "category": "model",
+        "country": "US",
+        "website": "https://www.precisionscaleco.com/",
+        "logo": "images/manufacturers/mmi.jpg"
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 27,
+    "fields": {
+        "name": "RGS workshops",
+        "slug": "rgs-workshops",
+        "category": "real",
+        "country": "US",
+        "website": "",
+        "logo": "images/manufacturers/Logo_and_Herald_of_the_Rio_Grande_Southern_Railroad.png"
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 28,
+    "fields": {
+        "name": "Precision Craft Models",
+        "slug": "precision-craft-models",
+        "category": "model",
+        "country": "US",
+        "website": "https://www.broadway-limited.com/",
+        "logo": "images/manufacturers/precision_craft.png"
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 29,
+    "fields": {
+        "name": "ELIN",
+        "slug": "elin",
+        "category": "real",
+        "country": "AT",
+        "website": "",
+        "logo": "images/manufacturers/Elin_logo.png"
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 30,
+    "fields": {
+        "name": "D&RGW workshops",
+        "slug": "drgw-workshops",
+        "category": "real",
+        "country": "US",
+        "website": "",
+        "logo": ""
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 31,
+    "fields": {
+        "name": "Krauss & Comp. Linz",
+        "slug": "krauss-comp-linz",
+        "category": "real",
+        "country": "AT",
+        "website": "",
+        "logo": ""
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 32,
+    "fields": {
+        "name": "Train-O-Matic",
+        "slug": "train-o-matic",
+        "category": "accessory",
+        "country": "RO",
+        "website": "https://train-o-matic.com/",
+        "logo": ""
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 33,
+    "fields": {
+        "name": "Fleischmann",
+        "slug": "fleischmann",
+        "category": "model",
+        "country": "DE",
+        "website": "https://www.fleischmann.de/",
+        "logo": "images/manufacturers/Logo_FLEISCHMANN.png"
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 34,
+    "fields": {
+        "name": "Henschel & Son",
+        "slug": "henschel-son",
+        "category": "real",
+        "country": "DE",
+        "website": "",
+        "logo": "images/manufacturers/henschel.png"
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 35,
+    "fields": {
+        "name": "MinitrainS",
+        "slug": "minitrains",
+        "category": "model",
+        "country": "DE",
+        "website": "https://www.minitrains.eu/",
+        "logo": "images/manufacturers/minitrains.png"
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 36,
+    "fields": {
+        "name": "FIAT Ferroviaria",
+        "slug": "fiat-ferroviaria",
+        "category": "real",
+        "country": "IT",
+        "website": "",
+        "logo": "images/manufacturers/fiat.png"
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 37,
+    "fields": {
+        "name": "HR Rivarossi",
+        "slug": "hr-rivarossi",
+        "category": "model",
+        "country": "IT",
+        "website": "https://it.rivarossi.com/",
+        "logo": "images/manufacturers/rivarossi.png"
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 38,
+    "fields": {
+        "name": "American Car and Foundry Co.",
+        "slug": "american-car-and-foundry-co",
+        "category": "real",
+        "country": "US",
+        "website": "https://en.wikipedia.org/wiki/American_Car_and_Foundry_Company",
+        "logo": ""
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 39,
+    "fields": {
+        "name": "Jackson and Sharp Company",
+        "slug": "jackson-and-sharp-company",
+        "category": "real",
+        "country": "US",
+        "website": "https://en.wikipedia.org/wiki/Jackson_and_Sharp_Company",
+        "logo": "images/manufacturers/1000006882.jpg"
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 40,
+    "fields": {
+        "name": "Schweizerische Industrie-Gesellschaft (SIG)",
+        "slug": "schweizerische-industrie-gesellschaft-sig",
+        "category": "real",
+        "country": "CH",
+        "website": "https://www.sig.biz/de",
+        "logo": "images/manufacturers/SIG_logo.png"
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 41,
+    "fields": {
+        "name": "Rivarossi",
+        "slug": "rivarossi",
+        "category": "model",
+        "country": "IT",
+        "website": "",
+        "logo": "images/manufacturers/rivarossi.jpg"
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 42,
+    "fields": {
+        "name": "S. A. des Ateliers Sécheron (SAAS)",
+        "slug": "s-a-des-ateliers-secheron-saas",
+        "category": "real",
+        "country": "CH",
+        "website": "",
+        "logo": ""
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 43,
+    "fields": {
+        "name": "Maschinenfabrik Oerlikon (MFO)",
+        "slug": "maschinenfabrik-oerlikon-mfo",
+        "category": "real",
+        "country": "CH",
+        "website": "",
+        "logo": "images/manufacturers/mfo.jpg"
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 44,
+    "fields": {
+        "name": "Brown, Boveri & Cie (BBC)",
+        "slug": "brown-boveri-cie-bbc",
+        "category": "real",
+        "country": "CH",
+        "website": "https://global.abb/",
+        "logo": "images/manufacturers/BBC_Logo.jpg"
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 45,
+    "fields": {
+        "name": "Schindler Waggon (SWP)",
+        "slug": "schindler-waggon-swp",
+        "category": "real",
+        "country": "CH",
+        "website": "",
+        "logo": "images/manufacturers/Schindler_Logo.jpg"
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 46,
+    "fields": {
+        "name": "ASEA Brown Boveri (ABB)",
+        "slug": "asea-brown-boveri-abb",
+        "category": "real",
+        "country": "CH",
+        "website": "https://global.abb/",
+        "logo": "images/manufacturers/ABB_logo.png"
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 47,
+    "fields": {
+        "name": "Liliput Wien",
+        "slug": "liliput-wien",
+        "category": "model",
+        "country": "AT",
+        "website": "",
+        "logo": "images/manufacturers/liliput_wien.png"
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 48,
+    "fields": {
+        "name": "Grazer Maschinen- und Waggonbau-Aktiengesellschaf (Graz)",
+        "slug": "grazer-maschinen-und-waggonbau-aktiengesellschaf-graz",
+        "category": "real",
+        "country": "AT",
+        "website": "",
+        "logo": ""
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 49,
+    "fields": {
+        "name": "Dolischo",
+        "slug": "dolischo",
+        "category": "model",
+        "country": "AT",
+        "website": "",
+        "logo": ""
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 50,
+    "fields": {
+        "name": "Waggonbau Bautzen",
+        "slug": "waggonbau-bautzen",
+        "category": "real",
+        "country": "DE",
+        "website": "",
+        "logo": ""
+    }
+},
+{
+    "model": "metadata.manufacturer",
+    "pk": 51,
+    "fields": {
+        "name": "Wegmann & Co.",
+        "slug": "wegmann-co",
+        "category": "real",
+        "country": "DE",
+        "website": "",
+        "logo": "images/manufacturers/WEGMANN-Waggonfabrik-Cassel.jpg"
     }
 },
 {
@@ -158,10 +720,11 @@
     "pk": 1,
     "fields": {
         "name": "ÖBB",
+        "slug": "obb",
         "extended_name": "Österreichische Bundesbahnen",
         "country": "AT",
         "freelance": false,
-        "logo": "images/oebb_logo.png"
+        "logo": "images/companies/oebb_logo.png"
     }
 },
 {
@@ -169,10 +732,11 @@
     "pk": 2,
     "fields": {
         "name": "SCRR",
+        "slug": "scrr",
         "extended_name": "Sand Creek Railroad",
         "country": "US",
         "freelance": true,
-        "logo": "images/scrr.png"
+        "logo": "images/companies/scrr.png"
     }
 },
 {
@@ -180,10 +744,11 @@
     "pk": 3,
     "fields": {
         "name": "RhB",
+        "slug": "rhb",
         "extended_name": "Rhätische Bahn",
         "country": "CH",
         "freelance": false,
-        "logo": ""
+        "logo": "images/companies/Rhaetische_Bahn_Logo_dreisprachig.jpg"
     }
 },
 {
@@ -191,10 +756,107 @@
     "pk": 4,
     "fields": {
         "name": "FO",
-        "extended_name": "Furka-Oberalp",
+        "slug": "fo",
+        "extended_name": "Furka-Oberalp Bahn",
         "country": "CH",
         "freelance": false,
+        "logo": "images/companies/fo_logo.gif"
+    }
+},
+{
+    "model": "metadata.company",
+    "pk": 5,
+    "fields": {
+        "name": "RGS",
+        "slug": "rgs",
+        "extended_name": "Rio Grande Southern",
+        "country": "US",
+        "freelance": false,
+        "logo": "images/companies/Logo_and_Herald_of_the_Rio_Grande_Southern_Railroad.png"
+    }
+},
+{
+    "model": "metadata.company",
+    "pk": 6,
+    "fields": {
+        "name": "D&RGW",
+        "slug": "drgw",
+        "extended_name": "Denver & Rio Grande Western",
+        "country": "US",
+        "freelance": false,
+        "logo": "images/companies/Logo_of_the_Denver_and_Rio_Grande_Western_Railroad.png"
+    }
+},
+{
+    "model": "metadata.company",
+    "pk": 7,
+    "fields": {
+        "name": "DB",
+        "slug": "db",
+        "extended_name": "Deutsche Bahn",
+        "country": "DE",
+        "freelance": false,
+        "logo": "images/companies/db_logo.png"
+    }
+},
+{
+    "model": "metadata.company",
+    "pk": 8,
+    "fields": {
+        "name": "FAV",
+        "slug": "fav",
+        "extended_name": "Ferrovia locale dell'Alta Valle",
+        "country": "IT",
+        "freelance": true,
+        "logo": "images/companies/fav.png"
+    }
+},
+{
+    "model": "metadata.company",
+    "pk": 9,
+    "fields": {
+        "name": "SNFT",
+        "slug": "snft",
+        "extended_name": "Società Nazionale Ferrovie e Tranvie",
+        "country": "IT",
+        "freelance": false,
+        "logo": "images/companies/snft.png"
+    }
+},
+{
+    "model": "metadata.company",
+    "pk": 10,
+    "fields": {
+        "name": "Feldbahn",
+        "slug": "feldbahn",
+        "extended_name": "A generic feldbahn",
+        "country": "EU",
+        "freelance": true,
         "logo": ""
+    }
+},
+{
+    "model": "metadata.company",
+    "pk": 11,
+    "fields": {
+        "name": "BVZ",
+        "slug": "bvz",
+        "extended_name": "Brig-Visp-Zermatt",
+        "country": "CH",
+        "freelance": false,
+        "logo": "images/companies/bvz_logo.png"
+    }
+},
+{
+    "model": "metadata.company",
+    "pk": 12,
+    "fields": {
+        "name": "SBB CFF FFS",
+        "slug": "sbb-cff-ffs",
+        "extended_name": "Schweizerische BundesBahnen",
+        "country": "CH",
+        "freelance": false,
+        "logo": "images/companies/SBB_CFF_FFS_logo.png"
     }
 },
 {
@@ -204,7 +866,6 @@
         "name": "Basic",
         "manufacturer": 5,
         "version": "",
-        "interface": 2,
         "sound": false,
         "image": ""
     }
@@ -216,7 +877,6 @@
         "name": "Tsunami",
         "manufacturer": 7,
         "version": "1",
-        "interface": 2,
         "sound": true,
         "image": ""
     }
@@ -225,10 +885,108 @@
     "model": "metadata.decoder",
     "pk": 3,
     "fields": {
-        "name": "LokPilot Micro",
+        "name": "LokPilot Micro V3.0 DCC",
+        "manufacturer": 6,
+        "version": "v3.0",
+        "sound": false,
+        "image": ""
+    }
+},
+{
+    "model": "metadata.decoder",
+    "pk": 4,
+    "fields": {
+        "name": "LokPilot Micro V4.0 DCC",
         "manufacturer": 6,
         "version": "v4",
-        "interface": 1,
+        "sound": false,
+        "image": ""
+    }
+},
+{
+    "model": "metadata.decoder",
+    "pk": 5,
+    "fields": {
+        "name": "N25-P",
+        "manufacturer": 15,
+        "version": "P",
+        "sound": false,
+        "image": ""
+    }
+},
+{
+    "model": "metadata.decoder",
+    "pk": 6,
+    "fields": {
+        "name": "MX645P22",
+        "manufacturer": 16,
+        "version": "",
+        "sound": true,
+        "image": ""
+    }
+},
+{
+    "model": "metadata.decoder",
+    "pk": 7,
+    "fields": {
+        "name": "MX617N",
+        "manufacturer": 16,
+        "version": "",
+        "sound": false,
+        "image": ""
+    }
+},
+{
+    "model": "metadata.decoder",
+    "pk": 8,
+    "fields": {
+        "name": "LokPilot Basic",
+        "manufacturer": 6,
+        "version": "",
+        "sound": false,
+        "image": ""
+    }
+},
+{
+    "model": "metadata.decoder",
+    "pk": 9,
+    "fields": {
+        "name": "LokSound Select Micro",
+        "manufacturer": 6,
+        "version": "V4.0",
+        "sound": true,
+        "image": ""
+    }
+},
+{
+    "model": "metadata.decoder",
+    "pk": 10,
+    "fields": {
+        "name": "LokSound V3.5",
+        "manufacturer": 6,
+        "version": "V3.5",
+        "sound": true,
+        "image": ""
+    }
+},
+{
+    "model": "metadata.decoder",
+    "pk": 11,
+    "fields": {
+        "name": "Lokommander 2 Micro",
+        "manufacturer": 32,
+        "version": "2",
+        "sound": false,
+        "image": ""
+    }
+},
+{
+    "model": "metadata.decoder",
+    "pk": 12,
+    "fields": {
+        "name": "Lokommander 2",
+        "manufacturer": 32,
+        "version": "2",
         "sound": false,
         "image": ""
     }
@@ -238,8 +996,11 @@
     "pk": 1,
     "fields": {
         "scale": "H0e",
+        "slug": "h0e",
         "ratio": "1:87",
-        "gauge": "9 mm"
+        "ratio_int": 114,
+        "tracks": 9.0,
+        "gauge": "760 mm"
     }
 },
 {
@@ -247,8 +1008,11 @@
     "pk": 2,
     "fields": {
         "scale": "H0",
+        "slug": "h0",
         "ratio": "1:87",
-        "gauge": "16.5 mm"
+        "ratio_int": 114,
+        "tracks": 16.5,
+        "gauge": "1435 mm"
     }
 },
 {
@@ -256,8 +1020,11 @@
     "pk": 3,
     "fields": {
         "scale": "0n30",
+        "slug": "0n30",
         "ratio": "1:48",
-        "gauge": "16.5 mm"
+        "ratio_int": 208,
+        "tracks": 16.5,
+        "gauge": "30 in"
     }
 },
 {
@@ -265,32 +1032,83 @@
     "pk": 4,
     "fields": {
         "scale": "H0m",
+        "slug": "h0m",
         "ratio": "1:87",
-        "gauge": "11 mm"
+        "ratio_int": 114,
+        "tracks": 11.0,
+        "gauge": "1000 mm"
     }
 },
 {
-    "model": "metadata.tag",
-    "pk": 1,
+    "model": "metadata.scale",
+    "pk": 5,
     "fields": {
-        "name": "Mariazellerbahn",
-        "slug": "mariazellerbahn"
+        "scale": "H0n3",
+        "slug": "h0n3",
+        "ratio": "1:87",
+        "ratio_int": 114,
+        "tracks": 10.5,
+        "gauge": "3 ft"
     }
 },
 {
-    "model": "metadata.tag",
-    "pk": 2,
+    "model": "metadata.scale",
+    "pk": 6,
     "fields": {
-        "name": "Colorado",
-        "slug": "colorado"
+        "scale": "N",
+        "slug": "n",
+        "ratio": "1:160",
+        "ratio_int": 62,
+        "tracks": 9.0,
+        "gauge": "1435 mm"
     }
 },
 {
-    "model": "metadata.tag",
-    "pk": 3,
+    "model": "metadata.scale",
+    "pk": 7,
     "fields": {
-        "name": "Narrow gauge",
-        "slug": "narrow-gauge"
+        "scale": "0",
+        "slug": "0",
+        "ratio": "1:45",
+        "ratio_int": 222,
+        "tracks": 32.0,
+        "gauge": "1435 mm"
+    }
+},
+{
+    "model": "metadata.scale",
+    "pk": 8,
+    "fields": {
+        "scale": "0m",
+        "slug": "0m",
+        "ratio": "1:45",
+        "ratio_int": 222,
+        "tracks": 22.5,
+        "gauge": "1000 mm"
+    }
+},
+{
+    "model": "metadata.scale",
+    "pk": 9,
+    "fields": {
+        "scale": "TT",
+        "slug": "tt",
+        "ratio": "1:120",
+        "ratio_int": 83,
+        "tracks": 11.0,
+        "gauge": "1435 mm"
+    }
+},
+{
+    "model": "metadata.scale",
+    "pk": 10,
+    "fields": {
+        "scale": "0e",
+        "slug": "0e",
+        "ratio": "1:45",
+        "ratio_int": 222,
+        "tracks": 16.5,
+        "gauge": "760 mm"
     }
 },
 {
@@ -298,7 +1116,9 @@
     "pk": 1,
     "fields": {
         "type": "Electric",
-        "category": "engine"
+        "order": 6,
+        "category": "engine",
+        "slug": "electric-engine"
     }
 },
 {
@@ -306,7 +1126,9 @@
     "pk": 2,
     "fields": {
         "type": "Diesel",
-        "category": "engine"
+        "order": 3,
+        "category": "engine",
+        "slug": "diesel-engine"
     }
 },
 {
@@ -314,7 +1136,9 @@
     "pk": 3,
     "fields": {
         "type": "Steam",
-        "category": "engine"
+        "order": 0,
+        "category": "engine",
+        "slug": "steam-engine"
     }
 },
 {
@@ -322,7 +1146,9 @@
     "pk": 4,
     "fields": {
         "type": "EMU",
-        "category": "railcar"
+        "order": 8,
+        "category": "railcar",
+        "slug": "emu-railcar"
     }
 },
 {
@@ -330,7 +1156,9 @@
     "pk": 5,
     "fields": {
         "type": "DMU",
-        "category": "railcar"
+        "order": 5,
+        "category": "railcar",
+        "slug": "dmu-railcar"
     }
 },
 {
@@ -338,7 +1166,9 @@
     "pk": 6,
     "fields": {
         "type": "Electric",
-        "category": "railcar"
+        "order": 7,
+        "category": "railcar",
+        "slug": "electric-railcar"
     }
 },
 {
@@ -346,7 +1176,9 @@
     "pk": 7,
     "fields": {
         "type": "Diesel",
-        "category": "railcar"
+        "order": 4,
+        "category": "railcar",
+        "slug": "diesel-railcar"
     }
 },
 {
@@ -354,7 +1186,9 @@
     "pk": 8,
     "fields": {
         "type": "Passenger",
-        "category": "car"
+        "order": 9,
+        "category": "car",
+        "slug": "passenger-car"
     }
 },
 {
@@ -362,7 +1196,9 @@
     "pk": 9,
     "fields": {
         "type": "Freight",
-        "category": "car"
+        "order": 11,
+        "category": "car",
+        "slug": "freight-car"
     }
 },
 {
@@ -370,7 +1206,49 @@
     "pk": 10,
     "fields": {
         "type": "Caboose",
-        "category": "equipment"
+        "order": 12,
+        "category": "equipment",
+        "slug": "caboose-equipment"
+    }
+},
+{
+    "model": "metadata.rollingstocktype",
+    "pk": 12,
+    "fields": {
+        "type": "Baggage",
+        "order": 10,
+        "category": "car",
+        "slug": "baggage-car"
+    }
+},
+{
+    "model": "metadata.rollingstocktype",
+    "pk": 13,
+    "fields": {
+        "type": "MoW",
+        "order": 13,
+        "category": "equipment",
+        "slug": "mow-equipment"
+    }
+},
+{
+    "model": "metadata.rollingstocktype",
+    "pk": 14,
+    "fields": {
+        "type": "Gasoline",
+        "order": 1,
+        "category": "engine",
+        "slug": "gasoline-engine"
+    }
+},
+{
+    "model": "metadata.rollingstocktype",
+    "pk": 15,
+    "fields": {
+        "type": "Gasoline",
+        "order": 2,
+        "category": "railcar",
+        "slug": "gasoline-railcar"
     }
 }
 ]
