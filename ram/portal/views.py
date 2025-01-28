@@ -264,11 +264,12 @@ class GetManufacturerItem(View):
         else:
             roster = (
                 RollingStock.objects.get_published(request.user)
-                .order_by(*get_order_by_field())
                 .filter(
                     Q(manufacturer=manufacturer)
                     | Q(rolling_class__manufacturer=manufacturer)
                 )
+                .distinct()
+                .order_by(*get_order_by_field())
             )
             title = "Manufacturer: {0}".format(manufacturer)
 
