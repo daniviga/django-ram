@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib import admin
 from solo.admin import SingletonModelAdmin
+from tinymce.widgets import TinyMCE
 
 from ram.admin import publish, unpublish
 from portal.models import SiteConfiguration, Flatpage
@@ -22,7 +23,7 @@ class SiteConfigurationAdmin(SingletonModelAdmin):
                     "currency",
                     "footer",
                     "footer_extended",
-                    "rest_api",
+                    "disclaimer",
                 )
             },
         ),
@@ -31,6 +32,7 @@ class SiteConfigurationAdmin(SingletonModelAdmin):
             {
                 "classes": ("collapse",),
                 "fields": (
+                    "rest_api",
                     "show_version",
                     "use_cdn",
                     "extra_head",
@@ -42,6 +44,15 @@ class SiteConfigurationAdmin(SingletonModelAdmin):
     @admin.display(description="REST API enabled", boolean=True)
     def rest_api(self, obj):
         return settings.REST_ENABLED
+
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        if db_field.name in ("footer", "footer_extended", "disclaimer"):
+            return db_field.formfield(
+                widget=TinyMCE(
+                    mce_attrs={"height": "200"},
+                )
+            )
+        return super().formfield_for_dbfield(db_field, **kwargs)
 
 
 @admin.register(Flatpage)

@@ -1,18 +1,34 @@
-  <footer class="text-muted py-4">
-    <div class="container">
-      <p class="float-end mb-1">
-        <a href="#">Back to top</a>
-      </p>
+  <footer class="text-body-secondary py-4">
+    <div class="container d-lg-flex justify-content-between">
       <div id="footer" class="mb-1">
-          <p>&copy; {% now "Y" %}</p> {{ site_conf.footer | safe }}
+        <p>&copy; {% now "Y" %}</p> {{ site_conf.footer | safe }}
       </div>
-      <div id="footer_extended" class="mb-0">
+    </div>
+    <div class="container">
+      <div id="footer_extended">
         {{ site_conf.footer_extended | safe }}
       </div>
     </div>
-
-    <div class="container">
-        <p class="small text-muted">Made with ❤️ for 🚂 and <a href="https://github.com/daniviga/django-ram">django-ram</a>
-        {% if site_conf.show_version %}<br>Version {{ site_conf.version }}{% endif %}
+    <div class="container d-flex text-body-secondary">
+      <p class="flex-fill small">Made with ❤️ for 🚂 and <i class="bi bi-github"></i> <a href="https://github.com/daniviga/django-ram">django-ram</a>
+      {% if site_conf.show_version %}<br>Version {{ site_conf.version }}{% endif %}</p>
+      <p class="text-end fs-5">
+        {% if site_conf.disclaimer %}<a class="text-reset" title="Disclaimer" href="" data-bs-toggle="modal" data-bs-target="#disclaimerModal"><i class="bi bi-info-square-fill"></i></a> {% endif %}
+        <a class="text-reset" title="Back to top" href="#"><i class="bi bi-arrow-up-left-square-fill"></i></a>
+      </p>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="disclaimerModal" tabindex="-1" aria-labelledby="disclaimerLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="disclaimerLabel">Disclaimer</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            {{ site_conf.disclaimer | safe }}
+          </div>
+        </div>
+      </div>
     </div>
   </footer>

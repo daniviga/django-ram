@@ -8,7 +8,7 @@
           {% endfor %}
         </p>
         {% endif %}
-        <small class="text-muted">Updated {{ rolling_stock.updated_time | date:"M d, Y H:i" }}</small>
+        <small class="text-body-secondary">Updated {{ rolling_stock.updated_time | date:"M d, Y H:i" }}</small>
         {% endblock %}
         {% block carousel %}
         <div class="row">
@@ -194,7 +194,7 @@
                       </tr>
                       <tr>
                         <th scope="row">Production year</th>
-                        <td>{{ rolling_stock.production_year|default:"-" }}</td>
+                        <td>{{ rolling_stock.production_year | default:"-" }}</td>
                       </tr>
                       {% if rolling_stock.description %}
                       <tr>
@@ -215,17 +215,17 @@
                       <tr>
                         <th class="w-33" scope="row">Shop</th>
                         <td>
-                          {{ rolling_stock.shop|default:"-" }}
+                          {{ rolling_stock.shop | default:"-" }}
                           {% if rolling_stock.shop.website %} <a href="{{ rolling_stock.shop.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
                         </td>
                       </tr>
                       <tr>
                         <th class="w-33" scope="row">Purchase date</th>
-                        <td>{{ rolling_stock.purchase_date|default:"-" }}</td>
+                        <td>{{ rolling_stock.purchase_date | default:"-" }}</td>
                       </tr>
                       <tr>
                         <th scope="row">Price ({{ site_conf.currency }})</th>
-                        <td>{{ rolling_stock.price|default:"-" }}</td>
+                        <td>{{ rolling_stock.price | default:"-" }}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -357,11 +357,11 @@
                       </tr>
                       <tr>
                         <th scope="row">Manufacturer</th>
-                        <td>{{ rolling_stock.decoder.manufacturer|default:"-" }}</td>
+                        <td>{{ rolling_stock.decoder.manufacturer | default:"-" }}</td>
                       </tr>
                       <tr>
                         <th scope="row">Version</th>
-                        <td>{{ rolling_stock.decoder.version }}</td>
+                        <td>{{ rolling_stock.decoder.version | default:"-"}}</td>
                       </tr>
                       <tr>
                         <th scope="row">Sound</th>

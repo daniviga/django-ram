@@ -7,7 +7,7 @@
         {{ t.name }}</a>{# new line is required #}
         {% endfor %}
       </p>
-      <small class="text-muted">Updated {{ consist.updated_time | date:"M d, Y H:i" }}</small>
+      <small class="text-body-secondary">Updated {{ consist.updated_time | date:"M d, Y H:i" }}</small>
       {% endif %}
       {% endblock %}
       {% block carousel %}
