@@ -49,13 +49,13 @@ It has been developed with:
 
 ## Future developments
 
-### Live assets kpi collection
+### Live assets KPI collection
 
 Realtime data usage is collected via a daemon connected over TCP to the Commandstation-EX and recorded for every asset with a DCC address.
 
 ### Asset lifecycle
 
-Data is collected to compute the asset usage and then the wear level of its components (eg. the engine)
+Data is collected to compute the asset usage and then the wear level of its components (eg. the engine).
 
 ### Required mainentance forecast
 
