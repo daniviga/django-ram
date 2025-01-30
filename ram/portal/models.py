@@ -33,6 +33,7 @@ class SiteConfiguration(SingletonModel):
     currency = models.CharField(max_length=3, default="EUR")
     footer = tinymce.HTMLField(blank=True)
     footer_extended = tinymce.HTMLField(blank=True)
+    disclaimer = tinymce.HTMLField(blank=True)
     show_version = models.BooleanField(default=True)
     use_cdn = models.BooleanField(default=True)
     extra_head = models.TextField(blank=True)
@@ -46,9 +47,11 @@ class SiteConfiguration(SingletonModel):
     def site_name(self):
         return settings.SITE_NAME
 
+    @property
     def version(self):
         return app_version
 
+    @property
     def django_version(self):
         return django.get_version()
 
