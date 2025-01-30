@@ -41,17 +41,25 @@ Project is based on the following technologies and components:
 
 It has been developed with:
 
-- [vim](https://www.vim.org/): because it rocks
+- [neovim](https://neovim.io/): because `vim` rocks, `neovim` rocks more
 - [arduino-cli](https://github.com/arduino/arduino-cli/): a mouse? What the heck?
 - [vim-arduino](https://github.com/stevearc/vim-arduino): another IDE? No thanks
 - [podman](https://podman.io/): because containers are fancy
-- [QEMU (avr)](https://qemu-project.gitlab.io/qemu/system/target-avr.html): QEMU can even make toast!
+- [QEMU (avr)](https://qemu-project.gitlab.io/qemu/system/target-avr.html): QEMU can even make toasts!
 
 ## Future developments
 
+A bunch of random, probably useless, ideas:
+
+### A bookshelf
+
+✅DONE
+
+Because books matter more than model trains themselves.
+
 ### Live assets KPI collection
 
-Realtime data usage is collected via a daemon connected over TCP to the Commandstation-EX and recorded for every asset with a DCC address.
+Realtime data usage is collected via a daemon connected over TCP to the EX-CommandStation and recorded for every asset with a DCC address.
 
 ### Asset lifecycle
 
@@ -60,6 +68,11 @@ Data is collected to compute the asset usage and then the wear level of its comp
 ### Required mainentance forecast
 
 Eventually data is used to "forecast" any required maintenance, like for example the replacement of carbon brushes, gear and motor oiling.
+
+### Asset export to JMRI
+
+Export assets (locomotives) into the JMRI format to be loaded in the JMRI
+roster.
 
 ## Requirements
 
@@ -96,6 +109,8 @@ $ cd ram
 $ python manage.py migrate
 $ python manage.py createsuperuser
 ```
+
+To load some sample metadata, see the [sample_data folder instructions](./sample_data/README.md).
 
 Run Django
 
