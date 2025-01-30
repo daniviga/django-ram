@@ -47,6 +47,19 @@ It has been developed with:
 - [podman](https://podman.io/): because containers are fancy
 - [QEMU (avr)](https://qemu-project.gitlab.io/qemu/system/target-avr.html): QEMU can even make toast!
 
+## Future developments
+
+### Live assets kpi collection
+
+Realtime data usage is collected via a daemon connected over TCP to the Commandstation-EX and recorded for every asset with a DCC address.
+
+### Asset lifecycle
+
+Data is collected to compute the asset usage and then the wear level of its components (eg. the engine)
+
+### Required mainentance forecast
+
+Eventually data is used to "forecast" any required maintenance, like for example the replacement of carbon brushes, gear and motor oiling.
 
 ## Requirements
 
@@ -57,7 +70,7 @@ It has been developed with:
 
 ### Using containers
 
-coming soon
+Do it yourself, otherwise, raise a request :)
 
 ### Manual installation
 
