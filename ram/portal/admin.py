@@ -9,7 +9,7 @@ from portal.models import SiteConfiguration, Flatpage
 
 @admin.register(SiteConfiguration)
 class SiteConfigurationAdmin(SingletonModelAdmin):
-    readonly_fields = ("site_name", "rest_api")
+    readonly_fields = ("site_name", "rest_api", "version")
     fieldsets = (
         (
             None,
@@ -32,10 +32,11 @@ class SiteConfigurationAdmin(SingletonModelAdmin):
             {
                 "classes": ("collapse",),
                 "fields": (
-                    "rest_api",
                     "show_version",
                     "use_cdn",
                     "extra_head",
+                    "rest_api",
+                    "version",
                 ),
             },
         ),
@@ -44,6 +45,10 @@ class SiteConfigurationAdmin(SingletonModelAdmin):
     @admin.display(description="REST API enabled", boolean=True)
     def rest_api(self, obj):
         return settings.REST_ENABLED
+
+    @admin.display()
+    def version(self, obj):
+        return "{} (Django {})".format(obj.version, obj.django_version)
 
     def formfield_for_dbfield(self, db_field, **kwargs):
         if db_field.name in ("footer", "footer_extended", "disclaimer"):
