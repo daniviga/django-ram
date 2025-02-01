@@ -64,6 +64,10 @@ class Flatpage(models.Model):
     creation_time = models.DateTimeField(auto_now_add=True)
     updated_time = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        verbose_name = "page"
+        verbose_name_plural = "pages"
+
     def __str__(self):
         return self.name
 
