@@ -152,65 +152,62 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
             '<img src="{}" /> {}'.format(obj.country.flag, obj.country)
         )
 
-    def get_fieldsets(self, request, obj=None):
-        fieldsets = (
-            (
-                None,
-                {
-                    "fields": (
-                        "preview",
-                        "published",
-                        "rolling_class",
-                        "road_number",
-                        "scale",
-                        "manufacturer",
-                        "item_number",
-                        "set",
-                        "era",
-                        "description",
-                        "production_year",
-                        "tags",
-                    )
-                },
-            ),
-            (
-                "DCC",
-                {
-                    "fields": (
-                        "decoder_interface",
-                        "decoder",
-                        "address",
-                    )
-                },
-            ),
-            (
-                "Purchase data",
-                {
-                    "fields": (
-                        "shop",
-                        "purchase_date",
-                        "price",
-                    )
-                },
-            ),
-            (
-                "Notes",
-                {"classes": ("collapse",), "fields": ("notes",)},
-            ),
-            (
-                "Audit",
-                {
-                    "classes": ("collapse",),
-                    "fields": (
-                        "creation_time",
-                        "updated_time",
-                    ),
-                },
-            ),
-        )
-        if obj and obj.invoice.count() > 0:
-            fieldsets[2][1]["fields"] += ("invoices",)
-        return fieldsets
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "preview",
+                    "published",
+                    "rolling_class",
+                    "road_number",
+                    "scale",
+                    "manufacturer",
+                    "item_number",
+                    "set",
+                    "era",
+                    "description",
+                    "production_year",
+                    "tags",
+                )
+            },
+        ),
+        (
+            "DCC",
+            {
+                "fields": (
+                    "decoder_interface",
+                    "decoder",
+                    "address",
+                )
+            },
+        ),
+        (
+            "Purchase data",
+            {
+                "fields": (
+                    "shop",
+                    "purchase_date",
+                    "price",
+                    "invoices",
+                )
+            },
+        ),
+        (
+            "Notes",
+            {"classes": ("collapse",), "fields": ("notes",)},
+        ),
+        (
+            "Audit",
+            {
+                "classes": ("collapse",),
+                "fields": (
+                    "creation_time",
+                    "updated_time",
+                ),
+            },
+        ),
+    )
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
@@ -221,10 +218,13 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
 
     @admin.display(description="Invoices")
     def invoices(self, obj):
-        html = "<br>".join(
-            "<a href=\"{}\" target=\"_blank\">{}</a>".format(
-                i.file.url, i
-            ) for i in obj.invoice.all())
+        if obj.invoice.exists():
+            html = "<br>".join(
+                "<a href=\"{}\" target=\"_blank\">{}</a>".format(
+                    i.file.url, i
+                ) for i in obj.invoice.all())
+        else:
+            html = "-"
         return format_html(html)
 
     def download_csv(modeladmin, request, queryset):

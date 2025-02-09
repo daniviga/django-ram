@@ -8,7 +8,7 @@ from adminsortable2.admin import SortableAdminBase, SortableInlineAdminMixin
 from ram.admin import publish, unpublish
 from ram.utils import generate_csv
 from portal.utils import get_site_conf
-from repository.models import BaseBookDocument
+from repository.models import BookDocument, CatalogDocument
 from bookshelf.models import (
     BaseBookProperty,
     BaseBookImage,
@@ -28,13 +28,6 @@ class BookImageInline(SortableInlineAdminMixin, admin.TabularInline):
     verbose_name = "Image"
 
 
-class BookDocInline(admin.TabularInline):
-    model = BaseBookDocument
-    min_num = 0
-    extra = 0
-    classes = ["collapse"]
-
-
 class BookPropertyInline(admin.TabularInline):
     model = BaseBookProperty
     min_num = 0
@@ -42,6 +35,17 @@ class BookPropertyInline(admin.TabularInline):
     autocomplete_fields = ("property",)
     verbose_name = "Property"
     verbose_name_plural = "Properties"
+
+
+class BookDocInline(admin.TabularInline):
+    model = BookDocument
+    min_num = 0
+    extra = 0
+    classes = ["collapse"]
+
+
+class CatalogDocInline(BookDocInline):
+    model = CatalogDocument
 
 
 @admin.register(Book)
@@ -64,53 +68,50 @@ class BookAdmin(SortableAdminBase, admin.ModelAdmin):
     search_fields = ("title", "publisher__name", "authors__last_name")
     list_filter = ("publisher__name", "authors")
 
-    def get_fieldsets(self, request, obj=None):
-        fieldsets = (
-            (
-                None,
-                {
-                    "fields": (
-                        "published",
-                        "title",
-                        "authors",
-                        "publisher",
-                        "ISBN",
-                        "language",
-                        "number_of_pages",
-                        "publication_year",
-                        "description",
-                        "tags",
-                    )
-                },
-            ),
-            (
-                "Purchase data",
-                {
-                    "fields": (
-                        "shop",
-                        "purchase_date",
-                        "price",
-                    )
-                },
-            ),
-            (
-                "Notes",
-                {"classes": ("collapse",), "fields": ("notes",)},
-            ),
-            (
-                "Audit",
-                {
-                    "classes": ("collapse",),
-                    "fields": (
-                        "creation_time",
-                        "updated_time",
-                    ),
-                },
-            ),
-        )
-        if obj and obj.invoice.count() > 0:
-            fieldsets[1][1]["fields"] += ("invoices",)
-        return fieldsets
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "published",
+                    "title",
+                    "authors",
+                    "publisher",
+                    "ISBN",
+                    "language",
+                    "number_of_pages",
+                    "publication_year",
+                    "description",
+                    "tags",
+                )
+            },
+        ),
+        (
+            "Purchase data",
+            {
+                "fields": (
+                    "shop",
+                    "purchase_date",
+                    "price",
+                    "invoices",
+                )
+            },
+        ),
+        (
+            "Notes",
+            {"classes": ("collapse",), "fields": ("notes",)},
+        ),
+        (
+            "Audit",
+            {
+                "classes": ("collapse",),
+                "fields": (
+                    "creation_time",
+                    "updated_time",
+                ),
+            },
+        ),
+    )
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
@@ -121,10 +122,13 @@ class BookAdmin(SortableAdminBase, admin.ModelAdmin):
 
     @admin.display(description="Invoices")
     def invoices(self, obj):
-        html = "<br>".join(
-            "<a href=\"{}\" target=\"_blank\">{}</a>".format(
-                i.file.url, i
-            ) for i in obj.invoice.all())
+        if obj.invoice.exists():
+            html = "<br>".join(
+                "<a href=\"{}\" target=\"_blank\">{}</a>".format(
+                    i.file.url, i
+                ) for i in obj.invoice.all())
+        else:
+            html = "-"
         return format_html(html)
 
     @admin.display(description="Publisher")
@@ -212,7 +216,7 @@ class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
     inlines = (
         BookPropertyInline,
         BookImageInline,
-        BookDocInline,
+        CatalogDocInline,
     )
     list_display = (
         "__str__",
@@ -222,56 +226,54 @@ class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
         "published",
     )
     autocomplete_fields = ("manufacturer",)
-    readonly_fields = ("creation_time", "updated_time")
+    readonly_fields = ("invoices", "creation_time", "updated_time")
     search_fields = ("manufacturer__name", "years", "scales__scale")
     list_filter = ("manufacturer__name", "publication_year", "scales__scale")
 
-    def get_fieldsets(self, request, obj=None):
-        fieldsets = (
-            (
-                None,
-                {
-                    "fields": (
-                        "published",
-                        "manufacturer",
-                        "years",
-                        "scales",
-                        "ISBN",
-                        "language",
-                        "number_of_pages",
-                        "publication_year",
-                        "description",
-                        "tags",
-                    )
-                },
-            ),
-            (
-                "Purchase data",
-                {
-                    "fields": (
-                        "purchase_date",
-                        "price",
-                    )
-                },
-            ),
-            (
-                "Notes",
-                {"classes": ("collapse",), "fields": ("notes",)},
-            ),
-            (
-                "Audit",
-                {
-                    "classes": ("collapse",),
-                    "fields": (
-                        "creation_time",
-                        "updated_time",
-                    ),
-                },
-            ),
-        )
-        if obj and obj.invoice.count() > 0:
-            fieldsets[1][1]["fields"] += ("invoices",)
-        return fieldsets
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "published",
+                    "manufacturer",
+                    "years",
+                    "scales",
+                    "ISBN",
+                    "language",
+                    "number_of_pages",
+                    "publication_year",
+                    "description",
+                    "tags",
+                )
+            },
+        ),
+        (
+            "Purchase data",
+            {
+                "fields": (
+                    "shop",
+                    "purchase_date",
+                    "price",
+                    "invoices",
+                )
+            },
+        ),
+        (
+            "Notes",
+            {"classes": ("collapse",), "fields": ("notes",)},
+        ),
+        (
+            "Audit",
+            {
+                "classes": ("collapse",),
+                "fields": (
+                    "creation_time",
+                    "updated_time",
+                ),
+            },
+        ),
+    )
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
@@ -279,6 +281,17 @@ class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
             get_site_conf().currency
         )
         return form
+
+    @admin.display(description="Invoices")
+    def invoices(self, obj):
+        if obj.invoice.exists():
+            html = "<br>".join(
+                "<a href=\"{}\" target=\"_blank\">{}</a>".format(
+                    i.file.url, i
+                ) for i in obj.invoice.all())
+        else:
+            html = "-"
+        return format_html(html)
 
     def download_csv(modeladmin, request, queryset):
         header = [

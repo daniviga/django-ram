@@ -4,7 +4,8 @@ from ram.admin import publish, unpublish
 from repository.models import (
     GenericDocument,
     InvoiceDocument,
-    # BaseBookDocument,
+    BookDocument,
+    CatalogDocument,
     DecoderDocument,
     RollingStockDocument
 )
@@ -61,23 +62,32 @@ class InvoiceDocumentAdmin(admin.ModelAdmin):
     list_display = (
         "__str__",
         "description",
+        "date",
+        "shop",
         "size",
         "download",
     )
     search_fields = (
+        "rolling_stock__manufacturer__name",
+        "rolling_stock__item_number",
+        "book__title",
+        "catalog__manufacturer__name",
+        "shop__name",
         "description",
         "file",
     )
-    autocomplete_fields = ("rolling_stock", "book", "catalog")
+    autocomplete_fields = ("rolling_stock", "book", "catalog", "shop")
     fieldsets = (
         (
             None,
             {
                 "fields": (
-                    "description",
                     "rolling_stock",
                     "book",
                     "catalog",
+                    "description",
+                    "date",
+                    "shop",
                     "file",
                     "size",
                 )
@@ -100,39 +110,72 @@ class InvoiceDocumentAdmin(admin.ModelAdmin):
     )
 
 
-# @admin.register(BaseBookDocument)
-# class BookDocumentAdmin(admin.ModelAdmin):
-#     readonly_fields = ("size",)
-#     list_display = (
-#         "__str__",
-#         # FIXME
-#         "book__book",
-#         "book__catalog",
-#         "description",
-#         "private",
-#         "size",
-#         "download",
-#     )
-#     search_fields = (
-#         "book__title",
-#         "description",
-#         "file",
-#     )
-#     fieldsets = (
-#         (
-#             None,
-#             {
-#                 "fields": (
-#                     "private",
-#                     # FIXME
-#                     "description",
-#                     "file",
-#                     "size",
-#                 )
-#             },
-#         ),
-#     )
-#     actions = [publish, unpublish]
+@admin.register(BookDocument)
+class BookDocumentAdmin(admin.ModelAdmin):
+    readonly_fields = ("size",)
+    list_display = (
+        "__str__",
+        "book",
+        "description",
+        "private",
+        "size",
+        "download",
+    )
+    search_fields = (
+        "book__title",
+        "description",
+        "file",
+    )
+    autocomplete_fields = ("book",)
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "private",
+                    "book",
+                    "description",
+                    "file",
+                    "size",
+                )
+            },
+        ),
+    )
+    actions = [publish, unpublish]
+
+
+@admin.register(CatalogDocument)
+class CatalogDocumentAdmin(admin.ModelAdmin):
+    readonly_fields = ("size",)
+    list_display = (
+        "__str__",
+        "catalog",
+        "description",
+        "private",
+        "size",
+        "download",
+    )
+    search_fields = (
+        "catalog__title",
+        "description",
+        "file",
+    )
+    autocomplete_fields = ("catalog",)
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "private",
+                    "catalog",
+                    "description",
+                    "file",
+                    "size",
+                )
+            },
+        ),
+    )
+    actions = [publish, unpublish]
 
 
 @admin.register(DecoderDocument)

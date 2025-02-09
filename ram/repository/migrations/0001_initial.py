@@ -53,15 +53,26 @@ def migrate_rollingstock(apps, schema_editor):
 def migrate_book(apps, schema_editor):
     book_document = apps.get_model("bookshelf", "BaseBookDocument")
     book_document_new = apps.get_model("repository", "BaseBookDocument")
+    catalog_document_new = apps.get_model("repository", "CatalogDocument")
     for d in book_document.objects.all():
-        book_document_new.objects.create(
-            book=d.book,
-            description=d.description,
-            file=d.file,
-            private=d.private,
-            creation_time=d.creation_time,
-            updated_time=d.updated_time,
-        )
+        if hasattr(d.book, "book"):
+            book_document_new.objects.create(
+                book=d.book.book,
+                description=d.description,
+                file=d.file,
+                private=d.private,
+                creation_time=d.creation_time,
+                updated_time=d.updated_time,
+            )
+        else:
+            catalog_document_new.objects.create(
+                catalog=d.book.catalog,
+                description=d.description,
+                file=d.file,
+                private=d.private,
+                creation_time=d.creation_time,
+                updated_time=d.updated_time,
+            )
 
 
 class Migration(migrations.Migration):
@@ -113,6 +124,98 @@ class Migration(migrations.Migration):
             options={
                 "verbose_name_plural": "Documents",
                 "abstract": False,
+            },
+        ),
+        migrations.CreateModel(
+            name="BookDocument",
+            fields=[
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("description", models.CharField(blank=True, max_length=128)),
+                (
+                    "file",
+                    models.FileField(
+                        storage=ram.utils.DeduplicatedStorage(), upload_to="files/"
+                    ),
+                ),
+                ("creation_time", models.DateTimeField(auto_now_add=True)),
+                ("updated_time", models.DateTimeField(auto_now=True)),
+                (
+                    "private",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Document will be visible only to logged users",
+                    ),
+                ),
+                (
+                    "book",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="document",
+                        to="bookshelf.book",
+                    ),
+                ),
+            ],
+            options={
+                "verbose_name_plural": "Book documents",
+                "constraints": [
+                    models.UniqueConstraint(
+                        fields=("book", "file"), name="unique_book_file"
+                    )
+                ],
+            },
+        ),
+        migrations.CreateModel(
+            name="CatalogDocument",
+            fields=[
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("description", models.CharField(blank=True, max_length=128)),
+                (
+                    "file",
+                    models.FileField(
+                        storage=ram.utils.DeduplicatedStorage(), upload_to="files/"
+                    ),
+                ),
+                ("creation_time", models.DateTimeField(auto_now_add=True)),
+                ("updated_time", models.DateTimeField(auto_now=True)),
+                (
+                    "private",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Document will be visible only to logged users",
+                    ),
+                ),
+                (
+                    "catalog",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="document",
+                        to="bookshelf.catalog",
+                    ),
+                ),
+            ],
+            options={
+                "verbose_name_plural": "Catalog documents",
+                "constraints": [
+                    models.UniqueConstraint(
+                        fields=("catalog", "file"), name="unique_catalog_file"
+                    )
+                ],
             },
         ),
         migrations.CreateModel(
