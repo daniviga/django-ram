@@ -3,7 +3,8 @@ from django.contrib import admin
 from ram.admin import publish, unpublish
 from repository.models import (
     GenericDocument,
-    BaseBookDocument,
+    InvoiceDocument,
+    # BaseBookDocument,
     DecoderDocument,
     RollingStockDocument
 )
@@ -52,6 +53,51 @@ class GenericDocumentAdmin(admin.ModelAdmin):
         ),
     )
     actions = [publish, unpublish]
+
+
+@admin.register(InvoiceDocument)
+class InvoiceDocumentAdmin(admin.ModelAdmin):
+    readonly_fields = ("size", "creation_time", "updated_time")
+    list_display = (
+        "__str__",
+        "description",
+        "size",
+        "download",
+    )
+    search_fields = (
+        "description",
+        "file",
+    )
+    autocomplete_fields = ("rolling_stock", "book", "catalog")
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "description",
+                    "rolling_stock",
+                    "book",
+                    "catalog",
+                    "file",
+                    "size",
+                )
+            },
+        ),
+        (
+            "Notes",
+            {"classes": ("collapse",), "fields": ("notes",)},
+        ),
+        (
+            "Audit",
+            {
+                "classes": ("collapse",),
+                "fields": (
+                    "creation_time",
+                    "updated_time",
+                ),
+            },
+        ),
+    )
 
 
 # @admin.register(BaseBookDocument)

@@ -7,6 +7,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("metadata", "0023_shop"),
+        ("repository", "0001_initial"),
     ]
 
     operations = [

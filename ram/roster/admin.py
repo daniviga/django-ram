@@ -8,8 +8,8 @@ from adminsortable2.admin import SortableAdminBase, SortableInlineAdminMixin
 
 from ram.admin import publish, unpublish
 from ram.utils import generate_csv
-from portal.utils import get_site_conf
 from repository.models import RollingStockDocument
+from portal.utils import get_site_conf
 from roster.models import (
     RollingClass,
     RollingClassProperty,
@@ -118,7 +118,7 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
         RollingStockJournalInline,
     )
     autocomplete_fields = ("rolling_class", "shop")
-    readonly_fields = ("preview", "creation_time", "updated_time")
+    readonly_fields = ("preview", "invoices", "creation_time", "updated_time")
     list_display = (
         "__str__",
         "address",
@@ -152,61 +152,65 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
             '<img src="{}" /> {}'.format(obj.country.flag, obj.country)
         )
 
-    fieldsets = (
-        (
-            None,
-            {
-                "fields": (
-                    "preview",
-                    "published",
-                    "rolling_class",
-                    "road_number",
-                    "scale",
-                    "manufacturer",
-                    "item_number",
-                    "set",
-                    "era",
-                    "description",
-                    "production_year",
-                    "tags",
-                )
-            },
-        ),
-        (
-            "DCC",
-            {
-                "fields": (
-                    "decoder_interface",
-                    "decoder",
-                    "address",
-                )
-            },
-        ),
-        (
-            "Purchase data",
-            {
-                "fields": (
-                    "shop",
-                    "purchase_date",
-                    "price",
-                )
-            },
-        ),
-        (
-            "Notes",
-            {"classes": ("collapse",), "fields": ("notes",)},
-        ),
-        (
-            "Audit",
-            {
-                "classes": ("collapse",),
-                "fields": (
-                    "creation_time",
-                    "updated_time",
-                ),
-            },
-        ),
-    )
+    def get_fieldsets(self, request, obj=None):
+        fieldsets = (
+            (
+                None,
+                {
+                    "fields": (
+                        "preview",
+                        "published",
+                        "rolling_class",
+                        "road_number",
+                        "scale",
+                        "manufacturer",
+                        "item_number",
+                        "set",
+                        "era",
+                        "description",
+                        "production_year",
+                        "tags",
+                    )
+                },
+            ),
+            (
+                "DCC",
+                {
+                    "fields": (
+                        "decoder_interface",
+                        "decoder",
+                        "address",
+                    )
+                },
+            ),
+            (
+                "Purchase data",
+                {
+                    "fields": (
+                        "shop",
+                        "purchase_date",
+                        "price",
+                    )
+                },
+            ),
+            (
+                "Notes",
+                {"classes": ("collapse",), "fields": ("notes",)},
+            ),
+            (
+                "Audit",
+                {
+                    "classes": ("collapse",),
+                    "fields": (
+                        "creation_time",
+                        "updated_time",
+                    ),
+                },
+            ),
+        )
+        if obj and obj.invoice.count() > 0:
+            fieldsets[2][1]["fields"] += ("invoices",)
+        return fieldsets
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
@@ -214,6 +218,14 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
             get_site_conf().currency
         )
         return form
+
+    @admin.display(description="Invoices")
+    def invoices(self, obj):
+        html = "<br>".join(
+            "<a href=\"{}\" target=\"_blank\">{}</a>".format(
+                i.file.url, i
+            ) for i in obj.invoice.all())
+        return format_html(html)
 
     def download_csv(modeladmin, request, queryset):
         header = [

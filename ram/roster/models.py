@@ -5,14 +5,12 @@ from django.db import models
 from django.urls import reverse
 from django.conf import settings
 from django.dispatch import receiver
-from django.contrib.contenttypes import fields
 
 from tinymce import models as tinymce
 
 from ram.models import BaseModel, Image, PropertyInstance
 from ram.utils import DeduplicatedStorage, slugify
 from ram.managers import PublicManager
-from repository.models import InvoiceDocument
 from metadata.models import (
     Scale,
     Manufacturer,
@@ -115,9 +113,6 @@ class RollingStock(BaseModel):
         null=True,
         blank=True,
     )
-    invoice = fields.GenericRelation(
-        app.get_model("repository", "InvoiceDocument"),
-        InvoiceDocument)
     tags = models.ManyToManyField(
         Tag, related_name="rolling_stock", blank=True
     )

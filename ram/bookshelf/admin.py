@@ -60,53 +60,57 @@ class BookAdmin(SortableAdminBase, admin.ModelAdmin):
         "published",
     )
     autocomplete_fields = ("authors", "publisher", "shop")
-    readonly_fields = ("creation_time", "updated_time")
+    readonly_fields = ("invoices", "creation_time", "updated_time")
     search_fields = ("title", "publisher__name", "authors__last_name")
     list_filter = ("publisher__name", "authors")
 
-    fieldsets = (
-        (
-            None,
-            {
-                "fields": (
-                    "published",
-                    "title",
-                    "authors",
-                    "publisher",
-                    "ISBN",
-                    "language",
-                    "number_of_pages",
-                    "publication_year",
-                    "description",
-                    "tags",
-                )
-            },
-        ),
-        (
-            "Purchase data",
-            {
-                "fields": (
-                    "shop",
-                    "purchase_date",
-                    "price",
-                )
-            },
-        ),
-        (
-            "Notes",
-            {"classes": ("collapse",), "fields": ("notes",)},
-        ),
-        (
-            "Audit",
-            {
-                "classes": ("collapse",),
-                "fields": (
-                    "creation_time",
-                    "updated_time",
-                ),
-            },
-        ),
-    )
+    def get_fieldsets(self, request, obj=None):
+        fieldsets = (
+            (
+                None,
+                {
+                    "fields": (
+                        "published",
+                        "title",
+                        "authors",
+                        "publisher",
+                        "ISBN",
+                        "language",
+                        "number_of_pages",
+                        "publication_year",
+                        "description",
+                        "tags",
+                    )
+                },
+            ),
+            (
+                "Purchase data",
+                {
+                    "fields": (
+                        "shop",
+                        "purchase_date",
+                        "price",
+                    )
+                },
+            ),
+            (
+                "Notes",
+                {"classes": ("collapse",), "fields": ("notes",)},
+            ),
+            (
+                "Audit",
+                {
+                    "classes": ("collapse",),
+                    "fields": (
+                        "creation_time",
+                        "updated_time",
+                    ),
+                },
+            ),
+        )
+        if obj and obj.invoice.count() > 0:
+            fieldsets[1][1]["fields"] += ("invoices",)
+        return fieldsets
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
@@ -114,6 +118,14 @@ class BookAdmin(SortableAdminBase, admin.ModelAdmin):
             get_site_conf().currency
         )
         return form
+
+    @admin.display(description="Invoices")
+    def invoices(self, obj):
+        html = "<br>".join(
+            "<a href=\"{}\" target=\"_blank\">{}</a>".format(
+                i.file.url, i
+            ) for i in obj.invoice.all())
+        return format_html(html)
 
     @admin.display(description="Publisher")
     def get_publisher(self, obj):
@@ -214,48 +226,52 @@ class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
     search_fields = ("manufacturer__name", "years", "scales__scale")
     list_filter = ("manufacturer__name", "publication_year", "scales__scale")
 
-    fieldsets = (
-        (
-            None,
-            {
-                "fields": (
-                    "published",
-                    "manufacturer",
-                    "years",
-                    "scales",
-                    "ISBN",
-                    "language",
-                    "number_of_pages",
-                    "publication_year",
-                    "description",
-                    "tags",
-                )
-            },
-        ),
-        (
-            "Purchase data",
-            {
-                "fields": (
-                    "purchase_date",
-                    "price",
-                )
-            },
-        ),
-        (
-            "Notes",
-            {"classes": ("collapse",), "fields": ("notes",)},
-        ),
-        (
-            "Audit",
-            {
-                "classes": ("collapse",),
-                "fields": (
-                    "creation_time",
-                    "updated_time",
-                ),
-            },
-        ),
-    )
+    def get_fieldsets(self, request, obj=None):
+        fieldsets = (
+            (
+                None,
+                {
+                    "fields": (
+                        "published",
+                        "manufacturer",
+                        "years",
+                        "scales",
+                        "ISBN",
+                        "language",
+                        "number_of_pages",
+                        "publication_year",
+                        "description",
+                        "tags",
+                    )
+                },
+            ),
+            (
+                "Purchase data",
+                {
+                    "fields": (
+                        "purchase_date",
+                        "price",
+                    )
+                },
+            ),
+            (
+                "Notes",
+                {"classes": ("collapse",), "fields": ("notes",)},
+            ),
+            (
+                "Audit",
+                {
+                    "classes": ("collapse",),
+                    "fields": (
+                        "creation_time",
+                        "updated_time",
+                    ),
+                },
+            ),
+        )
+        if obj and obj.invoice.count() > 0:
+            fieldsets[1][1]["fields"] += ("invoices",)
+        return fieldsets
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)

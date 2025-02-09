@@ -7,6 +7,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("roster", "0035_alter_rollingstock_shop"),
+        ("repository", "0001_initial"),
     ]
 
     operations = [

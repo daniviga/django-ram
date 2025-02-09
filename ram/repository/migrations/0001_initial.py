@@ -66,8 +66,6 @@ def migrate_book(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    initial = True
-
     dependencies = [
         ("bookshelf", "0022_basebook_shop"),
         ("metadata", "0023_shop"),

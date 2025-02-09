@@ -1,30 +1,43 @@
 from django.db import models
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes import fields
 
 from tinymce import models as tinymce
 
-from ram.models import Document
+from ram.models import PrivateDocument
 from metadata.models import Decoder, Tag
 from roster.models import RollingStock
-from bookshelf.models import BaseBook
+from bookshelf.models import Book, Catalog, BaseBook
 
 
-class GenericDocument(Document):
+class GenericDocument(PrivateDocument):
     notes = tinymce.HTMLField(blank=True)
     tags = models.ManyToManyField(Tag, blank=True, related_name="document")
 
     class Meta:
-        verbose_name_plural = "Generic Documents"
+        verbose_name_plural = "Generic documents"
 
 
-class InvoiceDocument(Document):
-    content_type = models.ForeignKey(ContentType)
-    object_id = models.PositiveIntegerField()
-    content_object = fields.GenericForeignKey("content_type", "object_id")
+class InvoiceDocument(PrivateDocument):
+    private = models.BooleanField(default=True, editable=False)
+    rolling_stock = models.ManyToManyField(
+        RollingStock, related_name="invoice",
+        blank=True
+    )
+    book = models.ManyToManyField(
+        Book, related_name="invoice",
+        blank=True
+    )
+    catalog = models.ManyToManyField(
+        Catalog, related_name="invoice",
+        blank=True
+    )
+    notes = tinymce.HTMLField(blank=True)
+
+    class Meta:
+        verbose_name = "Invoice"
+        verbose_name_plural = "Invoices"
 
 
-class DecoderDocument(Document):
+class DecoderDocument(PrivateDocument):
     decoder = models.ForeignKey(
         Decoder, on_delete=models.CASCADE, related_name="document"
     )
@@ -38,13 +51,13 @@ class DecoderDocument(Document):
         ]
 
 
-class BaseBookDocument(Document):
+class BaseBookDocument(PrivateDocument):
     book = models.ForeignKey(
         BaseBook, on_delete=models.CASCADE, related_name="document"
     )
 
     class Meta:
-        verbose_name_plural = "Documents"
+        verbose_name_plural = "Bookshelf Documents"
         constraints = [
             models.UniqueConstraint(
                 fields=["book", "file"],
@@ -53,7 +66,7 @@ class BaseBookDocument(Document):
         ]
 
 
-class RollingStockDocument(Document):
+class RollingStockDocument(PrivateDocument):
     rolling_stock = models.ForeignKey(
         RollingStock, on_delete=models.CASCADE, related_name="document"
     )
