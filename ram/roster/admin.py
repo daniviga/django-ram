@@ -9,12 +9,12 @@ from adminsortable2.admin import SortableAdminBase, SortableInlineAdminMixin
 from ram.admin import publish, unpublish
 from ram.utils import generate_csv
 from portal.utils import get_site_conf
+from repository.models import RollingStockDocument
 from roster.models import (
     RollingClass,
     RollingClassProperty,
     RollingStock,
     RollingStockImage,
-    RollingStockDocument,
     RollingStockProperty,
     RollingStockJournal,
 )
@@ -76,42 +76,8 @@ class RollingStockJournalInline(admin.TabularInline):
     classes = ["collapse"]
 
 
-@admin.register(RollingStockDocument)
-class RollingStockDocumentAdmin(admin.ModelAdmin):
-    readonly_fields = ("size",)
-    list_display = (
-        "__str__",
-        "rolling_stock",
-        "description",
-        "private",
-        "size",
-        "download",
-    )
-    search_fields = (
-        "rolling_stock__rolling_class__identifier",
-        "rolling_stock__item_number",
-        "description",
-        "file",
-    )
-    autocomplete_fields = ("rolling_stock",)
-    fieldsets = (
-        (
-            None,
-            {
-                "fields": (
-                    "private",
-                    "rolling_stock",
-                    "description",
-                    "file",
-                    "size",
-                )
-            },
-        ),
-    )
-
-
 @admin.register(RollingStockJournal)
-class RollingJournalDocumentAdmin(admin.ModelAdmin):
+class RollingJournalAdmin(admin.ModelAdmin):
     list_display = (
         "__str__",
         "date",

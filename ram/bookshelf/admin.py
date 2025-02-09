@@ -8,10 +8,10 @@ from adminsortable2.admin import SortableAdminBase, SortableInlineAdminMixin
 from ram.admin import publish, unpublish
 from ram.utils import generate_csv
 from portal.utils import get_site_conf
+from repository.models import BaseBookDocument
 from bookshelf.models import (
     BaseBookProperty,
     BaseBookImage,
-    BaseBookDocument,
     Book,
     Author,
     Publisher,

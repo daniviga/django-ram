@@ -2,7 +2,6 @@ from django.contrib import admin
 from django.utils.html import format_html
 from adminsortable2.admin import SortableAdminMixin
 
-from ram.admin import publish, unpublish
 from metadata.models import (
     Property,
     Decoder,
@@ -13,7 +12,6 @@ from metadata.models import (
     Company,
     Tag,
     RollingStockType,
-    GenericDocument,
 )
 
 
@@ -86,51 +84,6 @@ class RollingStockTypeAdmin(SortableAdminMixin, admin.ModelAdmin):
     list_display = ("__str__",)
     list_filter = ("type", "category")
     search_fields = ("type", "category")
-
-
-@admin.register(GenericDocument)
-class GenericDocumentAdmin(admin.ModelAdmin):
-    readonly_fields = ("size", "creation_time", "updated_time")
-    list_display = (
-        "__str__",
-        "description",
-        "private",
-        "size",
-        "download",
-    )
-    search_fields = (
-        "description",
-        "file",
-    )
-    fieldsets = (
-        (
-            None,
-            {
-                "fields": (
-                    "private",
-                    "description",
-                    "file",
-                    "size",
-                    "tags",
-                )
-            },
-        ),
-        (
-            "Notes",
-            {"classes": ("collapse",), "fields": ("notes",)},
-        ),
-        (
-            "Audit",
-            {
-                "classes": ("collapse",),
-                "fields": (
-                    "creation_time",
-                    "updated_time",
-                ),
-            },
-        ),
-    )
-    actions = [publish, unpublish]
 
 
 @admin.register(Shop)
