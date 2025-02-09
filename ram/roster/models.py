@@ -5,12 +5,14 @@ from django.db import models
 from django.urls import reverse
 from django.conf import settings
 from django.dispatch import receiver
+from django.contrib.contenttypes import fields
 
 from tinymce import models as tinymce
 
-from ram.models import BaseModel, Document, Image, PropertyInstance
+from ram.models import BaseModel, Image, PropertyInstance
 from ram.utils import DeduplicatedStorage, slugify
 from ram.managers import PublicManager
+from repository.models import InvoiceDocument
 from metadata.models import (
     Scale,
     Manufacturer,
@@ -113,6 +115,9 @@ class RollingStock(BaseModel):
         null=True,
         blank=True,
     )
+    invoice = fields.GenericRelation(
+        app.get_model("repository", "InvoiceDocument"),
+        InvoiceDocument)
     tags = models.ManyToManyField(
         Tag, related_name="rolling_stock", blank=True
     )
@@ -167,20 +172,6 @@ def pre_save_internal_fields(sender, instance, *args, **kwargs):
         pass
     # Generate a machine-friendly item number from original item number
     instance.item_number_slug = slugify(instance.item_number)
-
-
-class RollingStockDocument(Document):
-    rolling_stock = models.ForeignKey(
-        RollingStock, on_delete=models.CASCADE, related_name="document"
-    )
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["rolling_stock", "file"],
-                name="unique_stock_file"
-            )
-        ]
 
 
 def rolling_stock_image_upload(instance, filename):

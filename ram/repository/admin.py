@@ -1,7 +1,12 @@
 from django.contrib import admin
 
 from ram.admin import publish, unpublish
-from repository.models import GenericDocument, RollingStockDocument
+from repository.models import (
+    GenericDocument,
+    BaseBookDocument,
+    DecoderDocument,
+    RollingStockDocument
+)
 
 
 @admin.register(GenericDocument)
@@ -49,6 +54,76 @@ class GenericDocumentAdmin(admin.ModelAdmin):
     actions = [publish, unpublish]
 
 
+# @admin.register(BaseBookDocument)
+# class BookDocumentAdmin(admin.ModelAdmin):
+#     readonly_fields = ("size",)
+#     list_display = (
+#         "__str__",
+#         # FIXME
+#         "book__book",
+#         "book__catalog",
+#         "description",
+#         "private",
+#         "size",
+#         "download",
+#     )
+#     search_fields = (
+#         "book__title",
+#         "description",
+#         "file",
+#     )
+#     fieldsets = (
+#         (
+#             None,
+#             {
+#                 "fields": (
+#                     "private",
+#                     # FIXME
+#                     "description",
+#                     "file",
+#                     "size",
+#                 )
+#             },
+#         ),
+#     )
+#     actions = [publish, unpublish]
+
+
+@admin.register(DecoderDocument)
+class DecoderDocumentAdmin(admin.ModelAdmin):
+    readonly_fields = ("size",)
+    list_display = (
+        "__str__",
+        "decoder",
+        "description",
+        "private",
+        "size",
+        "download",
+    )
+    search_fields = (
+        "decoder__name",
+        "decoder__manufacturer__name",
+        "description",
+        "file",
+    )
+    autocomplete_fields = ("decoder",)
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "private",
+                    "decoder",
+                    "description",
+                    "file",
+                    "size",
+                )
+            },
+        ),
+    )
+    actions = [publish, unpublish]
+
+
 @admin.register(RollingStockDocument)
 class RollingStockDocumentAdmin(admin.ModelAdmin):
     readonly_fields = ("size",)
@@ -81,3 +156,4 @@ class RollingStockDocumentAdmin(admin.ModelAdmin):
             },
         ),
     )
+    actions = [publish, unpublish]

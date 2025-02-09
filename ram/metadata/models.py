@@ -6,9 +6,6 @@ from django.dispatch.dispatcher import receiver
 from django.core.exceptions import ValidationError
 from django_countries.fields import CountryField
 
-from tinymce import models as tinymce
-
-from ram.models import Document
 from ram.utils import DeduplicatedStorage, get_image_preview, slugify
 from ram.managers import PublicManager
 
@@ -132,20 +129,6 @@ class Decoder(models.Model):
     image_thumbnail.short_description = "Preview"
 
 
-class DecoderDocument(Document):
-    decoder = models.ForeignKey(
-        Decoder, on_delete=models.CASCADE, related_name="document"
-    )
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["decoder", "file"],
-                name="unique_decoder_file"
-            )
-        ]
-
-
 def calculate_ratio(ratio):
     try:
         num, den = ratio.split(":")
@@ -237,14 +220,6 @@ class Tag(models.Model):
                 "search": self.slug,
             },
         )
-
-
-class GenericDocument(Document):
-    notes = tinymce.HTMLField(blank=True)
-    tags = models.ManyToManyField(Tag, blank=True)
-
-    class Meta:
-        verbose_name_plural = "Generic Documents"
 
 
 class Shop(models.Model):

@@ -2,10 +2,10 @@ from django.contrib import admin
 from django.utils.html import format_html
 from adminsortable2.admin import SortableAdminMixin
 
+from repository.models import DecoderDocument
 from metadata.models import (
     Property,
     Decoder,
-    DecoderDocument,
     Scale,
     Shop,
     Manufacturer,

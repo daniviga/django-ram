@@ -6,7 +6,7 @@ from django.urls import reverse
 from django_countries.fields import CountryField
 
 from ram.utils import DeduplicatedStorage
-from ram.models import BaseModel, Image, Document, PropertyInstance
+from ram.models import BaseModel, Image, PropertyInstance
 from metadata.models import Scale, Manufacturer, Shop, Tag
 
 
@@ -87,21 +87,6 @@ class BaseBookImage(Image):
         upload_to=book_image_upload,
         storage=DeduplicatedStorage,
     )
-
-
-class BaseBookDocument(Document):
-    book = models.ForeignKey(
-        BaseBook, on_delete=models.CASCADE, related_name="document"
-    )
-
-    class Meta:
-        verbose_name_plural = "Documents"
-        constraints = [
-            models.UniqueConstraint(
-                fields=["book", "file"],
-                name="unique_book_file"
-            )
-        ]
 
 
 class BaseBookProperty(PropertyInstance):
