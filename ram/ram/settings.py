@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "portal",
     # "driver",  # uncomment this to enable the "driver" API
     "metadata",
+    "repository",
     "roster",
     "consist",
     "bookshelf",

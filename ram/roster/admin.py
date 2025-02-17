@@ -8,13 +8,13 @@ from adminsortable2.admin import SortableAdminBase, SortableInlineAdminMixin
 
 from ram.admin import publish, unpublish
 from ram.utils import generate_csv
+from repository.models import RollingStockDocument
 from portal.utils import get_site_conf
 from roster.models import (
     RollingClass,
     RollingClassProperty,
     RollingStock,
     RollingStockImage,
-    RollingStockDocument,
     RollingStockProperty,
     RollingStockJournal,
 )
@@ -76,42 +76,8 @@ class RollingStockJournalInline(admin.TabularInline):
     classes = ["collapse"]
 
 
-@admin.register(RollingStockDocument)
-class RollingStockDocumentAdmin(admin.ModelAdmin):
-    readonly_fields = ("size",)
-    list_display = (
-        "__str__",
-        "rolling_stock",
-        "description",
-        "private",
-        "size",
-        "download",
-    )
-    search_fields = (
-        "rolling_stock__rolling_class__identifier",
-        "rolling_stock__item_number",
-        "description",
-        "file",
-    )
-    autocomplete_fields = ("rolling_stock",)
-    fieldsets = (
-        (
-            None,
-            {
-                "fields": (
-                    "private",
-                    "rolling_stock",
-                    "description",
-                    "file",
-                    "size",
-                )
-            },
-        ),
-    )
-
-
 @admin.register(RollingStockJournal)
-class RollingJournalDocumentAdmin(admin.ModelAdmin):
+class RollingJournalAdmin(admin.ModelAdmin):
     list_display = (
         "__str__",
         "date",
@@ -152,7 +118,7 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
         RollingStockJournalInline,
     )
     autocomplete_fields = ("rolling_class", "shop")
-    readonly_fields = ("preview", "creation_time", "updated_time")
+    readonly_fields = ("preview", "invoices", "creation_time", "updated_time")
     list_display = (
         "__str__",
         "address",
@@ -223,6 +189,7 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
                     "shop",
                     "purchase_date",
                     "price",
+                    "invoices",
                 )
             },
         ),
@@ -248,6 +215,17 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
             get_site_conf().currency
         )
         return form
+
+    @admin.display(description="Invoices")
+    def invoices(self, obj):
+        if obj.invoice.exists():
+            html = "<br>".join(
+                "<a href=\"{}\" target=\"_blank\">{}</a>".format(
+                    i.file.url, i
+                ) for i in obj.invoice.all())
+        else:
+            html = "-"
+        return format_html(html)
 
     def download_csv(modeladmin, request, queryset):
         header = [

@@ -8,10 +8,10 @@ from adminsortable2.admin import SortableAdminBase, SortableInlineAdminMixin
 from ram.admin import publish, unpublish
 from ram.utils import generate_csv
 from portal.utils import get_site_conf
+from repository.models import BookDocument, CatalogDocument
 from bookshelf.models import (
     BaseBookProperty,
     BaseBookImage,
-    BaseBookDocument,
     Book,
     Author,
     Publisher,
@@ -28,13 +28,6 @@ class BookImageInline(SortableInlineAdminMixin, admin.TabularInline):
     verbose_name = "Image"
 
 
-class BookDocInline(admin.TabularInline):
-    model = BaseBookDocument
-    min_num = 0
-    extra = 0
-    classes = ["collapse"]
-
-
 class BookPropertyInline(admin.TabularInline):
     model = BaseBookProperty
     min_num = 0
@@ -42,6 +35,17 @@ class BookPropertyInline(admin.TabularInline):
     autocomplete_fields = ("property",)
     verbose_name = "Property"
     verbose_name_plural = "Properties"
+
+
+class BookDocInline(admin.TabularInline):
+    model = BookDocument
+    min_num = 0
+    extra = 0
+    classes = ["collapse"]
+
+
+class CatalogDocInline(BookDocInline):
+    model = CatalogDocument
 
 
 @admin.register(Book)
@@ -60,7 +64,7 @@ class BookAdmin(SortableAdminBase, admin.ModelAdmin):
         "published",
     )
     autocomplete_fields = ("authors", "publisher", "shop")
-    readonly_fields = ("creation_time", "updated_time")
+    readonly_fields = ("invoices", "creation_time", "updated_time")
     search_fields = ("title", "publisher__name", "authors__last_name")
     list_filter = ("publisher__name", "authors")
 
@@ -89,6 +93,7 @@ class BookAdmin(SortableAdminBase, admin.ModelAdmin):
                     "shop",
                     "purchase_date",
                     "price",
+                    "invoices",
                 )
             },
         ),
@@ -114,6 +119,17 @@ class BookAdmin(SortableAdminBase, admin.ModelAdmin):
             get_site_conf().currency
         )
         return form
+
+    @admin.display(description="Invoices")
+    def invoices(self, obj):
+        if obj.invoice.exists():
+            html = "<br>".join(
+                "<a href=\"{}\" target=\"_blank\">{}</a>".format(
+                    i.file.url, i
+                ) for i in obj.invoice.all())
+        else:
+            html = "-"
+        return format_html(html)
 
     @admin.display(description="Publisher")
     def get_publisher(self, obj):
@@ -200,7 +216,7 @@ class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
     inlines = (
         BookPropertyInline,
         BookImageInline,
-        BookDocInline,
+        CatalogDocInline,
     )
     list_display = (
         "__str__",
@@ -210,7 +226,7 @@ class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
         "published",
     )
     autocomplete_fields = ("manufacturer",)
-    readonly_fields = ("creation_time", "updated_time")
+    readonly_fields = ("invoices", "creation_time", "updated_time")
     search_fields = ("manufacturer__name", "years", "scales__scale")
     list_filter = ("manufacturer__name", "publication_year", "scales__scale")
 
@@ -236,8 +252,10 @@ class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
             "Purchase data",
             {
                 "fields": (
+                    "shop",
                     "purchase_date",
                     "price",
+                    "invoices",
                 )
             },
         ),
@@ -263,6 +281,17 @@ class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
             get_site_conf().currency
         )
         return form
+
+    @admin.display(description="Invoices")
+    def invoices(self, obj):
+        if obj.invoice.exists():
+            html = "<br>".join(
+                "<a href=\"{}\" target=\"_blank\">{}</a>".format(
+                    i.file.url, i
+                ) for i in obj.invoice.all())
+        else:
+            html = "-"
+        return format_html(html)
 
     def download_csv(modeladmin, request, queryset):
         header = [

@@ -27,11 +27,6 @@ class Document(models.Model):
     description = models.CharField(max_length=128, blank=True)
     file = models.FileField(
         upload_to="files/",
-        storage=DeduplicatedStorage(),
-    )
-    private = models.BooleanField(
-        default=False,
-        help_text="Document will be visible only to logged users",
     )
     creation_time = models.DateTimeField(auto_now_add=True)
     updated_time = models.DateTimeField(auto_now=True)
@@ -61,7 +56,16 @@ class Document(models.Model):
             '<a href="{0}" target="_blank">Link</a>'.format(self.file.url)
         )
 
+
+class PrivateDocument(Document):
+    private = models.BooleanField(
+        default=False,
+        help_text="Document will be visible only to logged users",
+    )
     objects = PublicManager()
+
+    class Meta:
+        abstract = True
 
 
 class Image(models.Model):
