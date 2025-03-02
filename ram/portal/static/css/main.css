@@ -43,13 +43,15 @@ a.badge, a.badge:hover {
   border-top: calc(var(--bs-border-width) * 3) solid var(--bs-border-color);
 }
 
-#nav-journal ul, #nav-journal ol {
-  margin: 0;
+#nav-journal ul,
+#nav-journal ol {
   padding-left: 1rem;
 }
 
-#nav-journal p {
-  margin: 0;
+#nav-journal p:last-child,
+#nav-journal ul:last-child,
+#nav-journal ol:last-child {
+  margin-bottom: 0;
 }
 
 #footer > p {
