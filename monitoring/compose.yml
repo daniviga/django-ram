@@ -1,0 +1,36 @@
+# -*- coding: utf-8 -*-
+# vim: tabstop=2 shiftwidth=2 softtabstop=2
+networks:
+  net:
+
+volumes:
+  pgdata:
+  staticdata:
+
+x-op-service-default: &service_default
+  restart: always  # unless-stopped
+  init: true
+
+services:
+  timescale:
+    <<: *service_default
+    image: timescale/timescaledb:latest-pg17
+    ports:
+        - "${CUSTOM_DOCKER_IP:-0.0.0.0}:5432:5432"
+    environment:
+      POSTGRES_USER: "dccmonitor"
+      POSTGRES_PASSWORD: "dccmonitor"
+    volumes:
+      - "pgdata:/var/lib/postgresql/data"
+    networks:
+      - net
+
+  broker:
+    <<: *service_default
+    image: eclipse-mosquitto:2.0
+    ports:
+        - "${CUSTOM_DOCKER_IP:-0.0.0.0}:1883:1883"
+    volumes:
+      - "./config/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro"
+    networks:
+      - net
