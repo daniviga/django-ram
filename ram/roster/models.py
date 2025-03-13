@@ -224,6 +224,20 @@ class RollingStockJournal(models.Model):
     objects = PublicManager()
 
 
+# trick: this is technically an abstract class
+# it is made readonly via db_router and admin to avoid any unwanted change
+class RollingStockTelemetry(models.Model):
+    bucket = models.DateTimeField(primary_key=True, editable=False)
+    cab = models.PositiveIntegerField(editable=False)
+    avg_speed = models.FloatField(editable=False)
+    max_speed = models.PositiveIntegerField(editable=False)
+
+    class Meta:
+        db_table = "telemetry_10secs"
+        ordering = ["cab", "bucket"]
+        verbose_name_plural = "Telemetries"
+
+
 # @receiver(models.signals.post_delete, sender=Cab)
 # def post_save_image(sender, instance, *args, **kwargs):
 #     try:

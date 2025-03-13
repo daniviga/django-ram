@@ -17,6 +17,7 @@ from roster.models import (
     RollingStockImage,
     RollingStockProperty,
     RollingStockJournal,
+    RollingStockTelemetry,
 )
 
 
@@ -287,3 +288,29 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
 
     download_csv.short_description = "Download selected items as CSV"
     actions = [publish, unpublish, download_csv]
+
+
+@admin.register(RollingStockTelemetry)
+class RollingTelemtryAdmin(admin.ModelAdmin):
+    list_filter = ("bucket", "cab")
+    list_display = ("bucket_highres", "cab", "max_speed", "avg_speed")
+
+    def bucket_highres(self, obj):
+        return obj.bucket.strftime("%Y-%m-%d %H:%M:%S")
+
+    bucket_highres.admin_order_field = "bucket"  # Enable sorting
+    bucket_highres.short_description = "Bucket"  # Column name in admin
+
+    def get_changelist_instance(self, request):
+        changelist = super().get_changelist_instance(request)
+        changelist.list_display_links = None  # Disable links
+        return changelist
+
+    def has_add_permission(self, request):
+        return False  # Disable adding new objects
+
+    def has_change_permission(self, request, obj=None):
+        return False  # Disable editing objects
+
+    def has_delete_permission(self, request, obj=None):
+        return False  # Disable deleting objects

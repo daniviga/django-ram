@@ -95,8 +95,16 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": STORAGE_DIR / "db.sqlite3",
-    }
+    },
+    "telemetry": {
+        "ENGINE": "django.db.backends.postgresql",
+        "HOST": "127.0.0.1",
+        "NAME": "dccmonitor",
+        "USER": "dccmonitor",
+        "PASSWORD": "dccmonitor",
+    },
 }
+DATABASE_ROUTERS = ["ram.db_router.TelemetryRouter"]
 
 
 # Password validation
