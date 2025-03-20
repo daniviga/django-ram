@@ -46,7 +46,10 @@
                 {% endif %}
                 <tr>
                   <th class="w-33" scope="row">Company</th>
-                  <td><abbr title="{{ d.item.company.extended_name }}">{{ d.item.company }}</abbr></td>
+                  <td>
+                    <img src="{{ d.item.company.country.flag }}" alt="{{ d.item.company.country }}">
+                    <abbr title="{{ d.item.company.extended_name }}">{{ d.item.company }}</abbr>
+                  </td>
                 </tr>
                 <tr>
                   <th scope="row">Era</th>

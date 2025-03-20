@@ -43,6 +43,7 @@
                   <tr>
                     <th scope="row">Company</th>
                     <td>
+                      <img src="{{ d.item.company.country.flag }}" alt="{{ d.item.company.country }}">
                       <a href="{% url 'filtered' _filter="company" search=d.item.company.slug %}"><abbr title="{{ d.item.company.extended_name }}">{{ d.item.company }}</abbr></a>
                     </td>
                   </tr>
