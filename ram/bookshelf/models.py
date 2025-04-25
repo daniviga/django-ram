@@ -137,6 +137,10 @@ class Catalog(BaseBook):
         ordering = ["manufacturer", "publication_year"]
 
     def __str__(self):
+        # if the object is new, return an empty string to avoid
+        # calling self.scales.all() which would raise a infinite recursion
+        if self.pk is None:
+            return str()  # empty string
         scales = self.get_scales()
         return "%s %s %s" % (self.manufacturer.name, self.years, scales)
 

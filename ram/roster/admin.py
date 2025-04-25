@@ -273,11 +273,11 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
                     settings.CSV_SEPARATOR_ALT.join(
                         t.name for t in obj.tags.all()
                     ),
-                    obj.decoder_interface,
+                    obj.get_decoder_interface_display(),
                     obj.decoder,
                     obj.address,
-                    obj.purchase_date,
                     obj.shop,
+                    obj.purchase_date,
                     obj.price,
                     properties,
                 ]
