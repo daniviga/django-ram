@@ -50,18 +50,13 @@ class Consist(BaseModel):
             "type"
         ).annotate(
             count=models.Count("rolling_stock"),
-            category=models.F("rolling_stock__rolling_class__type__category")
-        ).order_by("rolling_stock__rolling_class__type__order")
+            category=models.F("rolling_stock__rolling_class__type__category"),
+            order=models.Max("order"),
+        ).order_by("order")
 
     @property
     def country(self):
         return self.company.country
-
-    def clean(self):
-        if self.consist_item.filter(rolling_stock__published=False).exists():
-            raise ValidationError(
-                "You must publish all items in the consist before publishing the consist."  # noqa: E501
-            )
 
     class Meta:
         ordering = ["company", "-creation_time"]
@@ -72,11 +67,7 @@ class ConsistItem(models.Model):
         Consist, on_delete=models.CASCADE, related_name="consist_item"
     )
     rolling_stock = models.ForeignKey(RollingStock, on_delete=models.CASCADE)
-    order = models.PositiveIntegerField(
-        default=1000,  # make sure it is always added at the end
-        blank=False,
-        null=False
-    )
+    order = models.PositiveIntegerField(blank=False, null=False)
 
     class Meta:
         ordering = ["order"]
@@ -89,6 +80,12 @@ class ConsistItem(models.Model):
 
     def __str__(self):
         return "{0}".format(self.rolling_stock)
+
+    def clean(self):
+        if self.consist.published and not self.rolling_stock.published:
+            raise ValidationError(
+                "You must unpublish the the consist before using this item."
+            )
 
     def published(self):
         return self.rolling_stock.published
