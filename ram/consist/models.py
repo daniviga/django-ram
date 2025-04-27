@@ -40,6 +40,20 @@ class Consist(BaseModel):
         return reverse("consist", kwargs={"uuid": self.uuid})
 
     @property
+    def length(self):
+        return self.consist_item.count()
+
+    def get_type_count(self):
+        return self.consist_item.annotate(
+            type=models.F("rolling_stock__rolling_class__type__type")
+        ).values(
+            "type"
+        ).annotate(
+            count=models.Count("rolling_stock"),
+            category=models.F("rolling_stock__rolling_class__type__category")
+        ).order_by("rolling_stock__rolling_class__type__order")
+
+    @property
     def country(self):
         return self.company.country
 
