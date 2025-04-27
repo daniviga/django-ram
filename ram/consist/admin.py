@@ -28,7 +28,7 @@ class ConsistAdmin(SortableAdminBase, admin.ModelAdmin):
         "creation_time",
         "updated_time",
     )
-    list_filter = ("company", "era", "published")
+    list_filter = ("company__name", "era", "published")
     list_display = ("__str__",) + list_filter + ("country_flag",)
     search_fields = ("identifier",) + list_filter
     save_as = True
