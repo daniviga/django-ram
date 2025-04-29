@@ -109,7 +109,7 @@
                     {% endif %}
                     <tr>
                       <th scope="row">Length</th>
-                      <td>{{ consist.length }}: {% for t in consist.get_type_count %}{{ t.count }}x {{ t.type }} {{t.category }}{% if not forloop.last %} + {% endif %}{% endfor %}</td>
+                      <td>{{ consist.length }} | {% for t in consist.get_type_count %}{{ t.count }}x {{ t.type }} {{t.category }}{% if not forloop.last %} + {% endif %}{% endfor %}</td>
                     </tr>
                   </tbody>
                 </table>
