@@ -7,7 +7,7 @@ from urllib.parse import unquote
 from django.views import View
 from django.http import Http404, HttpResponseBadRequest
 from django.db.utils import OperationalError, ProgrammingError
-from django.db.models import Q, Count
+from django.db.models import F, Q, Count
 from django.shortcuts import render, get_object_or_404, get_list_or_404
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
@@ -490,7 +490,11 @@ class Manufacturers(GetData):
     item_type = "manufacturer"
 
     def get_data(self, request):
-        return Manufacturer.objects.filter(self.filter)
+        return Manufacturer.objects.filter(
+            self.filter
+        ).annotate(
+            num_items=Count("rollingstock") + Count("rollingclass"),
+        ).order_by("name")
 
     # overload get method to filter by category
     def get(self, request, category, page=1):
@@ -506,18 +510,50 @@ class Companies(GetData):
     item_type = "company"
 
     def get_data(self, request):
-        return Company.objects.all()
+        return Company.objects.annotate(
+            num_rollingstock=(
+                Count(
+                    "rollingclass__rolling_class",
+                    filter=Q(
+                        rollingclass__rolling_class__in=(
+                            RollingStock.objects.get_published(request.user)
+                        )
+                    ),
+                    distinct=True
+                )
+            )
+        ).annotate(
+            num_consists=(
+                Count(
+                    "consist",
+                    filter=Q(
+                        consist__in=(
+                            Consist.objects.get_published(request.user)
+                        ),
+                    ),
+                    distinct=True
+                )
+            )
+        ).annotate(
+            num_items=F("num_rollingstock") + F("num_consists")
+        ).order_by("name")
 
 
 class Scales(GetData):
     title = "Scales"
     item_type = "scale"
-    queryset = Scale.objects.all()
 
     def get_data(self, request):
         return Scale.objects.annotate(
-            num_items=Count("rollingstock")
-        )  # .filter(num_items__gt=0) to filter data with no items
+            num_items=Count(
+                "rollingstock",
+                filter=Q(
+                    rollingstock__in=RollingStock.objects.get_published(
+                        request.user
+                    )
+                ),
+            ),
+        ).order_by("-ratio_int", "-tracks", "scale")
 
 
 class Types(GetData):
@@ -525,7 +561,16 @@ class Types(GetData):
     item_type = "rolling_stock_type"
 
     def get_data(self, request):
-        return RollingStockType.objects.all()
+        return RollingStockType.objects.annotate(
+            num_items=Count(
+                "rollingclass__rolling_class",
+                filter=Q(
+                    rollingclass__rolling_class__in=(
+                        RollingStock.objects.get_published(request.user)
+                    )
+                ),
+            )
+        ).order_by("order")
 
 
 class Books(GetData):
