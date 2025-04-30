@@ -490,11 +490,13 @@ class Manufacturers(GetData):
     item_type = "manufacturer"
 
     def get_data(self, request):
-        return Manufacturer.objects.filter(
-            self.filter
-        ).annotate(
-            num_items=Count("rollingstock") + Count("rollingclass"),
-        ).order_by("name")
+        return (
+            Manufacturer.objects.filter(self.filter)
+            .annotate(
+                num_items=Count("rollingstock") + Count("rollingclass"),
+            )
+            .order_by("name")
+        )
 
     # overload get method to filter by category
     def get(self, request, category, page=1):
@@ -510,33 +512,38 @@ class Companies(GetData):
     item_type = "company"
 
     def get_data(self, request):
-        return Company.objects.annotate(
-            num_rollingstock=(
-                Count(
-                    "rollingclass__rolling_class",
-                    filter=Q(
-                        rollingclass__rolling_class__in=(
-                            RollingStock.objects.get_published(request.user)
-                        )
-                    ),
-                    distinct=True
-                )
-            )
-        ).annotate(
-            num_consists=(
-                Count(
-                    "consist",
-                    filter=Q(
-                        consist__in=(
-                            Consist.objects.get_published(request.user)
+        return (
+            Company.objects.annotate(
+                num_rollingstock=(
+                    Count(
+                        "rollingclass__rolling_class",
+                        filter=Q(
+                            rollingclass__rolling_class__in=(
+                                RollingStock.objects.get_published(
+                                    request.user
+                                )
+                            )
                         ),
-                    ),
-                    distinct=True
+                        distinct=True,
+                    )
                 )
             )
-        ).annotate(
-            num_items=F("num_rollingstock") + F("num_consists")
-        ).order_by("name")
+            .annotate(
+                num_consists=(
+                    Count(
+                        "consist",
+                        filter=Q(
+                            consist__in=(
+                                Consist.objects.get_published(request.user)
+                            ),
+                        ),
+                        distinct=True,
+                    )
+                )
+            )
+            .annotate(num_items=F("num_rollingstock") + F("num_consists"))
+            .order_by("name")
+        )
 
 
 class Scales(GetData):
@@ -614,7 +621,7 @@ class GetBookCatalog(View):
                 "book": book,
                 "documents": documents,
                 "properties": properties,
-                "type": selector
+                "type": selector,
             },
         )
 
