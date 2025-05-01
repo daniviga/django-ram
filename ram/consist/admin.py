@@ -25,10 +25,11 @@ class ConsistItemInline(SortableInlineAdminMixin, admin.TabularInline):
 class ConsistAdmin(SortableAdminBase, admin.ModelAdmin):
     inlines = (ConsistItemInline,)
     readonly_fields = (
+        "scale",
         "creation_time",
         "updated_time",
     )
-    list_filter = ("company__name", "era", "published")
+    list_filter = ("company__name", "era", "scale", "published")
     list_display = ("__str__",) + list_filter + ("country_flag",)
     search_fields = ("identifier",) + list_filter
     save_as = True
@@ -49,6 +50,7 @@ class ConsistAdmin(SortableAdminBase, admin.ModelAdmin):
                     "consist_address",
                     "company",
                     "era",
+                    "scale",
                     "description",
                     "image",
                     "tags",

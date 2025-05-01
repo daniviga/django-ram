@@ -7,7 +7,7 @@ from django.core.exceptions import ValidationError
 
 from ram.models import BaseModel
 from ram.utils import DeduplicatedStorage
-from metadata.models import Company, Tag
+from metadata.models import Company, Scale, Tag
 from roster.models import RollingStock
 
 
@@ -26,6 +26,7 @@ class Consist(BaseModel):
         blank=True,
         help_text="Era or epoch of the consist",
     )
+    scale = models.ForeignKey(Scale, null=True, on_delete=models.CASCADE)
     image = models.ImageField(
         upload_to=os.path.join("images", "consists"),
         storage=DeduplicatedStorage,
@@ -81,8 +82,39 @@ class ConsistItem(models.Model):
     def __str__(self):
         return "{0}".format(self.rolling_stock)
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.consist.scale != self.rolling_stock.scale:
+            self.consist.scale = self.rolling_stock.scale
+            self.consist.save()
+
+    def delete(self, *args, **kwargs):
+        super().delete(*args, **kwargs)
+        if not self.consist.consist_item.exists():
+            self.consist.scale = None
+            self.consist.save()
+
     def clean(self):
-        if self.consist.published and not self.rolling_stock.published:
+        rolling_stock = getattr(self, "rolling_stock", False)
+        if not rolling_stock:
+            return  # exit if no inline are present
+
+        # FIXME this does not work when creating a new consist,
+        # because the consist is not saved yet and it must be moved
+        # to the admin form validation via InlineFormSet.clean()
+        consist = self.consist
+        items = consist.consist_item
+        if (
+            consist.pk  # if we are not creating a new consist
+            and items.exists()  # if there's at least one item
+            and self != items.first()  # if we are not changing the first item
+            # if scale is different from the first item
+            and rolling_stock.scale != items.first().rolling_stock.scale
+        ):
+            raise ValidationError(
+                "The rolling stock and consist must be of the same scale."
+            )
+        if self.consist.published and not rolling_stock.published:
             raise ValidationError(
                 "You must unpublish the the consist before using this item."
             )

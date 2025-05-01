@@ -551,16 +551,30 @@ class Scales(GetData):
     item_type = "scale"
 
     def get_data(self, request):
-        return Scale.objects.annotate(
-            num_items=Count(
-                "rollingstock",
-                filter=Q(
-                    rollingstock__in=RollingStock.objects.get_published(
-                        request.user
-                    )
+        return (
+            Scale.objects.annotate(
+                num_rollingstock=Count(
+                    "rollingstock",
+                    filter=Q(
+                        rollingstock__in=RollingStock.objects.get_published(
+                            request.user
+                        )
+                    ),
+                    distinct=True,
                 ),
-            ),
-        ).order_by("-ratio_int", "-tracks", "scale")
+                num_consists=Count(
+                    "consist",
+                    filter=Q(
+                        consist__in=Consist.objects.get_published(
+                            request.user
+                        )
+                    ),
+                    distinct=True,
+                ),
+            )
+            .annotate(num_items=F("num_rollingstock") + F("num_consists"))
+            .order_by("-ratio_int", "-tracks", "scale")
+        )
 
 
 class Types(GetData):
