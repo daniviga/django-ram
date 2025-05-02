@@ -140,6 +140,7 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
         "rolling_class__identifier",
         "rolling_class__company__name",
         "manufacturer__name",
+        "scale",
         "road_number",
         "address",
         "item_number",
@@ -229,9 +230,12 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
 
     def download_csv(modeladmin, request, queryset):
         header = [
+            "ID",
             "Name",
+            "Class",
+            "Type",
             "Company",
-            "Identifier",
+            "Country",
             "Road Number",
             "Manufacturer",
             "Scale",
@@ -258,9 +262,12 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
             )
             data.append(
                 [
+                    obj.uuid,
                     obj.__str__(),
-                    obj.rolling_class.company.name,
                     obj.rolling_class.identifier,
+                    obj.rolling_class.type,
+                    obj.rolling_class.company.name,
+                    obj.rolling_class.company.country,
                     obj.road_number,
                     obj.manufacturer.name,
                     obj.scale.scale,

@@ -108,6 +108,10 @@ class ConsistItem(models.Model):
         return self.rolling_stock.image.first().image_thumbnail(100)
 
     @property
+    def scale(self):
+        return self.rolling_stock.scale
+
+    @property
     def type(self):
         return self.rolling_stock.rolling_class.type
 
