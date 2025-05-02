@@ -26,7 +26,7 @@ class Consist(BaseModel):
         blank=True,
         help_text="Era or epoch of the consist",
     )
-    scale = models.ForeignKey(Scale, null=True, on_delete=models.CASCADE)
+    scale = models.ForeignKey(Scale, on_delete=models.CASCADE)
     image = models.ImageField(
         upload_to=os.path.join("images", "consists"),
         storage=DeduplicatedStorage,
@@ -82,18 +82,6 @@ class ConsistItem(models.Model):
     def __str__(self):
         return "{0}".format(self.rolling_stock)
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        if self.consist.scale != self.rolling_stock.scale:
-            self.consist.scale = self.rolling_stock.scale
-            self.consist.save()
-
-    def delete(self, *args, **kwargs):
-        super().delete(*args, **kwargs)
-        if not self.consist.consist_item.exists():
-            self.consist.scale = None
-            self.consist.save()
-
     def clean(self):
         rolling_stock = getattr(self, "rolling_stock", False)
         if not rolling_stock:
@@ -103,14 +91,7 @@ class ConsistItem(models.Model):
         # because the consist is not saved yet and it must be moved
         # to the admin form validation via InlineFormSet.clean()
         consist = self.consist
-        items = consist.consist_item
-        if (
-            consist.pk  # if we are not creating a new consist
-            and items.exists()  # if there's at least one item
-            and self != items.first()  # if we are not changing the first item
-            # if scale is different from the first item
-            and rolling_stock.scale != items.first().rolling_stock.scale
-        ):
+        if rolling_stock.scale != consist.scale:
             raise ValidationError(
                 "The rolling stock and consist must be of the same scale."
             )

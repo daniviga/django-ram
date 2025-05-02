@@ -25,7 +25,6 @@ class ConsistItemInline(SortableInlineAdminMixin, admin.TabularInline):
 class ConsistAdmin(SortableAdminBase, admin.ModelAdmin):
     inlines = (ConsistItemInline,)
     readonly_fields = (
-        "scale",
         "creation_time",
         "updated_time",
     )
