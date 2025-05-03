@@ -140,7 +140,7 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
         "rolling_class__identifier",
         "rolling_class__company__name",
         "manufacturer__name",
-        "scale",
+        "scale__scale",
         "road_number",
         "address",
         "item_number",
