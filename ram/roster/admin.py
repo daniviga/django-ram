@@ -36,6 +36,7 @@ class RollingClass(admin.ModelAdmin):
     search_fields = (
         "identifier",
         "company__name",
+        "company__slug",
         "type__type",
     )
     save_as = True
@@ -139,6 +140,7 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
     search_fields = (
         "rolling_class__identifier",
         "rolling_class__company__name",
+        "rolling_class__company__slug",
         "manufacturer__name",
         "scale__scale",
         "road_number",
