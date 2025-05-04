@@ -30,6 +30,8 @@ class ConsistItemInline(SortableInlineAdminMixin, admin.TabularInline):
         "preview",
         "published",
         "scale",
+        "manufacturer",
+        "item_number",
         "company",
         "type",
         "era",

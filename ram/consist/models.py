@@ -2,6 +2,7 @@ import os
 
 from django.db import models
 from django.urls import reverse
+from django.utils.text import Truncator
 from django.dispatch import receiver
 from django.core.exceptions import ValidationError
 
@@ -108,12 +109,20 @@ class ConsistItem(models.Model):
         return self.rolling_stock.image.first().image_thumbnail(100)
 
     @property
+    def manufacturer(self):
+        return Truncator(self.rolling_stock.manufacturer).chars(10)
+
+    @property
+    def item_number(self):
+        return self.rolling_stock.item_number
+
+    @property
     def scale(self):
         return self.rolling_stock.scale
 
     @property
     def type(self):
-        return self.rolling_stock.rolling_class.type
+        return self.rolling_stock.rolling_class.type.type
 
     @property
     def address(self):
