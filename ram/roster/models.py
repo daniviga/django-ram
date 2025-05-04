@@ -67,7 +67,7 @@ class RollingStock(BaseModel):
         verbose_name="Class",
     )
     road_number = models.CharField(max_length=128, unique=False)
-    road_number_int = models.PositiveSmallIntegerField(default=0, unique=False)
+    road_number_int = models.PositiveIntegerField(default=0, unique=False)
     manufacturer = models.ForeignKey(
         Manufacturer,
         on_delete=models.CASCADE,
