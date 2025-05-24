@@ -491,10 +491,37 @@ class Manufacturers(GetData):
 
     def get_data(self, request):
         return (
-            Manufacturer.objects.filter(self.filter)
-            .annotate(
-                num_items=Count("rollingstock") + Count("rollingclass"),
+            Manufacturer.objects.filter(self.filter).annotate(
+                num_rollingstock=(
+                    Count(
+                        "rollingstock",
+                        filter=Q(
+                            rollingstock__in=(
+                                RollingStock.objects.get_published(
+                                    request.user
+                                )
+                            )
+                        ),
+                        distinct=True,
+                    )
+                )
             )
+            .annotate(
+                num_rollingclass=(
+                    Count(
+                        "rollingclass__rolling_class",
+                        filter=Q(
+                            rollingclass__rolling_class__in=(
+                                RollingStock.objects.get_published(
+                                    request.user
+                                )
+                            ),
+                        ),
+                        distinct=True,
+                    )
+                )
+            )
+            .annotate(num_items=F("num_rollingstock") + F("num_rollingclass"))
             .order_by("name")
         )
 
