@@ -509,9 +509,9 @@ class Manufacturers(GetData):
             .annotate(
                 num_rollingclass=(
                     Count(
-                        "rollingclass__rolling_class",
+                        "rollingclass__rolling_stock",
                         filter=Q(
-                            rollingclass__rolling_class__in=(
+                            rollingclass__rolling_stock__in=(
                                 RollingStock.objects.get_published(
                                     request.user
                                 )
@@ -543,9 +543,9 @@ class Companies(GetData):
             Company.objects.annotate(
                 num_rollingstock=(
                     Count(
-                        "rollingclass__rolling_class",
+                        "rollingclass__rolling_stock",
                         filter=Q(
-                            rollingclass__rolling_class__in=(
+                            rollingclass__rolling_stock__in=(
                                 RollingStock.objects.get_published(
                                     request.user
                                 )
@@ -611,9 +611,9 @@ class Types(GetData):
     def get_data(self, request):
         return RollingStockType.objects.annotate(
             num_items=Count(
-                "rollingclass__rolling_class",
+                "rollingclass__rolling_stock",
                 filter=Q(
-                    rollingclass__rolling_class__in=(
+                    rollingclass__rolling_stock__in=(
                         RollingStock.objects.get_published(request.user)
                     )
                 ),

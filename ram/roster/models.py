@@ -63,7 +63,7 @@ class RollingStock(BaseModel):
         on_delete=models.CASCADE,
         null=False,
         blank=False,
-        related_name="rolling_class",
+        related_name="rolling_stock",
         verbose_name="Class",
     )
     road_number = models.CharField(max_length=128, unique=False)
