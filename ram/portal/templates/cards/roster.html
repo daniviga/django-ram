@@ -25,11 +25,11 @@
                     <th colspan="2" scope="row">
                       Rolling stock
                       <div class="float-end">
+                        {% if not d.item.published %}
+                        <span class="badge text-bg-warning">Unpublished</span>
+                        {% endif %}
                         {% if d.item.company.freelance %}
                         <span class="badge text-bg-secondary">Freelance</span>
-                        {% endif %}
-                        {% if not d.item.published %}
-                        <span class="badge text-bg-warning">Draft</span>
                         {% endif %}
                       </div>
                     </th>
