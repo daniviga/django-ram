@@ -135,8 +135,22 @@ class RollingStock(BaseModel):
     def get_decoder_interface(self):
         return str(
             dict(settings.DECODER_INTERFACES).get(self.decoder_interface)
-            or "-"
+            or "No interface"
         )
+
+    def dcc(self):
+        if self.decoder:
+            dcc = (
+                '<i class="bi bi-volume-up-fill"></i>'
+                if self.decoder.sound
+                else '<i class="bi bi-cpu-fill"></i>'
+            )
+            dcc = f'<abbr title="{self.decoder} ({self.get_decoder_interface()})">{dcc}</abbr>'  # noqa: E501
+        elif self.decoder_interface:
+            dcc = f'<abbr title="{self.get_decoder_interface()}"><i class="bi bi-cpu"></i></abbr>'  # noqa: E501
+        else:
+            dcc = f'<abbr title="{self.get_decoder_interface()}"><i class="bi bi-ban"></i></abbr>'  # noqa: E501
+        return dcc
 
     @property
     def country(self):
