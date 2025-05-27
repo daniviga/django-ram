@@ -1,4 +1,6 @@
 {% load static %}
+{% load dcc %}
+
         <div class="col">
           <div class="card shadow-sm">
             {% if d.item.image.exists %}
@@ -75,7 +77,7 @@
                   </tr>
                   <tr>
                     <th scope="row">DCC</th>
-                    <td>{{ d.item.dcc|safe }}</td>
+                    <td>{% dcc d.item %}</td>
                   </tr>
                 </tbody>
               </table>

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load dcc %}
 
         {% block header %}
         {% if rolling_stock.tags.all %}
@@ -142,7 +143,9 @@
                   <table class="table table-striped">
                     <thead>
                       <tr>
-                        <th colspan="2" scope="row">DCC data</th>
+                        <th colspan="2" scope="row">DCC data
+                          <span class="mt-1 float-end">{% dcc rolling_stock %}</span>
+                        </th>
                       </tr>
                     </thead>
                     <tbody class="table-group-divider">
@@ -153,11 +156,15 @@
                       {% if rolling_stock.decoder %}
                       <tr>
                         <th scope="row">Decoder</th>
-                        <td>{{ rolling_stock.decoder }}
+                        <td>{{ rolling_stock.decoder }}</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Sound</th>
+                        <td>
                         {% if rolling_stock.decoder.sound %}
-                        | <span class="badge text-bg-secondary">
-                        <abbr title="Sound decoder"<i class="bi bi-volume-up-fill"></i></abbr>
-                        </span>
+                          <i class="bi bi-check-circle-fill text-success"></i>
+                        {% else %}
+                          <i class="bi bi-x-circle-fill text-secondary"></i>
                         {% endif %}
                         </td>
                       </tr>
@@ -345,12 +352,14 @@
                   <table class="table table-striped">
                     <thead>
                       <tr>
-                        <th colspan="2" scope="row">Decoder data</th>
+                        <th colspan="2" scope="row">Decoder data
+                            <span class="mt-1 float-end">{% dcc rolling_stock %}</span>
+                        </th>
                       </tr>
                     </thead>
                     <tbody class="table-group-divider">
                       <tr>
-                        <th scope="row">Interface</th>
+                        <th class="w-33" scope="row">Interface</th>
                         <td>{{ rolling_stock.get_decoder_interface }}</td>
                       </tr>
                       <tr>
@@ -359,18 +368,31 @@
                       </tr>
                       <tr>
                         <th scope="row">Name</th>
-                        <td>{{ rolling_stock.decoder.name }}
-                        {% if rolling_stock.decoder.sound %}
-                        | <span class="badge text-bg-secondary">
-                        <abbr title="Sound decoder"<i class="bi bi-volume-up-fill"></i></abbr>
-                        </span>
-                        {% endif %}
-                        </td>
+                        <td>{{ rolling_stock.decoder.name }}</td>
                       </tr>
                       <tr>
                         <th scope="row">Version</th>
                         <td>{{ rolling_stock.decoder.version | default:"-"}}</td>
                       </tr>
+                      <tr>
+                        <th scope="row">Sound</th>
+                        <td>
+                        {% if rolling_stock.decoder.sound %}
+                          <i class="bi bi-check-circle-fill text-success"></i>
+                        {% else %}
+                          <i class="bi bi-x-circle-fill text-secondary"></i>
+                        {% endif %}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th colspan="2" scope="row">Decoder configuration</th>
+                      </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
                       <tr>
                         <th class="w-33" scope="row">Address</th>
                         <td>{{ rolling_stock.address }}</td>
