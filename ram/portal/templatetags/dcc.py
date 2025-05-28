@@ -18,18 +18,19 @@ def dcc(object):
     if object.decoder:
         if object.decoder.sound:
             decoder = (
-                f'<abbr title="{object.decoder} (with sounds)">'
+                f'<abbr title="{object.decoder}">'
                 '<i class="bi bi-volume-up-fill"></i></abbr>'
             )
         else:
             decoder = (
-                f'<abbr title="{object.decoder}">'
+                f'<abbr title="{object.decoder}'
+                f'({object.get_decoder_interface()})">'
                 '<i class="bi bi-cpu-fill"></i></abbr>'
             )
 
     if decoder:
         return format_html(
-            f'{socket} <i class="bi bi-arrow-bar-left"></i> {decoder}'
+            f'{socket} <i class="bi bi-arrow-bar-left"></i>{decoder}'
         )
 
     return format_html(socket)

@@ -215,6 +215,7 @@
         <div class="container">{% block pagination %}{% endblock %}</div>
       </div>
       {% block extra_content %}{% endblock %}
+      {% include 'includes/symbols.html' %}
     </main>
     {% include 'includes/footer.html' %}
     {% if site_conf.use_cdn %}
