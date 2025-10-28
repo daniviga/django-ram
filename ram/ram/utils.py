@@ -13,7 +13,7 @@ class DeduplicatedStorage(FileSystemStorage):
     """
     A derived FileSystemStorage class that compares already existing files
     (with the same name) with new uploaded ones and stores new file only if
-    sha256 hash on is content is different
+    sha256 hash on its content is different
     """
 
     def save(self, name, content, max_length=None):

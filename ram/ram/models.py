@@ -27,6 +27,7 @@ class Document(models.Model):
     description = models.CharField(max_length=128, blank=True)
     file = models.FileField(
         upload_to="files/",
+        storage=DeduplicatedStorage,
     )
     creation_time = models.DateTimeField(auto_now_add=True)
     updated_time = models.DateTimeField(auto_now=True)
