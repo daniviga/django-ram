@@ -8,7 +8,11 @@ from adminsortable2.admin import SortableAdminBase, SortableInlineAdminMixin
 from ram.admin import publish, unpublish
 from ram.utils import generate_csv
 from portal.utils import get_site_conf
-from repository.models import BookDocument, CatalogDocument
+from repository.models import (
+    BookDocument,
+    CatalogDocument,
+    MagazineIssueDocument
+)
 from bookshelf.models import (
     BaseBookProperty,
     BaseBookImage,
@@ -16,6 +20,8 @@ from bookshelf.models import (
     Author,
     Publisher,
     Catalog,
+    Magazine,
+    MagazineIssue,
 )
 
 
@@ -46,6 +52,10 @@ class BookDocInline(admin.TabularInline):
 
 class CatalogDocInline(BookDocInline):
     model = CatalogDocument
+
+
+class MagazineIssueDocInline(BookDocInline):
+    model = MagazineIssueDocument
 
 
 @admin.register(Book)
@@ -344,3 +354,47 @@ class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
 
     download_csv.short_description = "Download selected items as CSV"
     actions = [publish, unpublish, download_csv]
+
+
+@admin.register(Issue)
+class MagazineIssueAdmin(admin.ModelAdmin):
+    inlines = (
+        BookPropertyInline,
+        BookImageInline,
+        MagazineIssueDocInline,
+    )
+    list_display = (
+        "__str__",
+        "issue_number",
+        "published",
+    )
+    # autocomplete_fields = ("publisher",)
+    # readonly_fields = ("creation_time", "updated_time")
+    # search_fields = ("title", "publisher__name")
+    # list_filter = ("publisher__name", "language")
+
+    def get_model_perms(self, request):
+        """
+        Return empty perms dict thus hiding the model from admin index.
+        """
+        return {}
+
+    actions = [publish, unpublish]
+
+
+@admin.register(Magazine)
+class MagazineAdmin(admin.ModelAdmin):
+    inlines = (
+        MagazineIssueInline,
+    )
+    list_display = (
+        "__str__",
+        "publisher",
+        "published",
+    )
+    autocomplete_fields = ("publisher",)
+    readonly_fields = ("creation_time", "updated_time")
+    search_fields = ("name", "publisher__name")
+    list_filter = ("publisher__name", "language")
+
+    actions = [publish, unpublish]

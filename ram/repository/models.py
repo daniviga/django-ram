@@ -1,12 +1,11 @@
 from django.db import models
-from django.core.exceptions import ValidationError
 
 from tinymce import models as tinymce
 
 from ram.models import PrivateDocument
 from metadata.models import Decoder, Shop, Tag
 from roster.models import RollingStock
-from bookshelf.models import Book, Catalog
+from bookshelf.models import Book, Catalog, Issue
 
 
 class GenericDocument(PrivateDocument):
@@ -73,6 +72,20 @@ class CatalogDocument(PrivateDocument):
         constraints = [
             models.UniqueConstraint(
                 fields=["catalog", "file"], name="unique_catalog_file"
+            )
+        ]
+
+
+class MagazineIssueDocument(PrivateDocument):
+    issue = models.ForeignKey(
+        Issue, on_delete=models.CASCADE, related_name="document"
+    )
+
+    class Meta:
+        verbose_name_plural = "Magazines documents"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["issue", "file"], name="unique_issue_file"
             )
         ]
 
