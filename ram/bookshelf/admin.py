@@ -2,7 +2,7 @@ import html
 
 from django.conf import settings
 from django.contrib import admin
-from django.utils.html import format_html, strip_tags
+from django.utils.html import format_html, format_html_join, strip_tags
 from adminsortable2.admin import SortableAdminBase, SortableInlineAdminMixin
 
 from ram.admin import publish, unpublish
@@ -123,13 +123,14 @@ class BookAdmin(SortableAdminBase, admin.ModelAdmin):
     @admin.display(description="Invoices")
     def invoices(self, obj):
         if obj.invoice.exists():
-            html = "<br>".join(
-                "<a href=\"{}\" target=\"_blank\">{}</a>".format(
-                    i.file.url, i
-                ) for i in obj.invoice.all())
+            html = format_html_join(
+                "<br>",
+                "<a href=\"{}\" target=\"_blank\">{}</a>",
+                ((i.file.url, i) for i in obj.invoice.all())
+            )
         else:
             html = "-"
-        return format_html(html)
+        return html
 
     @admin.display(description="Publisher")
     def get_publisher(self, obj):
@@ -207,7 +208,7 @@ class PublisherAdmin(admin.ModelAdmin):
     @admin.display(description="Country")
     def country_flag(self, obj):
         return format_html(
-            '<img src="{}" /> {}'.format(obj.country.flag, obj.country.name)
+            '<img src="{}" /> {}', obj.country.flag, obj.country.name
         )
 
 
@@ -285,13 +286,14 @@ class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
     @admin.display(description="Invoices")
     def invoices(self, obj):
         if obj.invoice.exists():
-            html = "<br>".join(
-                "<a href=\"{}\" target=\"_blank\">{}</a>".format(
-                    i.file.url, i
-                ) for i in obj.invoice.all())
+            html = format_html_join(
+                "<br>",
+                "<a href=\"{}\" target=\"_blank\">{}</a>",
+                ((i.file.url, i) for i in obj.invoice.all())
+            )
         else:
             html = "-"
-        return format_html(html)
+        return html
 
     def download_csv(modeladmin, request, queryset):
         header = [

@@ -54,7 +54,7 @@ class CompanyAdmin(admin.ModelAdmin):
     @admin.display(description="Country")
     def country_flag(self, obj):
         return format_html(
-            '<img src="{}" /> {}'.format(obj.country.flag, obj.country.name)
+            '<img src="{}" /> {}', obj.country.flag, obj.country.name
         )
 
 
@@ -68,7 +68,7 @@ class ManufacturerAdmin(admin.ModelAdmin):
     @admin.display(description="Country")
     def country_flag(self, obj):
         return format_html(
-            '<img src="{}" /> {}'.format(obj.country.flag, obj.country.name)
+            '<img src="{}" /> {}', obj.country.flag, obj.country.name
         )
 
 

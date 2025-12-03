@@ -48,8 +48,9 @@ def git_suffix(fname):
 
 def get_image_preview(url, max_size=150):
     return format_html(
-        '<img src="{src}" style="max-width: {size}px; max-height: {size}px;'
-        'background-color: #eee;" />'.format(src=url, size=max_size)
+        '<img src="{src}" style="max-width: {size}px; max-height: {size}px; background-color: #eee;" />',  # noqa: E501
+        src=url,
+        size=max_size,
     )
 
 
