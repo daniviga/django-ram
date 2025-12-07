@@ -1,7 +1,7 @@
 # Asset telemetry monitoring
 
-[!CAUTION]
-This is a PoC, not suitable for real world due to lack of any authentication and security
+> [!CAUTION]
+> This is a PoC, not suitable for real world due to lack of any authentication and security
 
 ## Pre-requisites
 
@@ -12,7 +12,7 @@ This is a PoC, not suitable for real world due to lack of any authentication and
 
 The `dispatcher.py` script collects data (`cab` commands) from a CommandStation and sends it a MQTT broker. 
 
-The command being monitored is the `<l cab reg speedByte functMap>` one returned by the `<t cab speed dir>` throttle command. See the [DCC-EX command reference](https://dcc-ex.com/reference/software/command-summary-consolidated.html#t-cab-speed-dir-set-cab-loco-speed).
+The command being monitored is `<l cab reg speedByte functMap>` which is returned by the `<t cab speed dir>` throttle command. See the [DCC-EX command reference](https://dcc-ex.com/reference/software/command-summary-consolidated.html#t-cab-speed-dir-set-cab-loco-speed).
 
 `mosquitto` is the MQTT broker.
 
@@ -27,8 +27,8 @@ Data is finally save into a Timescale hypertable.
 ```bash
 $ podman run -d -p 5432:5432 -v $(pwd)/data:/var/lib/postgresql/data -e "POSTGRES_USER=dccmonitor" -e "POSTGRES_PASSWORD=dccmonitor" --name timescale timescale/timescaledb:latest-pg17
 ```
-[!IMPORTANT]
-A volume should be created for persistent data
+> [!IMPORTANT]
+> A volume should be created for persistent data
 
 Tables and hypertables are automatically created by the `handler.py` script
 
