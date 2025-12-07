@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load dcc %}
 
         {% block header %}
         {% if rolling_stock.tags.all %}
@@ -7,6 +8,9 @@
           {{ t.name }}</a>{# new line is required #}
           {% endfor %}
         </p>
+        {% endif %}
+        {% if not rolling_stock.published %}
+        <span class="badge text-bg-warning">Unpublished</span> |
         {% endif %}
         <small class="text-body-secondary">Updated {{ rolling_stock.updated_time | date:"M d, Y H:i" }}</small>
         {% endblock %}
@@ -48,7 +52,7 @@
                 <button class="nav-link" id="nav-model-tab" data-bs-toggle="tab" data-bs-target="#nav-model" type="button" role="tab" aria-controls="nav-model" aria-selected="false">Model</button>
                 <button class="nav-link" id="nav-class-tab" data-bs-toggle="tab" data-bs-target="#nav-class" type="button" role="tab" aria-controls="nav-class" aria-selected="false">Class</button>
                 <button class="nav-link" id="nav-company-tab" data-bs-toggle="tab" data-bs-target="#nav-company" type="button" role="tab" aria-controls="nav-company" aria-selected="false">Company</button>
-                {% if rolling_stock.decoder %}<button class="nav-link" id="nav-dcc-tab" data-bs-toggle="tab" data-bs-target="#nav-dcc" type="button" role="tab" aria-controls="nav-dcc" aria-selected="false">DCC</button>{% endif %}
+                {% if rolling_stock.decoder or rolling_stock.decoder_interface %}<button class="nav-link" id="nav-dcc-tab" data-bs-toggle="tab" data-bs-target="#nav-dcc" type="button" role="tab" aria-controls="nav-dcc" aria-selected="false">DCC</button>{% endif %}
                 {% if documents or decoder_documents %}<button class="nav-link" id="nav-documents-tab" data-bs-toggle="tab" data-bs-target="#nav-documents" type="button" role="tab" aria-controls="nav-documents" aria-selected="false">Documents</button>{% endif %}
                 {% if journal %}<button class="nav-link" id="nav-journal-tab" data-bs-toggle="tab" data-bs-target="#nav-journal" type="button" role="tab" aria-controls="nav-journal" aria-selected="false">Journal</button>{% endif %}
                 {% if set %}<button class="nav-link" id="nav-set-tab" data-bs-toggle="tab" data-bs-target="#nav-set" type="button" role="tab" aria-controls="nav-set" aria-selected="false">Set</button>{% endif %}
@@ -59,7 +63,7 @@
                 <option value="nav-model">Model</option>
                 <option value="nav-class">Class</option>
                 <option value="nav-company">Company</option>
-                {% if rolling_stock.decoder %}<option value="nav-dcc">DCC</option>{% endif %}
+                {% if rolling_stock.decoder or rolling_stock.decoder_interface %}<option value="nav-dcc">DCC</option>{% endif %}
                 {% if documents or decoder_documents %}<option value="nav-documents">Documents</option>{% endif %}
                 {% if journal %}<option value="nav-journal">Journal</option>{% endif %}
                 {% if set %}<option value="nav-set">Set</option>{% endif %}
@@ -76,9 +80,6 @@
                           <div class="mt-1 float-end">
                             {% if company.freelance %}
                             <span class="badge text-bg-secondary">Freelance</span>
-                            {% endif %}
-                            {% if not rolling_stock.published %}
-                            <span class="badge text-bg-warning">Draft</span>
                             {% endif %}
                           </div>
                         </th>
@@ -142,7 +143,9 @@
                   <table class="table table-striped">
                     <thead>
                       <tr>
-                        <th colspan="2" scope="row">DCC data</th>
+                        <th colspan="2" scope="row">DCC data
+                        <a class="mt-1 float-end text-reset text-decoration-none" title="Symbols" href="" data-bs-toggle="modal" data-bs-target="#symbolsModal">{% dcc rolling_stock %}</a>
+                        </th>
                       </tr>
                     </thead>
                     <tbody class="table-group-divider">
@@ -154,6 +157,16 @@
                       <tr>
                         <th scope="row">Decoder</th>
                         <td>{{ rolling_stock.decoder }}</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Sound</th>
+                        <td>
+                        {% if rolling_stock.decoder.sound %}
+                          <i class="bi bi-check-circle-fill text-success"></i>
+                        {% else %}
+                          <i class="bi bi-x-circle-fill text-secondary"></i>
+                        {% endif %}
+                        </td>
                       </tr>
                       <tr>
                         <th scope="row">Address</th>
@@ -339,25 +352,24 @@
                   <table class="table table-striped">
                     <thead>
                       <tr>
-                        <th colspan="2" scope="row">Decoder data</th>
+                        <th colspan="2" scope="row">Decoder data
+                        <a class="mt-1 float-end text-reset text-decoration-none" title="Symbols" href="" data-bs-toggle="modal" data-bs-target="#symbolsModal">{% dcc rolling_stock %}</a>
+                        </th>
                       </tr>
                     </thead>
                     <tbody class="table-group-divider">
                       <tr>
-                        <th scope="row">Interface</th>
+                        <th class="w-33" scope="row">Interface</th>
                         <td>{{ rolling_stock.get_decoder_interface }}</td>
                       </tr>
+                      {% if rolling_stock.decoder %}
                       <tr>
-                        <th class="w-33" scope="row">Address</th>
-                        <td>{{ rolling_stock.address }}</td>
+                        <th scope="row">Manufacturer</th>
+                        <td>{{ rolling_stock.decoder.manufacturer | default:"-" }}</td>
                       </tr>
                       <tr>
                         <th scope="row">Name</th>
                         <td>{{ rolling_stock.decoder.name }}</td>
-                      </tr>
-                      <tr>
-                        <th scope="row">Manufacturer</th>
-                        <td>{{ rolling_stock.decoder.manufacturer | default:"-" }}</td>
                       </tr>
                       <tr>
                         <th scope="row">Version</th>
@@ -365,8 +377,28 @@
                       </tr>
                       <tr>
                         <th scope="row">Sound</th>
-                        <td>{{ rolling_stock.decoder.sound | yesno:"Yes,No" }}</td>
+                        <td>
+                        {% if rolling_stock.decoder.sound %}
+                          <i class="bi bi-check-circle-fill text-success"></i>
+                        {% else %}
+                          <i class="bi bi-x-circle-fill text-secondary"></i>
+                        {% endif %}
+                        </td>
                       </tr>
+                    </tbody>
+                  </table>
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th colspan="2" scope="row">Decoder configuration</th>
+                      </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                      <tr>
+                        <th class="w-33" scope="row">Address</th>
+                        <td>{{ rolling_stock.address }}</td>
+                      </tr>
+                      {% endif %}
                     </tbody>
                   </table>
                 </div>

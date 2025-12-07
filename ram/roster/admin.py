@@ -2,7 +2,7 @@ import html
 
 from django.conf import settings
 from django.contrib import admin
-from django.utils.html import format_html, strip_tags
+from django.utils.html import format_html, format_html_join, strip_tags
 
 from adminsortable2.admin import SortableAdminBase, SortableInlineAdminMixin
 
@@ -37,6 +37,7 @@ class RollingClass(admin.ModelAdmin):
     search_fields = (
         "identifier",
         "company__name",
+        "company__slug",
         "type__type",
     )
     save_as = True
@@ -44,7 +45,7 @@ class RollingClass(admin.ModelAdmin):
     @admin.display(description="Country")
     def country_flag(self, obj):
         return format_html(
-            '<img src="{}" /> {}'.format(obj.country.flag, obj.country)
+            '<img src="{}" /> {}', obj.country.flag, obj.country.name
         )
 
 
@@ -140,7 +141,9 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
     search_fields = (
         "rolling_class__identifier",
         "rolling_class__company__name",
+        "rolling_class__company__slug",
         "manufacturer__name",
+        "scale__scale",
         "road_number",
         "address",
         "item_number",
@@ -150,7 +153,7 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
     @admin.display(description="Country")
     def country_flag(self, obj):
         return format_html(
-            '<img src="{}" /> {}'.format(obj.country.flag, obj.country)
+            '<img src="{}" /> {}', obj.country.flag, obj.country.name
         )
 
     fieldsets = (
@@ -220,19 +223,23 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
     @admin.display(description="Invoices")
     def invoices(self, obj):
         if obj.invoice.exists():
-            html = "<br>".join(
-                "<a href=\"{}\" target=\"_blank\">{}</a>".format(
-                    i.file.url, i
-                ) for i in obj.invoice.all())
+            html = format_html_join(
+                "<br>",
+                "<a href=\"{}\" target=\"_blank\">{}</a>",
+                ((i.file.url, i) for i in obj.invoice.all())
+            )
         else:
             html = "-"
-        return format_html(html)
+        return html
 
     def download_csv(modeladmin, request, queryset):
         header = [
+            "ID",
             "Name",
+            "Class",
+            "Type",
             "Company",
-            "Identifier",
+            "Country",
             "Road Number",
             "Manufacturer",
             "Scale",
@@ -259,9 +266,12 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
             )
             data.append(
                 [
+                    obj.uuid,
                     obj.__str__(),
-                    obj.rolling_class.company.name,
                     obj.rolling_class.identifier,
+                    obj.rolling_class.type,
+                    obj.rolling_class.company.name,
+                    obj.rolling_class.company.country,
                     obj.road_number,
                     obj.manufacturer.name,
                     obj.scale.scale,
@@ -274,11 +284,11 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
                     settings.CSV_SEPARATOR_ALT.join(
                         t.name for t in obj.tags.all()
                     ),
-                    obj.decoder_interface,
+                    obj.get_decoder_interface_display(),
                     obj.decoder,
                     obj.address,
-                    obj.purchase_date,
                     obj.shop,
+                    obj.purchase_date,
                     obj.price,
                     properties,
                 ]

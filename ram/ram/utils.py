@@ -13,7 +13,7 @@ class DeduplicatedStorage(FileSystemStorage):
     """
     A derived FileSystemStorage class that compares already existing files
     (with the same name) with new uploaded ones and stores new file only if
-    sha256 hash on is content is different
+    sha256 hash on its content is different
     """
 
     def save(self, name, content, max_length=None):
@@ -48,8 +48,9 @@ def git_suffix(fname):
 
 def get_image_preview(url, max_size=150):
     return format_html(
-        '<img src="{src}" style="max-width: {size}px; max-height: {size}px;'
-        'background-color: #eee;" />'.format(src=url, size=max_size)
+        '<img src="{src}" style="max-width: {size}px; max-height: {size}px; background-color: #eee;" />',  # noqa: E501
+        src=url,
+        size=max_size,
     )
 
 

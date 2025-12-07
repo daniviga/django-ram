@@ -28,8 +28,10 @@
               </tbody>
             </table>
             <div class="d-grid gap-2 mb-1 d-md-block">
-              <a class="btn btn-sm btn-outline-primary{% if d.item.num_items == 0 %} disabled{% endif %}" href="{% url 'filtered' _filter="scale" search=d.item.slug %}">Show all rolling stock</a>
+              {% with items=d.item.num_items %}
+              <a class="btn btn-sm btn-outline-primary{% if items == 0 %} disabled{% endif %}" href="{% url 'filtered' _filter="scale" search=d.item.slug %}">Show {{ items }} item{{ items | pluralize}}</a>
               {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% url 'admin:metadata_scale_change' d.item.pk %}">Edit</a>{% endif %}
+              {% endwith %}
             </div>
           </div>
         </div>

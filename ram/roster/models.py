@@ -63,11 +63,11 @@ class RollingStock(BaseModel):
         on_delete=models.CASCADE,
         null=False,
         blank=False,
-        related_name="rolling_class",
+        related_name="rolling_stock",
         verbose_name="Class",
     )
     road_number = models.CharField(max_length=128, unique=False)
-    road_number_int = models.PositiveSmallIntegerField(default=0, unique=False)
+    road_number_int = models.PositiveIntegerField(default=0, unique=False)
     manufacturer = models.ForeignKey(
         Manufacturer,
         on_delete=models.CASCADE,
@@ -135,8 +135,22 @@ class RollingStock(BaseModel):
     def get_decoder_interface(self):
         return str(
             dict(settings.DECODER_INTERFACES).get(self.decoder_interface)
-            or "-"
+            or "No interface"
         )
+
+    def dcc(self):
+        if self.decoder:
+            dcc = (
+                '<i class="bi bi-volume-up-fill"></i>'
+                if self.decoder.sound
+                else '<i class="bi bi-cpu-fill"></i>'
+            )
+            dcc = f'<abbr title="{self.decoder} ({self.get_decoder_interface()})">{dcc}</abbr>'  # noqa: E501
+        elif self.decoder_interface:
+            dcc = f'<abbr title="{self.get_decoder_interface()}"><i class="bi bi-cpu"></i></abbr>'  # noqa: E501
+        else:
+            dcc = f'<abbr title="{self.get_decoder_interface()}"><i class="bi bi-ban"></i></abbr>'  # noqa: E501
+        return dcc
 
     @property
     def country(self):

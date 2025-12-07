@@ -27,11 +27,11 @@
                   <th colspan="2" scope="row">
                     Consist
                     <div class="float-end">
+                      {% if not d.item.published %}
+                      <span class="badge text-bg-warning">Unpublished</span>
+                      {% endif %}
                       {% if d.item.company.freelance %}
                       <span class="badge text-bg-secondary">Freelance</span>
-                      {% endif %}
-                      {% if not d.item.published %}
-                      <span class="badge text-bg-warning">Draft</span>
                       {% endif %}
                     </div>
                   </th>
@@ -46,7 +46,10 @@
                 {% endif %}
                 <tr>
                   <th class="w-33" scope="row">Company</th>
-                  <td><abbr title="{{ d.item.company.extended_name }}">{{ d.item.company }}</abbr></td>
+                  <td>
+                    <img src="{{ d.item.company.country.flag }}" alt="{{ d.item.company.country }}">
+                    <abbr title="{{ d.item.company.extended_name }}">{{ d.item.company }}</abbr>
+                  </td>
                 </tr>
                 <tr>
                   <th scope="row">Era</th>
@@ -54,7 +57,7 @@
                 </tr>
                 <tr>
                   <th scope="row">Length</th>
-                  <td>{{ d.item.consist_item.count }}</td>
+                  <td>{{ d.item.length }}</td>
                 </tr>
               </tbody>
             </table>

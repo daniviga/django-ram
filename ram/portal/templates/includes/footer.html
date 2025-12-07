@@ -12,14 +12,16 @@
     <div class="container d-flex text-body-secondary">
       <p class="flex-fill small">Made with ❤️ for 🚂 and <i class="bi bi-github"></i> <a href="https://github.com/daniviga/django-ram">django-ram</a>
       {% if site_conf.show_version %}<br>Version {{ site_conf.version }}{% endif %}</p>
-      <p class="text-end fs-5">
-        {% if site_conf.disclaimer %}<a class="text-reset" title="Disclaimer" href="" data-bs-toggle="modal" data-bs-target="#disclaimerModal"><i class="bi bi-info-square-fill"></i></a> {% endif %}
-        <a class="text-reset" title="Back to top" href="#"><i class="bi bi-arrow-up-left-square-fill"></i></a>
+      <p class="text-end">
+        {% if site_conf.disclaimer %}
+        <a title="Disclaimer" href="" data-bs-toggle="modal" data-bs-target="#disclaimerModal"><i class="text-muted d-lg-none fs-5 bi bi-info-square-fill"></i><span class="d-none d-lg-inline small">Disclaimer</span></a><span class="d-none d-lg-inline small"> | </span>
+        {% endif %}
+        <a title="Back to top" href="#"><i class="text-muted d-lg-none fs-5 bi bi-arrow-up-left-square-fill"></i><span class="d-none d-lg-inline small">Back to top</span></a>
       </p>
     </div>
     <!-- Modal -->
     <div class="modal fade" id="disclaimerModal" tabindex="-1" aria-labelledby="disclaimerLabel" aria-hidden="true">
-      <div class="modal-dialog">
+      <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
             <h1 class="modal-title fs-5" id="disclaimerLabel">Disclaimer</h1>

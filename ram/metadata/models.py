@@ -43,7 +43,7 @@ class Manufacturer(models.Model):
     )
 
     class Meta:
-        ordering = ["category", "name"]
+        ordering = ["category", "slug"]
 
     def __str__(self):
         return self.name
@@ -78,7 +78,7 @@ class Company(models.Model):
 
     class Meta:
         verbose_name_plural = "Companies"
-        ordering = ["name"]
+        ordering = ["slug"]
 
     def __str__(self):
         return self.name
@@ -207,7 +207,7 @@ class Tag(models.Model):
     slug = models.CharField(max_length=128, unique=True)
 
     class Meta:
-        ordering = ["name"]
+        ordering = ["slug"]
 
     def __str__(self):
         return self.name

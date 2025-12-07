@@ -29,6 +29,10 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RemoveConstraint(
+            model_name="basebookdocument",
+            name="unique_book_file",
+        ),
         migrations.AddField(
             model_name="basebook",
             name="shop",

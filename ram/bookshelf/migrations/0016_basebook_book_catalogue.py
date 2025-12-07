@@ -101,10 +101,10 @@ class Migration(migrations.Migration):
             model_name="basebook",
             name="old_title",
         ),
-        migrations.RemoveField(
-            model_name="basebook",
-            name="old_authors",
-        ),
+        # migrations.RemoveField(
+        #     model_name="basebook",
+        #     name="old_authors",
+        # ),
         migrations.RemoveField(
             model_name="basebook",
             name="old_publisher",
