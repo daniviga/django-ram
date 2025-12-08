@@ -4,6 +4,7 @@ from django.db import models
 from django.conf import settings
 from django.urls import reverse
 from django.utils.dates import MONTHS
+from django.core.exceptions import ValidationError
 from django_countries.fields import CountryField
 
 from ram.utils import DeduplicatedStorage
@@ -212,4 +213,11 @@ class MagazineIssue(BaseBook):
         ordering = ["magazine", "issue_number"]
 
     def __str__(self):
-        return f"{self.magazine.name} - {self.issue.issue_number}"
+        return f"{self.magazine.name} - {self.issue_number}"
+
+    def clean(self):
+        if self.magazine.published is False and self.published is True:
+            raise ValidationError(
+                "Cannot set an issue as published if the magazine is not "
+                "published."
+            )

@@ -5,7 +5,7 @@ from tinymce import models as tinymce
 from ram.models import PrivateDocument
 from metadata.models import Decoder, Shop, Tag
 from roster.models import RollingStock
-from bookshelf.models import Book, Catalog, Issue
+from bookshelf.models import Book, Catalog, MagazineIssue
 
 
 class GenericDocument(PrivateDocument):
@@ -78,7 +78,7 @@ class CatalogDocument(PrivateDocument):
 
 class MagazineIssueDocument(PrivateDocument):
     issue = models.ForeignKey(
-        Issue, on_delete=models.CASCADE, related_name="document"
+        MagazineIssue, on_delete=models.CASCADE, related_name="document"
     )
 
     class Meta:
