@@ -150,7 +150,7 @@ REST_FRAMEWORK = {
 }
 
 TINYMCE_DEFAULT_CONFIG = {
-    "height": "500px",
+    "height": "300px",
     "menubar": False,
     "plugins": "autolink lists link image charmap preview anchor "
     "searchreplace visualblocks code fullscreen insertdatetime media "
