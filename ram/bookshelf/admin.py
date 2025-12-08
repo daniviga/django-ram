@@ -8,7 +8,11 @@ from adminsortable2.admin import SortableAdminBase, SortableInlineAdminMixin
 from ram.admin import publish, unpublish
 from ram.utils import generate_csv
 from portal.utils import get_site_conf
-from repository.models import BookDocument, CatalogDocument
+from repository.models import (
+    BookDocument,
+    CatalogDocument,
+    MagazineIssueDocument
+)
 from bookshelf.models import (
     BaseBookProperty,
     BaseBookImage,
@@ -16,6 +20,8 @@ from bookshelf.models import (
     Author,
     Publisher,
     Catalog,
+    Magazine,
+    MagazineIssue,
 )
 
 
@@ -48,6 +54,10 @@ class CatalogDocInline(BookDocInline):
     model = CatalogDocument
 
 
+class MagazineIssueDocInline(BookDocInline):
+    model = MagazineIssueDocument
+
+
 @admin.register(Book)
 class BookAdmin(SortableAdminBase, admin.ModelAdmin):
     inlines = (
@@ -66,7 +76,7 @@ class BookAdmin(SortableAdminBase, admin.ModelAdmin):
     autocomplete_fields = ("authors", "publisher", "shop")
     readonly_fields = ("invoices", "creation_time", "updated_time")
     search_fields = ("title", "publisher__name", "authors__last_name")
-    list_filter = ("publisher__name", "authors")
+    list_filter = ("publisher__name", "authors", "published")
 
     fieldsets = (
         (
@@ -229,7 +239,12 @@ class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
     autocomplete_fields = ("manufacturer",)
     readonly_fields = ("invoices", "creation_time", "updated_time")
     search_fields = ("manufacturer__name", "years", "scales__scale")
-    list_filter = ("manufacturer__name", "publication_year", "scales__scale")
+    list_filter = (
+        "manufacturer__name",
+        "publication_year",
+        "scales__scale",
+        "published",
+    )
 
     fieldsets = (
         (
@@ -346,3 +361,142 @@ class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
 
     download_csv.short_description = "Download selected items as CSV"
     actions = [publish, unpublish, download_csv]
+
+
+@admin.register(MagazineIssue)
+class MagazineIssueAdmin(SortableAdminBase, admin.ModelAdmin):
+    inlines = (
+        BookPropertyInline,
+        BookImageInline,
+        MagazineIssueDocInline,
+    )
+    list_display = (
+        "__str__",
+        "issue_number",
+        "published",
+    )
+    autocomplete_fields = ("shop",)
+    readonly_fields = ("magazine", "creation_time", "updated_time")
+
+    def get_model_perms(self, request):
+        """
+        Return empty perms dict thus hiding the model from admin index.
+        """
+        return {}
+
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "published",
+                    "magazine",
+                    "issue_number",
+                    "publication_year",
+                    "publication_month",
+                    "ISBN",
+                    "language",
+                    "number_of_pages",
+                    "description",
+                    "tags",
+                )
+            },
+        ),
+        (
+            "Purchase data",
+            {
+                "classes": ("collapse",),
+                "fields": (
+                    "shop",
+                    "purchase_date",
+                    "price",
+                ),
+            },
+        ),
+        (
+            "Notes",
+            {"classes": ("collapse",), "fields": ("notes",)},
+        ),
+        (
+            "Audit",
+            {
+                "classes": ("collapse",),
+                "fields": (
+                    "creation_time",
+                    "updated_time",
+                ),
+            },
+        ),
+    )
+    actions = [publish, unpublish]
+
+
+class MagazineIssueInline(admin.TabularInline):
+    model = MagazineIssue
+    min_num = 0
+    extra = 0
+    autocomplete_fields = ("shop",)
+    show_change_link = True
+    fields = (
+        "preview",
+        "published",
+        "issue_number",
+        "publication_year",
+        "publication_month",
+        "number_of_pages",
+        "language",
+    )
+    readonly_fields = ("preview",)
+
+    class Media:
+        js = ('admin/js/magazine_issue_defaults.js',)
+
+
+@admin.register(Magazine)
+class MagazineAdmin(SortableAdminBase, admin.ModelAdmin):
+    inlines = (
+        MagazineIssueInline,
+    )
+
+    list_display = (
+        "__str__",
+        "publisher",
+        "published",
+    )
+    autocomplete_fields = ("publisher",)
+    readonly_fields = ("creation_time", "updated_time")
+    search_fields = ("name", "publisher__name")
+    list_filter = ("publisher__name", "published")
+
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "published",
+                    "name",
+                    "publisher",
+                    "ISBN",
+                    "language",
+                    "description",
+                    "image",
+                    "tags",
+                )
+            },
+        ),
+        (
+            "Notes",
+            {"classes": ("collapse",), "fields": ("notes",)},
+        ),
+        (
+            "Audit",
+            {
+                "classes": ("collapse",),
+                "fields": (
+                    "creation_time",
+                    "updated_time",
+                ),
+            },
+        ),
+    )
+    actions = [publish, unpublish]

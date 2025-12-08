@@ -3,6 +3,8 @@ import shutil
 from django.db import models
 from django.conf import settings
 from django.urls import reverse
+from django.utils.dates import MONTHS
+from django.core.exceptions import ValidationError
 from django_countries.fields import CountryField
 
 from ram.utils import DeduplicatedStorage
@@ -153,3 +155,72 @@ class Catalog(BaseBook):
     def get_scales(self):
         return "/".join([s.scale for s in self.scales.all()])
     get_scales.short_description = "Scales"
+
+
+class Magazine(BaseModel):
+    name = models.CharField(max_length=200)
+    publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE)
+    ISBN = models.CharField(max_length=17, blank=True)  # 13 + dashes
+    image = models.ImageField(
+        blank=True,
+        upload_to=book_image_upload,
+        storage=DeduplicatedStorage,
+    )
+    language = models.CharField(
+        max_length=7,
+        choices=settings.LANGUAGES,
+        default='en'
+    )
+    tags = models.ManyToManyField(
+        Tag, related_name="magazine", blank=True
+    )
+
+    def delete(self, *args, **kwargs):
+        shutil.rmtree(
+            os.path.join(
+                settings.MEDIA_ROOT, "images", "magazines", str(self.uuid)
+            ),
+            ignore_errors=True
+        )
+        super(Magazine, self).delete(*args, **kwargs)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse(
+            "bookshelf_item",
+            kwargs={"selector": "magazine", "uuid": self.uuid}
+        )
+
+
+class MagazineIssue(BaseBook):
+    magazine = models.ForeignKey(
+        Magazine, on_delete=models.CASCADE, related_name="issue"
+    )
+    issue_number = models.CharField(max_length=100)
+    publication_month = models.SmallIntegerField(
+        null=True,
+        blank=True,
+        choices=MONTHS.items()
+    )
+
+    class Meta:
+        unique_together = ("magazine", "issue_number")
+        ordering = ["magazine", "issue_number"]
+
+    def __str__(self):
+        return f"{self.magazine.name} - {self.issue_number}"
+
+    def clean(self):
+        if self.magazine.published is False and self.published is True:
+            raise ValidationError(
+                "Cannot set an issue as published if the magazine is not "
+                "published."
+            )
+
+    def preview(self):
+        return self.image.first().image_thumbnail(100)
