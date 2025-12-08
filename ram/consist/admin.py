@@ -54,7 +54,7 @@ class ConsistAdmin(SortableAdminBase, admin.ModelAdmin):
     @admin.display(description="Country")
     def country_flag(self, obj):
         return format_html(
-            '<img src="{}" /> {}'.format(obj.country.flag, obj.country)
+            '<img src="{}" /> {}', obj.country.flag, obj.country
         )
 
     fieldsets = (
