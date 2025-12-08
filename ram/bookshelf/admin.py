@@ -431,48 +431,22 @@ class MagazineIssueAdmin(SortableAdminBase, admin.ModelAdmin):
     actions = [publish, unpublish]
 
 
-class MagazineIssueInline(admin.StackedInline):
+class MagazineIssueInline(admin.TabularInline):
     model = MagazineIssue
     min_num = 0
     extra = 0
     autocomplete_fields = ("shop",)
     show_change_link = True
-    fieldsets = (
-        (
-            None,
-            {
-                "fields": (
-                    "published",
-                    "issue_number",
-                    "publication_year",
-                    "publication_month",
-                )
-            },
-        ),
-        (
-            "Additional info",
-            {
-                "classes": ("collapse",),
-                "fields": (
-                    "language",
-                    "number_of_pages",
-                    "ISBN",
-                    "tags",
-                ),
-            },
-        ),
-        (
-            "Purchase data",
-            {
-                "classes": ("collapse",),
-                "fields": (
-                    "shop",
-                    "purchase_date",
-                    "price",
-                ),
-            },
-        ),
+    fields = (
+        "preview",
+        "published",
+        "issue_number",
+        "publication_year",
+        "publication_month",
+        "number_of_pages",
+        "language",
     )
+    readonly_fields = ("preview",)
 
     class Media:
         js = ('admin/js/magazine_issue_defaults.js',)

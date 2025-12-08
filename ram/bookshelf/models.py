@@ -221,3 +221,6 @@ class MagazineIssue(BaseBook):
                 "Cannot set an issue as published if the magazine is not "
                 "published."
             )
+
+    def preview(self):
+        return self.image.first().image_thumbnail(100)
