@@ -61,8 +61,7 @@
                     <thead>
                       <tr>
                         <th colspan="2" scope="row">
-                          {% if type == "catalog" %}Catalog
-                          {% elif type == "book" %}Book{% endif %}
+                          {{ label|capfirst }}
                         </th>
                       </tr>
                     </thead>

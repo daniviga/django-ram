@@ -38,3 +38,5 @@ class CatalogGet(RetrieveAPIView):
 
     def get_queryset(self):
         return Book.objects.get_published(self.request.user)
+
+# FIXME: add Magazine and MagazineIssue views

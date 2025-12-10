@@ -24,7 +24,7 @@
                 <thead>
                   <tr>
                     <th colspan="2" scope="row">
-                      {{ d.type | capfirst }}
+                      {{ d.label|capfirst }}
                       <div class="float-end">
                         {% if not d.item.published %}
                         <span class="badge text-bg-warning">Unpublished</span>

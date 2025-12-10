@@ -77,7 +77,11 @@ class GetData(View):
         self.filter = filter
         data = []
         for item in self.get_data(request):
-            data.append({"type": self.item_type, "item": item})
+            data.append({
+                "type": self.item_type,
+                "label": self.item_type.capitalize(),
+                "item": item
+            })
 
         paginator = Paginator(data, get_items_per_page())
         data = paginator.get_page(page)
@@ -669,6 +673,7 @@ class GetMagazine(View):
         data = [
             {
                 "type": "magazineissue",
+                "label": "Magazine issue",
                 "item": i,
             }
             for i in magazine.issue.get_published(request.user).all()
@@ -742,6 +747,7 @@ class GetBookCatalog(View):
                 "documents": documents,
                 "properties": properties,
                 "type": selector,
+                "label": selector.capitalize(),
             },
         )
 

@@ -49,3 +49,5 @@ class CatalogSerializer(serializers.ModelSerializer):
             "price",
         )
         read_only_fields = ("creation_time", "updated_time")
+
+# FIXME: add Magazine and MagazineIssue serializers
