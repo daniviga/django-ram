@@ -15,6 +15,9 @@ from portal.views import (
     Types,
     Books,
     Catalogs,
+    Magazines,
+    GetMagazine,
+    GetMagazineIssue,
     GetBookCatalog,
     SearchObjects,
 )
@@ -97,6 +100,31 @@ urlpatterns = [
         "bookshelf/books/page/<int:page>",
         Books.as_view(),
         name="books_pagination"
+    ),
+    path(
+        "bookshelf/magazine/<uuid:uuid>",
+        GetMagazine.as_view(),
+        name="magazine"
+    ),
+    path(
+        "bookshelf/magazine/<uuid:uuid>/page/<int:page>",
+        GetMagazine.as_view(),
+        name="magazine_pagination",
+    ),
+    path(
+        "bookshelf/magazine/<uuid:magazine>/issue/<uuid:uuid>",
+        GetMagazineIssue.as_view(),
+        name="issue",
+    ),
+    path(
+        "bookshelf/magazines",
+        Magazines.as_view(),
+        name="magazines"
+    ),
+    path(
+        "bookshelf/magazines/page/<int:page>",
+        Magazines.as_view(),
+        name="magazines_pagination"
     ),
     path(
         "bookshelf/<str:selector>/<uuid:uuid>",

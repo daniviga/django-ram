@@ -16,7 +16,7 @@ from portal.utils import get_site_conf
 from portal.models import Flatpage
 from roster.models import RollingStock
 from consist.models import Consist
-from bookshelf.models import Book, Catalog
+from bookshelf.models import Book, Catalog, Magazine, MagazineIssue
 from metadata.models import (
     Company,
     Manufacturer,
@@ -73,7 +73,8 @@ class GetData(View):
             .filter(self.filter)
         )
 
-    def get(self, request, page=1):
+    def get(self, request, filter=Q(), page=1):
+        self.filter = filter
         data = []
         for item in self.get_data(request):
             data.append({"type": self.item_type, "item": item})
@@ -491,7 +492,8 @@ class Manufacturers(GetData):
 
     def get_data(self, request):
         return (
-            Manufacturer.objects.filter(self.filter).annotate(
+            Manufacturer.objects.filter(self.filter)
+            .annotate(
                 num_rollingstock=(
                     Count(
                         "rollingstock",
@@ -592,9 +594,7 @@ class Scales(GetData):
                 num_consists=Count(
                     "consist",
                     filter=Q(
-                        consist__in=Consist.objects.get_published(
-                            request.user
-                        )
+                        consist__in=Consist.objects.get_published(request.user)
                     ),
                     distinct=True,
                 ),
@@ -635,6 +635,84 @@ class Catalogs(GetData):
 
     def get_data(self, request):
         return Catalog.objects.get_published(request.user).all()
+
+
+class Magazines(GetData):
+    title = "Magazines"
+    item_type = "magazine"
+
+    def get_data(self, request):
+        return (
+            Magazine.objects.get_published(request.user)
+            .all()
+            .annotate(
+                num_issues=Count(
+                    "issue",
+                    filter=Q(
+                        issue__in=(
+                            MagazineIssue.objects.get_published(request.user)
+                        )
+                    ),
+                )
+            )
+        )
+
+
+class GetMagazine(View):
+    def get(self, request, uuid, page=1):
+        try:
+            magazine = Magazine.objects.get_published(request.user).get(
+                uuid=uuid
+            )
+        except ObjectDoesNotExist:
+            raise Http404
+        data = [
+            {
+                "type": "issue",
+                "item": i,
+            }
+            for i in magazine.issue.get_published(request.user).all()
+        ]
+        paginator = Paginator(data, get_items_per_page())
+        data = paginator.get_page(page)
+        page_range = paginator.get_elided_page_range(
+            data.number, on_each_side=1, on_ends=1
+        )
+
+        return render(
+            request,
+            "magazine.html",
+            {
+                "title": magazine,
+                "magazine": magazine,
+                "data": data,
+                "page_range": page_range,
+            },
+        )
+
+
+class GetMagazineIssue(View):
+    def get(self, request, uuid, magazine, page=1):
+        try:
+            issue = MagazineIssue.objects.get_published(request.user).get(
+                uuid=uuid,
+                magazine__uuid=magazine,
+            )
+        except ObjectDoesNotExist:
+            raise Http404
+        properties = issue.property.get_public(request.user)
+        documents = issue.document.get_public(request.user)
+        return render(
+            request,
+            "bookshelf/book.html",
+            {
+                "title": issue,
+                "book": issue,
+                "documents": documents,
+                "properties": properties,
+                "type": "magazineissue",
+            },
+        )
 
 
 class GetBookCatalog(View):

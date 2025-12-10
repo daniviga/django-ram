@@ -81,6 +81,15 @@ def book_image_upload(instance, filename):
     )
 
 
+def magazine_image_upload(instance, filename):
+    return os.path.join(
+        "images",
+        "magazines",
+        str(instance.uuid),
+        filename
+    )
+
+
 class BaseBookImage(Image):
     book = models.ForeignKey(
         BaseBook, on_delete=models.CASCADE, related_name="image"
@@ -163,7 +172,7 @@ class Magazine(BaseModel):
     ISBN = models.CharField(max_length=17, blank=True)  # 13 + dashes
     image = models.ImageField(
         blank=True,
-        upload_to=book_image_upload,
+        upload_to=magazine_image_upload,
         storage=DeduplicatedStorage,
     )
     language = models.CharField(
@@ -192,8 +201,8 @@ class Magazine(BaseModel):
 
     def get_absolute_url(self):
         return reverse(
-            "bookshelf_item",
-            kwargs={"selector": "magazine", "uuid": self.uuid}
+            "magazine",
+            kwargs={"uuid": self.uuid}
         )
 
 
@@ -224,3 +233,12 @@ class MagazineIssue(BaseBook):
 
     def preview(self):
         return self.image.first().image_thumbnail(100)
+
+    def get_absolute_url(self):
+        return reverse(
+            "issue",
+            kwargs={
+                "uuid": self.uuid,
+                "magazine": self.magazine.uuid
+            }
+        )
