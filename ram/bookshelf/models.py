@@ -43,8 +43,8 @@ class BaseBook(BaseModel):
     ISBN = models.CharField(max_length=17, blank=True)  # 13 + dashes
     language = models.CharField(
         max_length=7,
-        choices=settings.LANGUAGES,
-        default='en'
+        choices=sorted(settings.LANGUAGES, key=lambda s: s[1]),
+        default="en",
     )
     number_of_pages = models.SmallIntegerField(null=True, blank=True)
     publication_year = models.SmallIntegerField(null=True, blank=True)
@@ -177,7 +177,7 @@ class Magazine(BaseModel):
     )
     language = models.CharField(
         max_length=7,
-        choices=settings.LANGUAGES,
+        choices=sorted(settings.LANGUAGES, key=lambda s: s[1]),
         default='en'
     )
     tags = models.ManyToManyField(
@@ -233,6 +233,10 @@ class MagazineIssue(BaseBook):
 
     def preview(self):
         return self.image.first().image_thumbnail(100)
+
+    @property
+    def publisher(self):
+        return self.magazine.publisher
 
     def get_absolute_url(self):
         return reverse(

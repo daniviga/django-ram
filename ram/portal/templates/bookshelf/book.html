@@ -89,7 +89,30 @@
                       </tr>
                       <tr>
                         <th class="w-33" scope="row">Publisher</th>
-                        <td>{{ book.publisher }}</td>
+                        <td>
+                          <img src="{{ book.publisher.country.flag }}" alt="{{ book.publisher.country }}"> {{ book.publisher }}
+                          {% if book.publisher.website %} <a href="{{ book.publisher.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
+                        </td>
+                      </tr>
+                      {% elif type == "magazineissue" %}
+                      <tr>
+                        <th class="w-33" scope="row">Magazine</th>
+                        <td><a href="{% url 'magazine' book.magazine.pk %}">{{ book.magazine }}</a></td>
+                      </tr>
+                      <tr>
+                        <th class="w-33" scope="row">Publisher</th>
+                        <td>
+                          <img src="{{ book.publisher.country.flag }}" alt="{{ book.publisher.country }}"> {{ book.publisher }}
+                          {% if book.publisher.website %} <a href="{{ book.publisher.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
+                        </td>
+                      </tr>
+                      <tr>
+                        <th class="w-33" scope="row">Issue</th>
+                        <td>{{ book.issue_number }}</td>
+                      </tr>
+                      <tr>
+                        <th class="w-33" scope="row">Date</th>
+                        <td>{{ book.publication_year|default:"-" }} / {{ book.publication_month|default:"-" }}</td>
                       </tr>
                       {% endif %}
                       <tr>
@@ -104,10 +127,12 @@
                         <th scope="row">Number of pages</th>
                         <td>{{ book.number_of_pages|default:"-" }}</td>
                       </tr>
+                      {% if type == "boook" or type == "catalog" %}
                       <tr>
                         <th scope="row">Publication year</th>
                         <td>{{ book.publication_year|default:"-" }}</td>
                       </tr>
+                      {% endif %}
                       {% if book.description %}
                       <tr>
                         <th class="w-33" scope="row">Description</th>

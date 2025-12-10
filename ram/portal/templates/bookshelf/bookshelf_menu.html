@@ -10,6 +10,9 @@
                     {% if catalogs_menu %}
                     <li><a class="dropdown-item" href="{% url 'catalogs' %}">Catalogs</a></li>
                     {% endif %}
+                    {% if magazines_menu %}
+                    <li><a class="dropdown-item" href="{% url 'magazines' %}">Magazines</a></li>
+                    {% endif %}
                   </ul>
                 </li>
                 {% endif %}

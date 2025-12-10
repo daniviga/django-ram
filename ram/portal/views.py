@@ -646,7 +646,7 @@ class Magazines(GetData):
             Magazine.objects.get_published(request.user)
             .all()
             .annotate(
-                num_issues=Count(
+                issues=Count(
                     "issue",
                     filter=Q(
                         issue__in=(
@@ -668,7 +668,7 @@ class GetMagazine(View):
             raise Http404
         data = [
             {
-                "type": "issue",
+                "type": "magazineissue",
                 "item": i,
             }
             for i in magazine.issue.get_published(request.user).all()
@@ -686,6 +686,7 @@ class GetMagazine(View):
                 "title": magazine,
                 "magazine": magazine,
                 "data": data,
+                "matches": paginator.count,
                 "page_range": page_range,
             },
         )

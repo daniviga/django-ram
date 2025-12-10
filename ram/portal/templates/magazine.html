@@ -1,6 +1,6 @@
 {% extends "cards.html" %}
-
       {% block header %}
+      {{ block.super }}
       {% if magazine.tags.all %}
       <p><small>Tags:</small>
         {% for t in magazine.tags.all %}<a href="{% url 'filtered' _filter="tag" search=t.slug %}" class="badge rounded-pill bg-primary">
@@ -87,13 +87,19 @@
                   </thead>
                   <tbody class="table-group-divider">
                     <tr>
-                      <th class="w-33" scope="row">Company</th>
+                      <th class="w-33" scope="row">Name</th>
+                      <td>{{ magazine }} </td>
+                    </tr>
+                    <tr>
+                      <th class="w-33" scope="row">Publisher</th>
                       <td>
+                        <img src="{{ magazine.publisher.country.flag }}" alt="{{ magazine.publisher.country }}"> {{ magazine.publisher }}
+                        {% if magazine.publisher.website %} <a href="{{ magazine.publisher.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
                       </td>
                     </tr>
                     <tr>
-                      <th scope="row">Era</th>
-                      <td>{{ magazine.era }}</td>
+                      <th scope="row">ISBN</th>
+                      <td>{{ magazine.ISBN | default:"-" }}</td>
                     </tr>
                     {% if magazine.description %}
                     <tr>
@@ -101,14 +107,6 @@
                       <td>{{ magazine.description | safe }}</td>
                     </tr>
                     {% endif %}
-                    <tr>
-                      <th scope="row">Length</th>
-                      <td>{{ magazine.length }}</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Composition</th>
-                      <td>{% for t in magazine.get_type_count %}{{ t.count }}x {{ t.type }} {{t.category }}{% if not forloop.last %} &raquo; {% endif %}{% endfor %}</td>
-                    </tr>
                   </tbody>
                 </table>
               </div>
