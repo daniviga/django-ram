@@ -24,8 +24,7 @@
                 <thead>
                   <tr>
                     <th colspan="2" scope="row">
-                      {% if d.type == "catalog" %}Catalog
-                      {% elif d.type == "book" %}Book{% endif %}
+                      {{ d.type | capfirst }}
                       <div class="float-end">
                         {% if not d.item.published %}
                         <span class="badge text-bg-warning">Unpublished</span>
@@ -53,7 +52,7 @@
                   </tr>
                   <tr>
                     <th class="w-33" scope="row">Publisher</th>
-                    <td>{{ d.item.publisher }}</td>
+                    <td><img src="{{ d.item.publisher.country.flag }}" alt="{{ d.item.publisher.country }}"> {{ d.item.publisher }}</td>
                   </tr>
                   {% endif %}
                   <tr>
