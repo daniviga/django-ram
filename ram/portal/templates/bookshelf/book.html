@@ -111,7 +111,7 @@
                       </tr>
                       <tr>
                         <th class="w-33" scope="row">Date</th>
-                        <td>{{ book.publication_year|default:"-" }} / {{ book.publication_month|default:"-" }}</td>
+                        <td>{{ book.publication_year|default:"-" }} / {{ book.get_publication_month_display|default:"-" }}</td>
                       </tr>
                       {% endif %}
                       <tr>

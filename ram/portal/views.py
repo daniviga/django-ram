@@ -717,6 +717,7 @@ class GetMagazineIssue(View):
                 "documents": documents,
                 "properties": properties,
                 "type": "magazineissue",
+                "label": "Magazine issue",
             },
         )
 

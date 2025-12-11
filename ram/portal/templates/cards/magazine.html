@@ -72,7 +72,7 @@
                 </tr>
                 <tr>
                   <th class="w-33" scope="row">Date</th>
-                  <td>{{ d.item.publication_year|default:"-" }} / {{ d.item.publication_month|default:"-" }}</td>
+                  <td>{{ d.item.publication_year|default:"-" }} / {{ d.item.get_publication_month_display|default:"-" }}</td>
                 </tr>
                 <tr>
                   <th class="w-33" scope="row">Pages</th>
