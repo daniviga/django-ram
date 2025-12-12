@@ -17,12 +17,10 @@
                     <td><img class="logo" src="{{ d.item.logo.url }}" alt="{{ d.item.name }} logo"></td>
                   </tr>
                   {% endif %}
-                  {% if d.item.website %}
                   <tr>
                     <th class="w-33" scope="row">Website</th>
-                    <td><a href="{{ d.item.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a></td>
+                    <td>{% if d.item.website %}<a href="{{ d.item.website }}" target="_blank">{{ d.item.website_short }}</td>{% else %}-{% endif %}</td>
                   </tr>
-                  {% endif %}
                   <tr>
                     <th class="w-33" scope="row">Category</th>
                     <td>{{ d.item.category | title }}</td>

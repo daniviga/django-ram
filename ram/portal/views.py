@@ -73,8 +73,7 @@ class GetData(View):
             .filter(self.filter)
         )
 
-    def get(self, request, filter=Q(), page=1):
-        self.filter = filter
+    def get(self, request, page=1):
         data = []
         for item in self.get_data(request):
             data.append({

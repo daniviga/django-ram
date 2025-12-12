@@ -475,6 +475,7 @@ class MagazineAdmin(SortableAdminBase, admin.ModelAdmin):
                 "fields": (
                     "published",
                     "name",
+                    "website",
                     "publisher",
                     "ISBN",
                     "language",

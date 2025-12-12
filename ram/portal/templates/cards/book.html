@@ -37,7 +37,9 @@
                   {% if d.type == "catalog" %}
                   <tr>
                     <th class="w-33" scope="row">Manufacturer</th>
-                    <td>{{ d.item.manufacturer }}</td>
+                    <td>
+                      <a href="{% url 'filtered' _filter="manufacturer" search=d.item.manufacturer.slug %}">{{ d.item.manufacturer }}{% if d.item.manufacturer.website %}</a> <a href="{{ d.item.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
+                    </td>
                   </tr>
                   <tr>
                     <th class="w-33" scope="row">Scales</th>

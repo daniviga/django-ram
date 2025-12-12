@@ -88,7 +88,7 @@
                   <tbody class="table-group-divider">
                     <tr>
                       <th class="w-33" scope="row">Name</th>
-                      <td>{{ magazine }} </td>
+                      <td>{{ magazine }}</td>
                     </tr>
                     <tr>
                       <th class="w-33" scope="row">Publisher</th>
@@ -96,6 +96,14 @@
                         <img src="{{ magazine.publisher.country.flag }}" alt="{{ magazine.publisher.country }}"> {{ magazine.publisher }}
                         {% if magazine.publisher.website %} <a href="{{ magazine.publisher.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
                       </td>
+                    </tr>
+                    <tr>
+                      <th class="w-33" scope="row">Website</th>
+                      <td>{% if magazine.website %}<a href="{{ magazine.website }}" target="_blank">{{ magazine.website_short }}</td>{% else %}-{% endif %}</td>
+                    </tr>
+                    <tr>
+                      <th class="w-33" scope="row">Language</th>
+                      <td>{{ magazine.get_language_display }}</td>
                     </tr>
                     <tr>
                       <th scope="row">ISBN</th>

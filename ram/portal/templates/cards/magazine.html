@@ -43,6 +43,7 @@
                 <tr>
                   <th colspan="2" scope="row">
                     {{ d.label|capfirst }}
+
                     <div class="float-end">
                       {% if not d.item.published %}
                       <span class="badge text-bg-warning">Unpublished</span>
@@ -56,6 +57,11 @@
                 <tr>
                   <th class="w-33" scope="row">Magazine</th>
                   <td>{{ d.item.magazine }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                  <th class="w-33" scope="row">Website</th>
+                  <td>{% if d.item.website %}<a href="{{ d.item.website }}" target="_blank">{{ d.item.website_short }}</td>{% else %}-{% endif %}</td>
                 </tr>
                 {% endif %}
                 <tr>

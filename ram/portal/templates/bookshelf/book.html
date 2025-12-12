@@ -69,7 +69,9 @@
                       {% if type == "catalog" %}
                       <tr>
                         <th class="w-33" scope="row">Manufacturer</th>
-                        <td>{{ book.manufacturer }}</td>
+                        <td>
+                          <a href="{% url 'filtered' _filter="manufacturer" search=book.manufacturer.slug %}">{{ book.manufacturer }}{% if book.manufacturer.website %}</a> <a href="{{ book.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
+                        </td>
                       </tr>
                       <tr>
                         <th class="w-33" scope="row">Scales</th>
@@ -96,7 +98,10 @@
                       {% elif type == "magazineissue" %}
                       <tr>
                         <th class="w-33" scope="row">Magazine</th>
-                        <td><a href="{% url 'magazine' book.magazine.pk %}">{{ book.magazine }}</a></td>
+                        <td>
+                          <a href="{% url 'magazine' book.magazine.pk %}">{{ book.magazine }}</a>
+                          {% if book.magazine.website %} <a href="{{ book.magazine.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
+                        </td>
                       </tr>
                       <tr>
                         <th class="w-33" scope="row">Publisher</th>

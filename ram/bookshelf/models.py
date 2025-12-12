@@ -1,5 +1,6 @@
 import os
 import shutil
+from urllib.parse import urlparse
 from django.db import models
 from django.conf import settings
 from django.urls import reverse
@@ -169,6 +170,7 @@ class Catalog(BaseBook):
 class Magazine(BaseModel):
     name = models.CharField(max_length=200)
     publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE)
+    website = models.URLField(blank=True)
     ISBN = models.CharField(max_length=17, blank=True)  # 13 + dashes
     image = models.ImageField(
         blank=True,
@@ -204,6 +206,10 @@ class Magazine(BaseModel):
             "magazine",
             kwargs={"uuid": self.uuid}
         )
+
+    def website_short(self):
+        if self.website:
+            return urlparse(self.website).netloc.replace("www.", "")
 
 
 class MagazineIssue(BaseBook):

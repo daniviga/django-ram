@@ -1,4 +1,5 @@
 import os
+from urllib.parse import urlparse
 from django.db import models
 from django.urls import reverse
 from django.conf import settings
@@ -56,6 +57,10 @@ class Manufacturer(models.Model):
                 "search": self.slug,
             },
         )
+
+    def website_short(self):
+        if self.website:
+            return urlparse(self.website).netloc.replace("www.", "")
 
     def logo_thumbnail(self):
         return get_image_preview(self.logo.url)
