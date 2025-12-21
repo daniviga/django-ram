@@ -13,13 +13,13 @@
                 <strong>{{ d.item }}</strong>
                 <a class="stretched-link" href="{{ d.item.get_absolute_url }}"></a>
               </p>
-              {% if d.item.tags.all %}
               <p class="card-text"><small>Tags:</small>
                 {% for t in d.item.tags.all %}<a href="{% url 'filtered' _filter="tag" search=t.slug %}" class="badge rounded-pill bg-primary">
                 {{ t.name }}</a>{# new line is required #}
+                {% empty %}
+                <span class="badge rounded-pill bg-secondary"><i class="bi bi-ban"></i></span>
                 {% endfor %}
               </p>
-              {% endif %}
               <table class="table table-striped">
                 <thead>
                   <tr>

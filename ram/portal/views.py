@@ -8,6 +8,7 @@ from django.views import View
 from django.http import Http404, HttpResponseBadRequest
 from django.db.utils import OperationalError, ProgrammingError
 from django.db.models import F, Q, Count
+from django.db.models.functions import Lower
 from django.shortcuts import render, get_object_or_404, get_list_or_404
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
@@ -76,11 +77,13 @@ class GetData(View):
     def get(self, request, page=1):
         data = []
         for item in self.get_data(request):
-            data.append({
-                "type": self.item_type,
-                "label": self.item_type.capitalize(),
-                "item": item
-            })
+            data.append(
+                {
+                    "type": self.item_type,
+                    "label": self.item_type.capitalize(),
+                    "item": item,
+                }
+            )
 
         paginator = Paginator(data, get_items_per_page())
         data = paginator.get_page(page)
@@ -180,16 +183,50 @@ class SearchObjects(View):
                 data.append({"type": "consist", "item": item})
             books = (
                 Book.objects.get_published(request.user)
-                .filter(title__icontains=search)
+                .filter(
+                    Q(
+                        Q(title__icontains=search)
+                        | Q(description__icontains=search)
+                    )
+                )
                 .distinct()
             )
             catalogs = (
                 Catalog.objects.get_published(request.user)
-                .filter(manufacturer__name__icontains=search)
+                .filter(
+                    Q(
+                        Q(manufacturer__name__icontains=search)
+                        | Q(description__icontains=search)
+                    )
+                )
                 .distinct()
             )
             for item in list(chain(books, catalogs)):
-                data.append({"type": "book", "item": item})
+                data.append(
+                    {
+                        "type": "book",
+                        "label": item._meta.object_name,
+                        "item": item,
+                    }
+                )
+            magazine_issues = (
+                MagazineIssue.objects.get_published(request.user)
+                .filter(
+                    Q(
+                        Q(magazine__name__icontains=search)
+                        | Q(description__icontains=search)
+                    )
+                )
+                .distinct()
+            )
+            for item in magazine_issues:
+                data.append(
+                    {
+                        "type": "book",
+                        "label": "Magazine Issue",
+                        "item": item,
+                    }
+                )
 
         paginator = Paginator(data, get_items_per_page())
         data = paginator.get_page(page)
@@ -347,15 +384,32 @@ class GetObjectsFiltered(View):
                     .filter(query_2nd)
                     .distinct()
                 )
-                for item in books:
-                    data.append({"type": "book", "item": item})
                 catalogs = (
                     Catalog.objects.get_published(request.user)
                     .filter(query_2nd)
                     .distinct()
                 )
-                for item in catalogs:
-                    data.append({"type": "catalog", "item": item})
+                for item in list(chain(books, catalogs)):
+                    data.append(
+                        {
+                            "type": "book",
+                            "label": item._meta.object_name,
+                            "item": item,
+                        }
+                    )
+                magazine_issues = (
+                    MagazineIssue.objects.get_published(request.user)
+                    .filter(query_2nd)
+                    .distinct()
+                )
+                for item in magazine_issues:
+                    data.append(
+                        {
+                            "type": "book",
+                            "label": "Magazine Issue",
+                            "item": item,
+                        }
+                    )
         except NameError:
             pass
 
@@ -647,7 +701,7 @@ class Magazines(GetData):
     def get_data(self, request):
         return (
             Magazine.objects.get_published(request.user)
-            .all()
+            .order_by(Lower("name"))
             .annotate(
                 issues=Count(
                     "issue",

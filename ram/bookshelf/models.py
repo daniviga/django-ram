@@ -5,6 +5,7 @@ from django.db import models
 from django.conf import settings
 from django.urls import reverse
 from django.utils.dates import MONTHS
+from django.db.models.functions import Lower
 from django.core.exceptions import ValidationError
 from django_countries.fields import CountryField
 
@@ -59,36 +60,24 @@ class BaseBook(BaseModel):
         blank=True,
     )
     purchase_date = models.DateField(null=True, blank=True)
-    tags = models.ManyToManyField(
-        Tag, related_name="bookshelf", blank=True
-    )
+    tags = models.ManyToManyField(Tag, related_name="bookshelf", blank=True)
 
     def delete(self, *args, **kwargs):
         shutil.rmtree(
             os.path.join(
                 settings.MEDIA_ROOT, "images", "books", str(self.uuid)
             ),
-            ignore_errors=True
+            ignore_errors=True,
         )
         super(BaseBook, self).delete(*args, **kwargs)
 
 
 def book_image_upload(instance, filename):
-    return os.path.join(
-        "images",
-        "books",
-        str(instance.book.uuid),
-        filename
-    )
+    return os.path.join("images", "books", str(instance.book.uuid), filename)
 
 
 def magazine_image_upload(instance, filename):
-    return os.path.join(
-        "images",
-        "magazines",
-        str(instance.uuid),
-        filename
-    )
+    return os.path.join("images", "magazines", str(instance.uuid), filename)
 
 
 class BaseBookImage(Image):
@@ -132,8 +121,7 @@ class Book(BaseBook):
 
     def get_absolute_url(self):
         return reverse(
-            "bookshelf_item",
-            kwargs={"selector": "book", "uuid": self.uuid}
+            "bookshelf_item", kwargs={"selector": "book", "uuid": self.uuid}
         )
 
 
@@ -158,12 +146,12 @@ class Catalog(BaseBook):
 
     def get_absolute_url(self):
         return reverse(
-            "bookshelf_item",
-            kwargs={"selector": "catalog", "uuid": self.uuid}
+            "bookshelf_item", kwargs={"selector": "catalog", "uuid": self.uuid}
         )
 
     def get_scales(self):
         return "/".join([s.scale for s in self.scales.all()])
+
     get_scales.short_description = "Scales"
 
 
@@ -180,32 +168,27 @@ class Magazine(BaseModel):
     language = models.CharField(
         max_length=7,
         choices=sorted(settings.LANGUAGES, key=lambda s: s[1]),
-        default='en'
+        default="en",
     )
-    tags = models.ManyToManyField(
-        Tag, related_name="magazine", blank=True
-    )
+    tags = models.ManyToManyField(Tag, related_name="magazine", blank=True)
 
     def delete(self, *args, **kwargs):
         shutil.rmtree(
             os.path.join(
                 settings.MEDIA_ROOT, "images", "magazines", str(self.uuid)
             ),
-            ignore_errors=True
+            ignore_errors=True,
         )
         super(Magazine, self).delete(*args, **kwargs)
 
     class Meta:
-        ordering = ["name"]
+        ordering = [Lower("name")]
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
-        return reverse(
-            "magazine",
-            kwargs={"uuid": self.uuid}
-        )
+        return reverse("magazine", kwargs={"uuid": self.uuid})
 
     def website_short(self):
         if self.website:
@@ -218,14 +201,17 @@ class MagazineIssue(BaseBook):
     )
     issue_number = models.CharField(max_length=100)
     publication_month = models.SmallIntegerField(
-        null=True,
-        blank=True,
-        choices=MONTHS.items()
+        null=True, blank=True, choices=MONTHS.items()
     )
 
     class Meta:
         unique_together = ("magazine", "issue_number")
-        ordering = ["magazine", "issue_number"]
+        ordering = [
+            "magazine",
+            "publication_year",
+            "publication_month",
+            "issue_number",
+        ]
 
     def __str__(self):
         return f"{self.magazine.name} - {self.issue_number}"
@@ -246,9 +232,5 @@ class MagazineIssue(BaseBook):
 
     def get_absolute_url(self):
         return reverse(
-            "issue",
-            kwargs={
-                "uuid": self.uuid,
-                "magazine": self.magazine.uuid
-            }
+            "issue", kwargs={"uuid": self.uuid, "magazine": self.magazine.uuid}
         )
