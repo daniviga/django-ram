@@ -28,7 +28,7 @@ urlpatterns = [
     path(
         "roster/page/<int:page>",
         GetRoster.as_view(),
-        name="rosters_pagination"
+        name="roster"
     ),
     path(
         "page/<str:flatpage>",
@@ -43,13 +43,13 @@ urlpatterns = [
     path(
         "consists/page/<int:page>",
         Consists.as_view(),
-        name="consists_pagination"
+        name="consists"
     ),
     path("consist/<uuid:uuid>", GetConsist.as_view(), name="consist"),
     path(
         "consist/<uuid:uuid>/page/<int:page>",
         GetConsist.as_view(),
-        name="consist_pagination",
+        name="consist",
     ),
     path(
         "companies",
@@ -59,7 +59,7 @@ urlpatterns = [
     path(
         "companies/page/<int:page>",
         Companies.as_view(),
-        name="companies_pagination",
+        name="companies",
     ),
     path(
         "manufacturers/<str:category>",
@@ -69,7 +69,7 @@ urlpatterns = [
     path(
         "manufacturers/<str:category>/page/<int:page>",
         Manufacturers.as_view(template="pagination_manufacturers.html"),
-        name="manufacturers_pagination",
+        name="manufacturers",
     ),
     path(
         "scales",
@@ -79,7 +79,7 @@ urlpatterns = [
     path(
         "scales/page/<int:page>",
         Scales.as_view(),
-        name="scales_pagination"
+        name="scales"
     ),
     path(
         "types",
@@ -89,7 +89,7 @@ urlpatterns = [
     path(
         "types/page/<int:page>",
         Types.as_view(),
-        name="rolling_stock_types_pagination"
+        name="rolling_stock_types"
     ),
     path(
         "bookshelf/books",
@@ -99,7 +99,7 @@ urlpatterns = [
     path(
         "bookshelf/books/page/<int:page>",
         Books.as_view(),
-        name="books_pagination"
+        name="books"
     ),
     path(
         "bookshelf/magazine/<uuid:uuid>",
@@ -109,7 +109,7 @@ urlpatterns = [
     path(
         "bookshelf/magazine/<uuid:uuid>/page/<int:page>",
         GetMagazine.as_view(),
-        name="magazine_pagination",
+        name="magazine",
     ),
     path(
         "bookshelf/magazine/<uuid:magazine>/issue/<uuid:uuid>",
@@ -124,7 +124,7 @@ urlpatterns = [
     path(
         "bookshelf/magazines/page/<int:page>",
         Magazines.as_view(),
-        name="magazines_pagination"
+        name="magazines"
     ),
     path(
         "bookshelf/<str:selector>/<uuid:uuid>",
@@ -139,7 +139,7 @@ urlpatterns = [
     path(
         "bookshelf/catalogs/page/<int:page>",
         Catalogs.as_view(),
-        name="catalogs_pagination"
+        name="catalogs"
     ),
     path(
         "search",
@@ -149,7 +149,7 @@ urlpatterns = [
     path(
         "search/<str:search>/page/<int:page>",
         SearchObjects.as_view(),
-        name="search_pagination",
+        name="search",
     ),
     path(
         "manufacturer/<str:manufacturer>",
@@ -159,7 +159,7 @@ urlpatterns = [
     path(
         "manufacturer/<str:manufacturer>/page/<int:page>",
         GetManufacturerItem.as_view(),
-        name="manufacturer_pagination",
+        name="manufacturer",
     ),
     path(
         "manufacturer/<str:manufacturer>/<str:search>",
@@ -169,7 +169,7 @@ urlpatterns = [
     path(
         "manufacturer/<str:manufacturer>/<str:search>/page/<int:page>",
         GetManufacturerItem.as_view(),
-        name="manufacturer_pagination",
+        name="manufacturer",
     ),
     path(
         "<str:_filter>/<str:search>",
@@ -179,7 +179,7 @@ urlpatterns = [
     path(
         "<str:_filter>/<str:search>/page/<int:page>",
         GetObjectsFiltered.as_view(),
-        name="filtered_pagination",
+        name="filtered",
     ),
     path("<uuid:uuid>", GetRollingStock.as_view(), name="rolling_stock"),
 ]

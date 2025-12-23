@@ -3,19 +3,19 @@
 
         <div class="col">
           <div class="card shadow-sm">
-            {% if d.item.image.exists %}
-            <a href="{{d.item.get_absolute_url}}"><img class="card-img-top" src="{{ d.item.image.first.image.url }}" alt="{{ d.item }}"></a>
+            {% if d.image.exists %}
+            <a href="{{d.get_absolute_url}}"><img class="card-img-top" src="{{ d.image.first.image.url }}" alt="{{ d }}"></a>
             {% else %}
             <!-- Do not show the "Coming soon" image when running in a single card column mode (e.g. on mobile) -->
-            <a href="{{d.item.get_absolute_url}}"><img class="card-img-top d-none d-sm-block" src="{% static DEFAULT_CARD_IMAGE %}" alt="{{ d.item }}"></a>
+            <a href="{{d.get_absolute_url}}"><img class="card-img-top d-none d-sm-block" src="{% static DEFAULT_CARD_IMAGE %}" alt="{{ d }}"></a>
             {% endif %}
             <div class="card-body">
               <p class="card-text" style="position: relative;">
-                <strong>{{ d.item }}</strong>
-                <a class="stretched-link" href="{{ d.item.get_absolute_url }}"></a>
+                <strong>{{ d }}</strong>
+                <a class="stretched-link" href="{{ d.get_absolute_url }}"></a>
               </p>
               <p class="card-text"><small>Tags:</small>
-                {% for t in d.item.tags.all %}<a href="{% url 'filtered' _filter="tag" search=t.slug %}" class="badge rounded-pill bg-primary">
+                {% for t in d.tags.all %}<a href="{% url 'filtered' _filter="tag" search=t.slug %}" class="badge rounded-pill bg-primary">
                 {{ t.name }}</a>{# new line is required #}
                 {% empty %}
                 <span class="badge rounded-pill bg-secondary"><i class="bi bi-ban"></i></span>
@@ -27,10 +27,10 @@
                     <th colspan="2" scope="row">
                       Rolling stock
                       <div class="float-end">
-                        {% if not d.item.published %}
+                        {% if not d.published %}
                         <span class="badge text-bg-warning">Unpublished</span>
                         {% endif %}
-                        {% if d.item.company.freelance %}
+                        {% if d.company.freelance %}
                         <span class="badge text-bg-secondary">Freelance</span>
                         {% endif %}
                       </div>
@@ -40,50 +40,50 @@
                 <tbody class="table-group-divider">
                   <tr>
                     <th class="w-33" scope="row">Type</th>
-                    <td>{{ d.item.rolling_class.type }}</td>
+                    <td>{{ d.rolling_class.type }}</td>
                   </tr>
                   <tr>
                     <th scope="row">Company</th>
                     <td>
-                      <img src="{{ d.item.company.country.flag }}" alt="{{ d.item.company.country }}">
-                      <a href="{% url 'filtered' _filter="company" search=d.item.company.slug %}"><abbr title="{{ d.item.company.extended_name }}">{{ d.item.company }}</abbr></a>
+                      <img src="{{ d.company.country.flag }}" alt="{{ d.company.country }}">
+                      <a href="{% url 'filtered' _filter="company" search=d.company.slug %}"><abbr title="{{ d.company.extended_name }}">{{ d.company }}</abbr></a>
                     </td>
                   </tr>
                   <tr>
                     <th scope="row">Class</th>
-                    <td>{{ d.item.rolling_class.identifier }}</td>
+                    <td>{{ d.rolling_class.identifier }}</td>
                   </tr>
                   <tr>
                     <th scope="row">Road number</th>
-                    <td>{{ d.item.road_number }}</td>
+                    <td>{{ d.road_number }}</td>
                   </tr>
                   <tr>
                     <th scope="row">Era</th>
-                    <td>{{ d.item.era }}</td>
+                    <td>{{ d.era }}</td>
                   </tr>
                   <tr>
                     <th class="w-33" scope="row">Manufacturer</th>
-                    <td>{%if d.item.manufacturer %}
-                      <a href="{% url 'filtered' _filter="manufacturer" search=d.item.manufacturer.slug %}">{{ d.item.manufacturer }}{% if d.item.manufacturer.website %}</a> <a href="{{ d.item.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
+                    <td>{%if d.manufacturer %}
+                      <a href="{% url 'filtered' _filter="manufacturer" search=d.manufacturer.slug %}">{{ d.manufacturer }}{% if d.manufacturer.website %}</a> <a href="{{ d.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
                     {% endif %}</td>
                   </tr>
                   <tr>
                     <th scope="row">Scale</th>
-                    <td><a href="{% url 'filtered' _filter="scale" search=d.item.scale.slug %}"><abbr title="{{ d.item.scale.ratio }} - {{ d.item.scale.tracks }} mm">{{ d.item.scale }}</abbr></a></td>
+                    <td><a href="{% url 'filtered' _filter="scale" search=d.scale.slug %}"><abbr title="{{ d.scale.ratio }} - {{ d.scale.tracks }} mm">{{ d.scale }}</abbr></a></td>
                   </tr>
                   <tr>
                     <th scope="row">Item number</th>
-                    <td>{{ d.item.item_number }}{%if d.item.set %} | <a class="badge text-bg-primary" href="{% url 'manufacturer' manufacturer=d.item.manufacturer.slug search=d.item.item_number_slug %}">SET</a>{% endif %}</td>
+                    <td>{{ d.item_number }}{%if d.set %} | <a class="badge text-bg-primary" href="{% url 'manufacturer' manufacturer=d.manufacturer.slug search=d.item_number_slug %}">SET</a>{% endif %}</td>
                   </tr>
                   <tr>
                     <th scope="row">DCC</th>
-                    <td><a class="text-reset text-decoration-none" title="Symbols" href="" data-bs-toggle="modal" data-bs-target="#symbolsModal">{% dcc d.item %}</a></td>
+                    <td><a class="text-reset text-decoration-none" title="Symbols" href="" data-bs-toggle="modal" data-bs-target="#symbolsModal">{% dcc d %}</a></td>
                   </tr>
                 </tbody>
               </table>
               <div class="d-grid gap-2 mb-1 d-md-block">
-               <a class="btn btn-sm btn-outline-primary" href="{{d.item.get_absolute_url}}">Show all data</a>
-                {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% url 'admin:roster_rollingstock_change' d.item.pk %}">Edit</a>{% endif %}
+               <a class="btn btn-sm btn-outline-primary" href="{{d.get_absolute_url}}">Show all data</a>
+                {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% url 'admin:roster_rollingstock_change' d.pk %}">Edit</a>{% endif %}
               </div>
             </div>
           </div>

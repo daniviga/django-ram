@@ -224,6 +224,10 @@ class MagazineIssue(BaseBook):
                 "published."
             )
 
+    @property
+    def obj_label(self):
+        return "Magazine Issue"
+
     def preview(self):
         return self.image.first().image_thumbnail(100)
 

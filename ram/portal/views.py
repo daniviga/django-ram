@@ -64,7 +64,6 @@ class Render404(View):
 class GetData(View):
     title = "Home"
     template = "pagination.html"
-    item_type = "roster"
     filter = Q()  # empty filter by default
 
     def get_data(self, request):
@@ -74,16 +73,11 @@ class GetData(View):
             .filter(self.filter)
         )
 
+    def get_page_url(self, request):
+        return request.resolver_match.url_name
+
     def get(self, request, page=1):
-        data = []
-        for item in self.get_data(request):
-            data.append(
-                {
-                    "type": self.item_type,
-                    "label": self.item_type.capitalize(),
-                    "item": item,
-                }
-            )
+        data = list(self.get_data(request))
 
         paginator = Paginator(data, get_items_per_page())
         data = paginator.get_page(page)
@@ -96,7 +90,7 @@ class GetData(View):
             self.template,
             {
                 "title": self.title,
-                "type": self.item_type,
+                "type": self.get_page_url(request),
                 "data": data,
                 "matches": paginator.count,
                 "page_range": page_range,
@@ -106,7 +100,6 @@ class GetData(View):
 
 class GetRoster(GetData):
     title = "The Roster"
-    item_type = "roster"
 
     def get_data(self, request):
         return RollingStock.objects.get_published(request.user).order_by(
@@ -169,15 +162,13 @@ class SearchObjects(View):
         # FIXME duplicated code!
         # FIXME see if it makes sense to filter calatogs and books by scale
         #       and manufacturer as well
-        data = []
         roster = (
             RollingStock.objects.get_published(request.user)
             .filter(query)
             .distinct()
             .order_by(*get_order_by_field())
         )
-        for item in roster:
-            data.append({"type": "roster", "item": item})
+        data = list(roster)
 
         if _filter is None:
             consists = (
@@ -190,8 +181,7 @@ class SearchObjects(View):
                 )
                 .distinct()
             )
-            for item in consists:
-                data.append({"type": "consist", "item": item})
+            data = list(chain(data, consists))
             books = (
                 Book.objects.get_published(request.user)
                 .filter(
@@ -212,14 +202,7 @@ class SearchObjects(View):
                 )
                 .distinct()
             )
-            for item in list(chain(books, catalogs)):
-                data.append(
-                    {
-                        "type": item._meta.model_name,
-                        "label": item._meta.object_name,
-                        "item": item,
-                    }
-                )
+            data = list(chain(data, books, catalogs))
             magazine_issues = (
                 MagazineIssue.objects.get_published(request.user)
                 .filter(
@@ -230,14 +213,7 @@ class SearchObjects(View):
                 )
                 .distinct()
             )
-            for item in magazine_issues:
-                data.append(
-                    {
-                        "type": "book",
-                        "label": "Magazine Issue",
-                        "item": item,
-                    }
-                )
+            data = list(chain(data, magazine_issues))
 
         paginator = Paginator(data, get_items_per_page())
         data = paginator.get_page(page)
@@ -344,12 +320,7 @@ class GetManufacturerItem(View):
             )
             title = "Manufacturer: {0}".format(manufacturer)
 
-        data = []
-        for item in roster:
-            data.append({"type": "roster", "item": item})
-        for item in catalogs:
-            data.append({"type": "catalog", "label": "Catalog", "item": item})
-
+        data = list(chain(roster, catalogs))
         paginator = Paginator(data, get_items_per_page())
         data = paginator.get_page(page)
         page_range = paginator.get_elided_page_range(
@@ -398,9 +369,7 @@ class GetObjectsFiltered(View):
             .order_by(*get_order_by_field())
         )
 
-        data = []
-        for item in roster:
-            data.append({"type": "roster", "item": item})
+        data = list(roster)
 
         if _filter == "scale":
             catalogs = (
@@ -408,14 +377,7 @@ class GetObjectsFiltered(View):
                 .filter(scales__slug=search)
                 .distinct()
             )
-            for item in catalogs:
-                data.append(
-                    {
-                        "type": "catalog",
-                        "label": "Catalog",
-                        "item": item,
-                    }
-                )
+            data = list(chain(data, catalogs))
 
         try:  # Execute only if query_2nd is defined
             consists = (
@@ -423,8 +385,7 @@ class GetObjectsFiltered(View):
                 .filter(query_2nd)
                 .distinct()
             )
-            for item in consists:
-                data.append({"type": "consist", "item": item})
+            data = list(chain(data, consists))
             if _filter == "tag":  # Books can be filtered only by tag
                 books = (
                     Book.objects.get_published(request.user)
@@ -436,27 +397,12 @@ class GetObjectsFiltered(View):
                     .filter(query_2nd)
                     .distinct()
                 )
-                for item in list(chain(books, catalogs)):
-                    data.append(
-                        {
-                            "type": item._meta.model_name,
-                            "label": item._meta.object_name,
-                            "item": item,
-                        }
-                    )
                 magazine_issues = (
                     MagazineIssue.objects.get_published(request.user)
                     .filter(query_2nd)
                     .distinct()
                 )
-                for item in magazine_issues:
-                    data.append(
-                        {
-                            "type": "magazineissue",
-                            "label": "Magazine Issue",
-                            "item": item,
-                        }
-                    )
+                data = list(chain(data, books, catalogs, magazine_issues))
         except NameError:
             pass
 
@@ -510,16 +456,14 @@ class GetRollingStock(View):
                 request.user
             )
 
-        consists = [
-            {"type": "consist", "item": c}
-            for c in Consist.objects.get_published(request.user).filter(
+        consists = list(
+            Consist.objects.get_published(request.user).filter(
                 consist_item__rolling_stock=rolling_stock
             )
-        ]  # A dict with "item" is required by the consists card
+        )
 
-        set = [
-            {"type": "set", "item": s}
-            for s in RollingStock.objects.get_published(request.user)
+        trainset = list(
+            RollingStock.objects.get_published(request.user)
             .filter(
                 Q(
                     Q(item_number__exact=rolling_stock.item_number)
@@ -527,7 +471,7 @@ class GetRollingStock(View):
                 )
             )
             .order_by(*get_order_by_field())
-        ]
+        )
 
         return render(
             request,
@@ -540,7 +484,7 @@ class GetRollingStock(View):
                 "decoder_documents": decoder_documents,
                 "documents": documents,
                 "journal": journal,
-                "set": set,
+                "set": trainset,
                 "consists": consists,
             },
         )
@@ -548,7 +492,6 @@ class GetRollingStock(View):
 
 class Consists(GetData):
     title = "Consists"
-    item_type = "consist"
 
     def get_data(self, request):
         return Consist.objects.get_published(request.user).all()
@@ -562,16 +505,12 @@ class GetConsist(View):
             )
         except ObjectDoesNotExist:
             raise Http404
-        data = [
-            {
-                "type": "roster",
-                "item": RollingStock.objects.get_published(request.user).get(
-                    uuid=r.rolling_stock_id
-                ),
-            }
-            for r in consist.consist_item.all()
-        ]
 
+        data = list(
+            RollingStock.objects.get_published(request.user).get(
+                uuid=r.rolling_stock_id
+            ) for r in consist.consist_item.all()
+        )
         paginator = Paginator(data, get_items_per_page())
         data = paginator.get_page(page)
         page_range = paginator.get_elided_page_range(
@@ -592,7 +531,6 @@ class GetConsist(View):
 
 class Manufacturers(GetData):
     title = "Manufacturers"
-    item_type = "manufacturer"
 
     def get_data(self, request):
         return (
@@ -661,7 +599,6 @@ class Manufacturers(GetData):
 
 class Companies(GetData):
     title = "Companies"
-    item_type = "company"
 
     def get_data(self, request):
         return (
@@ -700,7 +637,6 @@ class Companies(GetData):
 
 class Scales(GetData):
     title = "Scales"
-    item_type = "scale"
 
     def get_data(self, request):
         return (
@@ -736,7 +672,6 @@ class Scales(GetData):
 
 class Types(GetData):
     title = "Types"
-    item_type = "rolling_stock_type"
 
     def get_data(self, request):
         return RollingStockType.objects.annotate(
@@ -753,7 +688,6 @@ class Types(GetData):
 
 class Books(GetData):
     title = "Books"
-    item_type = "book"
 
     def get_data(self, request):
         return Book.objects.get_published(request.user).all()
@@ -761,7 +695,6 @@ class Books(GetData):
 
 class Catalogs(GetData):
     title = "Catalogs"
-    item_type = "catalog"
 
     def get_data(self, request):
         return Catalog.objects.get_published(request.user).all()
@@ -769,7 +702,6 @@ class Catalogs(GetData):
 
 class Magazines(GetData):
     title = "Magazines"
-    item_type = "magazine"
 
     def get_data(self, request):
         return (
@@ -796,14 +728,7 @@ class GetMagazine(View):
             )
         except ObjectDoesNotExist:
             raise Http404
-        data = [
-            {
-                "type": "magazineissue",
-                "label": "Magazine issue",
-                "item": i,
-            }
-            for i in magazine.issue.get_published(request.user).all()
-        ]
+        data = list(magazine.issue.get_published(request.user).all())
         paginator = Paginator(data, get_items_per_page())
         data = paginator.get_page(page)
         page_range = paginator.get_elided_page_range(
@@ -839,11 +764,9 @@ class GetMagazineIssue(View):
             "bookshelf/book.html",
             {
                 "title": issue,
-                "book": issue,
+                "data": issue,
                 "documents": documents,
                 "properties": properties,
-                "type": "magazineissue",
-                "label": "Magazine issue",
             },
         )
 
@@ -870,11 +793,9 @@ class GetBookCatalog(View):
             "bookshelf/book.html",
             {
                 "title": book,
-                "book": book,
+                "data": book,
                 "documents": documents,
                 "properties": properties,
-                "type": selector,
-                "label": selector.capitalize(),
             },
         )
 
