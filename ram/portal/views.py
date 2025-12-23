@@ -116,6 +116,17 @@ class GetRoster(GetData):
 
 class SearchObjects(View):
     def run_search(self, request, search, _filter, page=1):
+        """
+        Run the search query on the database and return the results.
+        param request: HTTP request
+        param search: search string
+        param _filter: filter to apply (type, company, manufacturer, scale)
+        param page: page number for pagination
+        return: tuple (data, matches, page_range)
+        1. data: list of dicts with keys "type" and "item"
+        2. matches: total number of matches
+        3. page_range: elided page range for pagination
+        """
         if _filter is None:
             query = reduce(
                 operator.or_,
@@ -282,10 +293,25 @@ class SearchObjects(View):
 
 class GetManufacturerItem(View):
     def get(self, request, manufacturer, search="all", page=1):
+        """
+        Get all items from a specific manufacturer. If `search` is not "all",
+        filter by item number as well, for example to get all itmes from the
+        same set.
+        The view returns both rolling stock and catalogs.
+        param request: HTTP request
+        param manufacturer: Manufacturer slug
+        param search: item number slug or "all"
+        param page: page number for pagination
+        return: rendered template
+        1. manufacturer: Manufacturer object
+        2. search: item number slug or "all"
+        3. data: list of dicts with keys "type" and "item"
+        4. matches: total number of matches
+        5. page_range: elided page range for pagination
+        """
         manufacturer = get_object_or_404(
             Manufacturer, slug__iexact=manufacturer
         )
-
         if search != "all":
             roster = get_list_or_404(
                 RollingStock.objects.get_published(request.user).order_by(
@@ -296,6 +322,7 @@ class GetManufacturerItem(View):
                     & Q(item_number_slug__exact=search)
                 ),
             )
+            catalogs = []  # no catalogs when searching for a specific item
             title = "{0}: {1}".format(
                 manufacturer,
                 # all returned records must have the same `item_number``;
@@ -320,16 +347,8 @@ class GetManufacturerItem(View):
         data = []
         for item in roster:
             data.append({"type": "roster", "item": item})
-
-        if catalogs is not None:
-            for item in catalogs:
-                data.append(
-                    {
-                        "type": "catalog",
-                        "label": "Catalog",
-                        "item": item,
-                    }
-                )
+        for item in catalogs:
+            data.append({"type": "catalog", "label": "Catalog", "item": item})
 
         paginator = Paginator(data, get_items_per_page())
         data = paginator.get_page(page)
@@ -433,7 +452,7 @@ class GetObjectsFiltered(View):
                 for item in magazine_issues:
                     data.append(
                         {
-                            "type": "book",
+                            "type": "magazineissue",
                             "label": "Magazine Issue",
                             "item": item,
                         }
