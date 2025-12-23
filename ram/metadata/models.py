@@ -207,14 +207,6 @@ class RollingStockType(SimpleBaseModel):
     def __str__(self):
         return "{0} {1}".format(self.type, self.category)
 
-    @property
-    def obj_type(self):
-        return self._meta.model_name
-
-    @property
-    def obj_label(self):
-        return self._meta.object_name
-
 
 class Tag(SimpleBaseModel):
     name = models.CharField(max_length=128, unique=True)
