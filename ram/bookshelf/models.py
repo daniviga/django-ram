@@ -129,9 +129,10 @@ class Catalog(BaseBook):
     manufacturer = models.ForeignKey(
         Manufacturer,
         on_delete=models.CASCADE,
+        related_name="catalogs",
     )
     years = models.CharField(max_length=12)
-    scales = models.ManyToManyField(Scale)
+    scales = models.ManyToManyField(Scale, related_name="catalogs")
 
     class Meta:
         ordering = ["manufacturer", "publication_year"]

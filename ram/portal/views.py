@@ -204,7 +204,7 @@ class SearchObjects(View):
             for item in list(chain(books, catalogs)):
                 data.append(
                     {
-                        "type": "book",
+                        "type": item._meta.model_name,
                         "label": item._meta.object_name,
                         "item": item,
                     }
@@ -312,11 +312,24 @@ class GetManufacturerItem(View):
                 .distinct()
                 .order_by(*get_order_by_field())
             )
+            catalogs = Catalog.objects.get_published(request.user).filter(
+                manufacturer=manufacturer
+            )
             title = "Manufacturer: {0}".format(manufacturer)
 
         data = []
         for item in roster:
             data.append({"type": "roster", "item": item})
+
+        if catalogs is not None:
+            for item in catalogs:
+                data.append(
+                    {
+                        "type": "catalog",
+                        "label": "Catalog",
+                        "item": item,
+                    }
+                )
 
         paginator = Paginator(data, get_items_per_page())
         data = paginator.get_page(page)
@@ -370,6 +383,21 @@ class GetObjectsFiltered(View):
         for item in roster:
             data.append({"type": "roster", "item": item})
 
+        if _filter == "scale":
+            catalogs = (
+                Catalog.objects.get_published(request.user)
+                .filter(scales__slug=search)
+                .distinct()
+            )
+            for item in catalogs:
+                data.append(
+                    {
+                        "type": "catalog",
+                        "label": "Catalog",
+                        "item": item,
+                    }
+                )
+
         try:  # Execute only if query_2nd is defined
             consists = (
                 Consist.objects.get_published(request.user)
@@ -392,7 +420,7 @@ class GetObjectsFiltered(View):
                 for item in list(chain(books, catalogs)):
                     data.append(
                         {
-                            "type": "book",
+                            "type": item._meta.model_name,
                             "label": item._meta.object_name,
                             "item": item,
                         }
@@ -580,7 +608,26 @@ class Manufacturers(GetData):
                     )
                 )
             )
-            .annotate(num_items=F("num_rollingstock") + F("num_rollingclass"))
+            .annotate(
+                num_catalogs=(
+                    Count(
+                        "catalogs",
+                        filter=Q(
+                            catalogs__in=(
+                                Catalog.objects.get_published(request.user)
+                            ),
+                        ),
+                        distinct=True,
+                    )
+                )
+            )
+            .annotate(
+                num_items=(
+                    F("num_rollingstock")
+                    + F("num_rollingclass")
+                    + F("num_catalogs")
+                )
+            )
             .order_by("name")
         )
 
@@ -655,8 +702,15 @@ class Scales(GetData):
                     ),
                     distinct=True,
                 ),
+                num_catalogs=Count("catalogs", distinct=True),
             )
-            .annotate(num_items=F("num_rollingstock") + F("num_consists"))
+            .annotate(
+                num_items=(
+                    F("num_rollingstock")
+                    + F("num_consists")
+                    + F("num_catalogs")
+                )
+            )
             .order_by("-ratio_int", "-tracks", "scale")
         )
 
