@@ -2,19 +2,19 @@
 {% load dynamic_url %}
         <div class="col">
           <div class="card shadow-sm">
-            {% if d.item.image.exists %}
-            <a href="{{d.item.get_absolute_url}}"><img class="card-img-top" src="{{ d.item.image.first.image.url }}" alt="{{ d.item }}"></a>
+            {% if d.image.exists %}
+            <a href="{{d.get_absolute_url}}"><img class="card-img-top" src="{{ d.image.first.image.url }}" alt="{{ d }}"></a>
             {% else %}
             <!-- Do not show the "Coming soon" image when running in a single card column mode (e.g. on mobile) -->
-            <a href="{{d.item.get_absolute_url}}"><img class="card-img-top d-none d-sm-block" src="{% static DEFAULT_CARD_IMAGE %}" alt="{{ d.item }}"></a>
+            <a href="{{d.get_absolute_url}}"><img class="card-img-top d-none d-sm-block" src="{% static DEFAULT_CARD_IMAGE %}" alt="{{ d }}"></a>
             {% endif %}
             <div class="card-body">
               <p class="card-text" style="position: relative;">
-                <strong>{{ d.item }}</strong>
-                <a class="stretched-link" href="{{ d.item.get_absolute_url }}"></a>
+                <strong>{{ d }}</strong>
+                <a class="stretched-link" href="{{ d.get_absolute_url }}"></a>
               </p>
               <p class="card-text"><small>Tags:</small>
-                {% for t in d.item.tags.all %}<a href="{% url 'filtered' _filter="tag" search=t.slug %}" class="badge rounded-pill bg-primary">
+                {% for t in d.tags.all %}<a href="{% url 'filtered' _filter="tag" search=t.slug %}" class="badge rounded-pill bg-primary">
                 {{ t.name }}</a>{# new line is required #}
                 {% empty %}
                 <span class="badge rounded-pill bg-secondary"><i class="bi bi-ban"></i></span>
@@ -24,9 +24,9 @@
                 <thead>
                   <tr>
                     <th colspan="2" scope="row">
-                      {{ d.label|capfirst }}
+                      {{ d.obj_label|capfirst }}
                       <div class="float-end">
-                        {% if not d.item.published %}
+                        {% if not d.published %}
                         <span class="badge text-bg-warning">Unpublished</span>
                         {% endif %}
                       </div>
@@ -34,46 +34,46 @@
                   </tr>
                 </thead>
                 <tbody class="table-group-divider">
-                  {% if d.type == "catalog" %}
+                  {% if d.obj_type == "catalog" %}
                   <tr>
                     <th class="w-33" scope="row">Manufacturer</th>
                     <td>
-                      <a href="{% url 'filtered' _filter="manufacturer" search=d.item.manufacturer.slug %}">{{ d.item.manufacturer }}{% if d.item.manufacturer.website %}</a> <a href="{{ d.item.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
+                      <a href="{% url 'filtered' _filter="manufacturer" search=d.manufacturer.slug %}">{{ d.manufacturer }}{% if d.manufacturer.website %}</a> <a href="{{ d.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
                     </td>
                   </tr>
                   <tr>
                     <th class="w-33" scope="row">Scales</th>
-                    <td>{{ d.item.get_scales }}</td>
+                    <td>{{ d.get_scales }}</td>
                   </tr>
-                  {% elif d.type == "book" %}
+                  {% elif d.obj_type == "book" %}
                   <tr>
                     <th class="w-33" scope="row">Authors</th>
                     <td>
-                      <ul class="mb-0 list-unstyled">{% for a in d.item.authors.all %}<li>{{ a }}</li>{% endfor %}</ul>
+                      <ul class="mb-0 list-unstyled">{% for a in d.authors.all %}<li>{{ a }}</li>{% endfor %}</ul>
                     </td>
                   </tr>
                   <tr>
                     <th class="w-33" scope="row">Publisher</th>
-                    <td><img src="{{ d.item.publisher.country.flag }}" alt="{{ d.item.publisher.country }}"> {{ d.item.publisher }}</td>
+                    <td><img src="{{ d.publisher.country.flag }}" alt="{{ d.publisher.country }}"> {{ d.publisher }}</td>
                   </tr>
                   {% endif %}
                   <tr>
                     <th scope="row">Language</th>
-                    <td>{{ d.item.get_language_display }}</td>
+                    <td>{{ d.get_language_display }}</td>
                   </tr>
                   <tr>
                     <th scope="row">Pages</th>
-                    <td>{{ d.item.number_of_pages|default:"-" }}</td>
+                    <td>{{ d.number_of_pages|default:"-" }}</td>
                   </tr>
                   <tr>
                     <th scope="row">Year</th>
-                    <td>{{ d.item.publication_year|default:"-" }}</td>
+                    <td>{{ d.publication_year|default:"-" }}</td>
                   </tr>
                 </tbody>
               </table>
               <div class="d-grid gap-2 mb-1 d-md-block">
-                <a class="btn btn-sm btn-outline-primary" href="{{ d.item.get_absolute_url }}">Show all data</a>
-                {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% dynamic_admin_url 'bookshelf' d.type d.item.pk %}">Edit</a>{% endif %}
+                <a class="btn btn-sm btn-outline-primary" href="{{ d.get_absolute_url }}">Show all data</a>
+                {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% dynamic_admin_url 'bookshelf' d.obj_type d.pk %}">Edit</a>{% endif %}
               </div>
             </div>
           </div>

@@ -2,23 +2,23 @@
 {% load dynamic_url %}
 
         {% block header %}
-        {% if book.tags.all %}
+        {% if data.tags.all %}
         <p><small>Tags:</small>
-          {% for t in book.tags.all %}<a href="{% url 'filtered' _filter="tag" search=t.slug %}" class="badge rounded-pill bg-primary">
+          {% for t in data.tags.all %}<a href="{% url 'filtered' _filter="tag" search=t.slug %}" class="badge rounded-pill bg-primary">
           {{ t.name }}</a>{# new line is required #}
           {% endfor %}
         </p>
         {% endif %}
-        {% if not book.published %}
+        {% if not data.published %}
         <span class="badge text-bg-warning">Unpublished</span> |
         {% endif %}
-        <small class="text-body-secondary">Updated {{ book.updated_time | date:"M d, Y H:i" }}</small>
+        <small class="text-body-secondary">Updated {{ data.updated_time | date:"M d, Y H:i" }}</small>
         {% endblock %}
         {% block carousel %}
         <div class="row">
           <div id="carouselControls" class="carousel carousel-dark slide" data-bs-ride="carousel" data-bs-interval="10000">
             <div class="carousel-inner">
-              {% for t in book.image.all %}
+              {% for t in data.image.all %}
               {% if forloop.first %}
               <div class="carousel-item active">
               {% else %}
@@ -28,7 +28,7 @@
               </div>
               {% endfor %}
             </div>
-            {% if book.image.count > 1 %}
+            {% if data.image.count > 1 %}
             <button class="carousel-control-prev" type="button" data-bs-target="#carouselControls" data-bs-slide="prev">
               <span class="carousel-control-prev-icon" aria-hidden="true"></span>
               <span class="visually-hidden"><i class="bi bi-chevron-left"></i></span>
@@ -61,86 +61,86 @@
                     <thead>
                       <tr>
                         <th colspan="2" scope="row">
-                          {{ label|capfirst }}
+                          {{ data.obj_label|capfirst }}
                         </th>
                       </tr>
                     </thead>
                     <tbody class="table-group-divider">
-                      {% if type == "catalog" %}
+                      {% if data.obj_type == "catalog" %}
                       <tr>
                         <th class="w-33" scope="row">Manufacturer</th>
                         <td>
-                          <a href="{% url 'filtered' _filter="manufacturer" search=book.manufacturer.slug %}">{{ book.manufacturer }}{% if book.manufacturer.website %}</a> <a href="{{ book.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
+                          <a href="{% url 'filtered' _filter="manufacturer" search=data.manufacturer.slug %}">{{ data.manufacturer }}{% if data.manufacturer.website %}</a> <a href="{{ data.manufacturer.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
                         </td>
                       </tr>
                       <tr>
                         <th class="w-33" scope="row">Scales</th>
-                        <td>{{ book.get_scales }}</td>
+                        <td>{{ data.get_scales }}</td>
                       </tr>
-                      {% elif type == "book" %}
+                      {% elif data.obj_type == "book" %}
                       <tr>
                         <th class="w-33" scope="row">Title</th>
-                        <td>{{ book.title }}</td>
+                        <td>{{ data.title }}</td>
                       </tr>
                       <tr>
                         <th class="w-33" scope="row">Authors</th>
                         <td>
-                          <ul class="mb-0 list-unstyled">{% for a in book.authors.all %}<li>{{ a }}</li>{% endfor %}</ul>
+                          <ul class="mb-0 list-unstyled">{% for a in data.authors.all %}<li>{{ a }}</li>{% endfor %}</ul>
                         </td>
                       </tr>
                       <tr>
                         <th class="w-33" scope="row">Publisher</th>
                         <td>
-                          <img src="{{ book.publisher.country.flag }}" alt="{{ book.publisher.country }}"> {{ book.publisher }}
-                          {% if book.publisher.website %} <a href="{{ book.publisher.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
+                          <img src="{{ data.publisher.country.flag }}" alt="{{ data.publisher.country }}"> {{ data.publisher }}
+                          {% if data.publisher.website %} <a href="{{ data.publisher.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
                         </td>
                       </tr>
-                      {% elif type == "magazineissue" %}
+                      {% elif data.obj_type == "magazineissue" %}
                       <tr>
                         <th class="w-33" scope="row">Magazine</th>
                         <td>
-                          <a href="{% url 'magazine' book.magazine.pk %}">{{ book.magazine }}</a>
-                          {% if book.magazine.website %} <a href="{{ book.magazine.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
+                          <a href="{% url 'magazine' data.magazine.pk %}">{{ data.magazine }}</a>
+                          {% if data.magazine.website %} <a href="{{ data.magazine.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
                         </td>
                       </tr>
                       <tr>
                         <th class="w-33" scope="row">Publisher</th>
                         <td>
-                          <img src="{{ book.publisher.country.flag }}" alt="{{ book.publisher.country }}"> {{ book.publisher }}
-                          {% if book.publisher.website %} <a href="{{ book.publisher.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
+                          <img src="{{ data.publisher.country.flag }}" alt="{{ data.publisher.country }}"> {{ data.publisher }}
+                          {% if data.publisher.website %} <a href="{{ data.publisher.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
                         </td>
                       </tr>
                       <tr>
                         <th class="w-33" scope="row">Issue</th>
-                        <td>{{ book.issue_number }}</td>
+                        <td>{{ data.issue_number }}</td>
                       </tr>
                       <tr>
                         <th class="w-33" scope="row">Date</th>
-                        <td>{{ book.publication_year|default:"-" }} / {{ book.get_publication_month_display|default:"-" }}</td>
+                        <td>{{ data.publication_year|default:"-" }} / {{ data.get_publication_month_display|default:"-" }}</td>
                       </tr>
                       {% endif %}
                       <tr>
                         <th scope="row">ISBN</th>
-                        <td>{{ book.ISBN|default:"-" }}</td>
+                        <td>{{ data.ISBN|default:"-" }}</td>
                       </tr>
                       <tr>
                         <th scope="row">Language</th>
-                        <td>{{ book.get_language_display }}</td>
+                        <td>{{ data.get_language_display }}</td>
                       </tr>
                       <tr>
                         <th scope="row">Number of pages</th>
-                        <td>{{ book.number_of_pages|default:"-" }}</td>
+                        <td>{{ data.number_of_pages|default:"-" }}</td>
                       </tr>
-                      {% if type == "boook" or type == "catalog" %}
+                      {% if data.obj_type == "book" or data.obj_type == "catalog" %}
                       <tr>
                         <th scope="row">Publication year</th>
-                        <td>{{ book.publication_year|default:"-" }}</td>
+                        <td>{{ data.publication_year|default:"-" }}</td>
                       </tr>
                       {% endif %}
-                      {% if book.description %}
+                      {% if data.description %}
                       <tr>
                         <th class="w-33" scope="row">Description</th>
-                        <td>{{ book.description | safe }}</td>
+                        <td>{{ data.description | safe }}</td>
                       </tr>
                       {% endif %}
                     </tbody>
@@ -156,17 +156,17 @@
                       <tr>
                         <th class="w-33" scope="row">Shop</th>
                         <td>
-                          {{ book.shop|default:"-" }}
-                          {% if book.shop.website %} <a href="{{ book.shop.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
+                          {{ data.shop|default:"-" }}
+                          {% if data.shop.website %} <a href="{{ data.shop.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
                         </td>
                       </tr>
                       <tr>
                         <th class="w-33" scope="row">Purchase date</th>
-                        <td>{{ book.purchase_date|default:"-" }}</td>
+                        <td>{{ data.purchase_date|default:"-" }}</td>
                       </tr>
                       <tr>
                         <th scope="row">Price ({{ site_conf.currency }})</th>
-                        <td>{{ book.price|default:"-" }}</td>
+                        <td>{{ data.price|default:"-" }}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -209,7 +209,7 @@
                 </div>
               </div>
               <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% dynamic_admin_url 'bookshelf' type book.pk %}">Edit</a>{% endif %}
+                {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% dynamic_admin_url 'bookshelf' data.obj_type data.pk %}">Edit</a>{% endif %}
               </div>
             </div>
           </div>

@@ -44,7 +44,9 @@ class RollingClass(admin.ModelAdmin):
     @admin.display(description="Country")
     def country_flag(self, obj):
         return format_html(
-            '<img src="{}" /> {}', obj.country.flag, obj.country.name
+            '<img src="{}" title="{}" />',
+            obj.company.country.flag,
+            obj.company.country.name,
         )
 
 
@@ -128,9 +130,12 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
         "item_number",
         "company",
         "country_flag",
+        "featured",
         "published",
     )
     list_filter = (
+        "featured",
+        "published",
         "rolling_class__type__category",
         "rolling_class__type",
         "rolling_class__company__name",
@@ -152,7 +157,7 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
     @admin.display(description="Country")
     def country_flag(self, obj):
         return format_html(
-            '<img src="{}" /> {}', obj.country.flag, obj.country.name
+            '<img src="{}" title="{}" />', obj.country.flag, obj.country.name
         )
 
     fieldsets = (
@@ -162,6 +167,7 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
                 "fields": (
                     "preview",
                     "published",
+                    "featured",
                     "rolling_class",
                     "road_number",
                     "scale",
@@ -224,8 +230,8 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
         if obj.invoice.exists():
             html = format_html_join(
                 "<br>",
-                "<a href=\"{}\" target=\"_blank\">{}</a>",
-                ((i.file.url, i) for i in obj.invoice.all())
+                '<a href="{}" target="_blank">{}</a>',
+                ((i.file.url, i) for i in obj.invoice.all()),
             )
         else:
             html = "-"
@@ -296,4 +302,38 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
         return generate_csv(header, data, "rolling_stock.csv")
 
     download_csv.short_description = "Download selected items as CSV"
-    actions = [publish, unpublish, download_csv]
+
+    def set_featured(modeladmin, request, queryset):
+        count = queryset.count()
+        if count > settings.FEATURED_ITEMS_MAX:
+            modeladmin.message_user(
+                request,
+                "You can only mark up to {} items as featured.".format(
+                    settings.FEATURED_ITEMS_MAX
+                ),
+                level="error",
+            )
+            return
+        featured = RollingStock.objects.filter(featured=True).count()
+        if featured + count > settings.FEATURED_ITEMS_MAX:
+            modeladmin.message_user(
+                request,
+                "There are already {} featured items. You can only mark {} more items as featured.".format(  # noqa: E501
+                    featured,
+                    settings.FEATURED_ITEMS_MAX - featured,
+                ),
+                level="error",
+            )
+            return
+        queryset.update(featured=True)
+
+    set_featured.short_description = "Mark selected rolling stock as featured"
+
+    def unset_featured(modeladmin, request, queryset):
+        queryset.update(featured=False)
+
+    unset_featured.short_description = (
+        "Unmark selected rolling stock as featured"
+    )
+
+    actions = [publish, unpublish, set_featured, unset_featured, download_csv]

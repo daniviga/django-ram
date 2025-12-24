@@ -9,6 +9,19 @@ from ram.utils import DeduplicatedStorage, get_image_preview
 from ram.managers import PublicManager
 
 
+class SimpleBaseModel(models.Model):
+    class Meta:
+        abstract = True
+
+    @property
+    def obj_type(self):
+        return self._meta.model_name
+
+    @property
+    def obj_label(self):
+        return self._meta.object_name
+
+
 class BaseModel(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     description = tinymce.HTMLField(blank=True)
@@ -19,6 +32,14 @@ class BaseModel(models.Model):
 
     class Meta:
         abstract = True
+
+    @property
+    def obj_type(self):
+        return self._meta.model_name
+
+    @property
+    def obj_label(self):
+        return self._meta.object_name
 
     objects = PublicManager()
 

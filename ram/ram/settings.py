@@ -204,6 +204,8 @@ ROLLING_STOCK_TYPES = [
     ("other", "Other"),
 ]
 
+FEATURED_ITEMS_MAX = 6
+
 try:
     from ram.local_settings import *
 except ImportError:

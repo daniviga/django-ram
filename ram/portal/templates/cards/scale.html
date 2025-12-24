@@ -1,7 +1,7 @@
       <div class="col">
         <div class="card shadow-sm">
           <div class="card-body">
-            <p class="card-text"><strong>{{ d.item }}</strong></p>
+            <p class="card-text"><strong>{{ d }}</strong></p>
             <table class="table table-striped">
               <thead>
                 <tr>
@@ -11,26 +11,26 @@
               <tbody>
                 <tr>
                   <th class="w-33" scope="row">Name</th>
-                  <td>{{ d.item.scale }}</td>
+                  <td>{{ d.scale }}</td>
                 </tr>
                 <tr>
                   <th class="w-33" scope="row">Ratio</th>
-                  <td>{{ d.item.ratio }}</td>
+                  <td>{{ d.ratio }}</td>
                 </tr>
                 <tr>
                   <th class="w-33" scope="row">Tracks</th>
-                  <td>{{ d.item.tracks }} mm</td>
+                  <td>{{ d.tracks }} mm</td>
                 </tr>
                 <tr>
                   <th class="w-33" scope="row">Gauge</th>
-                  <td>{{ d.item.gauge }}</td>
+                  <td>{{ d.gauge }}</td>
                 </tr>
               </tbody>
             </table>
             <div class="d-grid gap-2 mb-1 d-md-block">
-              {% with items=d.item.num_items %}
-              <a class="btn btn-sm btn-outline-primary{% if items == 0 %} disabled{% endif %}" href="{% url 'filtered' _filter="scale" search=d.item.slug %}">Show {{ items }} item{{ items | pluralize}}</a>
-              {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% url 'admin:metadata_scale_change' d.item.pk %}">Edit</a>{% endif %}
+              {% with items=d.num_items %}
+              <a class="btn btn-sm btn-outline-primary{% if items == 0 %} disabled{% endif %}" href="{% url 'filtered' _filter="scale" search=d.slug %}">Show {{ items }} item{{ items | pluralize}}</a>
+              {% if request.user.is_staff %}<a class="btn btn-sm btn-outline-danger" href="{% url 'admin:metadata_scale_change' d.pk %}">Edit</a>{% endif %}
               {% endwith %}
             </div>
           </div>

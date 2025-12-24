@@ -11,7 +11,7 @@ from portal.utils import get_site_conf
 from repository.models import (
     BookDocument,
     CatalogDocument,
-    MagazineIssueDocument
+    MagazineIssueDocument,
 )
 from bookshelf.models import (
     BaseBookProperty,
@@ -66,12 +66,12 @@ class BookAdmin(SortableAdminBase, admin.ModelAdmin):
         BookDocInline,
     )
     list_display = (
+        "published",
         "title",
         "get_authors",
         "get_publisher",
         "publication_year",
         "number_of_pages",
-        "published",
     )
     autocomplete_fields = ("authors", "publisher", "shop")
     readonly_fields = ("invoices", "creation_time", "updated_time")
@@ -135,8 +135,8 @@ class BookAdmin(SortableAdminBase, admin.ModelAdmin):
         if obj.invoice.exists():
             html = format_html_join(
                 "<br>",
-                "<a href=\"{}\" target=\"_blank\">{}</a>",
-                ((i.file.url, i) for i in obj.invoice.all())
+                '<a href="{}" target="_blank">{}</a>',
+                ((i.file.url, i) for i in obj.invoice.all()),
             )
         else:
             html = "-"
@@ -212,11 +212,11 @@ class AuthorAdmin(admin.ModelAdmin):
 
 @admin.register(Publisher)
 class PublisherAdmin(admin.ModelAdmin):
-    list_display = ("name", "country_flag")
+    list_display = ("name", "country_flag_name")
     search_fields = ("name",)
 
     @admin.display(description="Country")
-    def country_flag(self, obj):
+    def country_flag_name(self, obj):
         return format_html(
             '<img src="{}" /> {}', obj.country.flag, obj.country.name
         )
@@ -240,10 +240,10 @@ class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
     readonly_fields = ("invoices", "creation_time", "updated_time")
     search_fields = ("manufacturer__name", "years", "scales__scale")
     list_filter = (
+        "published",
         "manufacturer__name",
         "publication_year",
         "scales__scale",
-        "published",
     )
 
     fieldsets = (
@@ -303,8 +303,8 @@ class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
         if obj.invoice.exists():
             html = format_html_join(
                 "<br>",
-                "<a href=\"{}\" target=\"_blank\">{}</a>",
-                ((i.file.url, i) for i in obj.invoice.all())
+                '<a href="{}" target="_blank">{}</a>',
+                ((i.file.url, i) for i in obj.invoice.all()),
             )
         else:
             html = "-"
@@ -449,14 +449,12 @@ class MagazineIssueInline(admin.TabularInline):
     readonly_fields = ("preview",)
 
     class Media:
-        js = ('admin/js/magazine_issue_defaults.js',)
+        js = ("admin/js/magazine_issue_defaults.js",)
 
 
 @admin.register(Magazine)
 class MagazineAdmin(SortableAdminBase, admin.ModelAdmin):
-    inlines = (
-        MagazineIssueInline,
-    )
+    inlines = (MagazineIssueInline,)
 
     list_display = (
         "__str__",
@@ -466,7 +464,10 @@ class MagazineAdmin(SortableAdminBase, admin.ModelAdmin):
     autocomplete_fields = ("publisher",)
     readonly_fields = ("creation_time", "updated_time")
     search_fields = ("name", "publisher__name")
-    list_filter = ("publisher__name", "published")
+    list_filter = (
+        "published",
+        "publisher__name",
+    )
 
     fieldsets = (
         (

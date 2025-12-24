@@ -5,6 +5,7 @@ from django.db import models
 from django.urls import reverse
 from django.conf import settings
 from django.dispatch import receiver
+from django.core.exceptions import ValidationError
 
 from tinymce import models as tinymce
 
@@ -82,9 +83,7 @@ class RollingStock(BaseModel):
         help_text="Catalog item number or code",
     )
     item_number_slug = models.CharField(
-        max_length=32,
-        blank=True,
-        editable=False
+        max_length=32, blank=True, editable=False
     )
     set = models.BooleanField(
         default=False,
@@ -112,6 +111,10 @@ class RollingStock(BaseModel):
         decimal_places=2,
         null=True,
         blank=True,
+    )
+    featured = models.BooleanField(
+        default=False,
+        help_text="Featured rolling stock will appear on the homepage",
     )
     tags = models.ManyToManyField(
         Tag, related_name="rolling_stock", blank=True
@@ -165,9 +168,17 @@ class RollingStock(BaseModel):
             os.path.join(
                 settings.MEDIA_ROOT, "images", "rollingstock", str(self.uuid)
             ),
-            ignore_errors=True
+            ignore_errors=True,
         )
         super(RollingStock, self).delete(*args, **kwargs)
+
+    def clean(self, *args, **kwargs):
+        if self.featured:
+            MAX = settings.FEATURED_ITEMS_MAX
+            if RollingStock.objects.filter(featured=True).count() > MAX - 1:
+                raise ValidationError(
+                    "There are already {} featured items".format(MAX)
+                )
 
 
 @receiver(models.signals.pre_save, sender=RollingStock)
@@ -185,10 +196,7 @@ def pre_save_internal_fields(sender, instance, *args, **kwargs):
 
 def rolling_stock_image_upload(instance, filename):
     return os.path.join(
-        "images",
-        "rollingstock",
-        str(instance.rolling_stock.uuid),
-        filename
+        "images", "rollingstock", str(instance.rolling_stock.uuid), filename
     )
 
 

@@ -4,6 +4,7 @@ from itertools import chain
 from functools import reduce
 from urllib.parse import unquote
 
+from django.conf import settings
 from django.views import View
 from django.http import Http404, HttpResponseBadRequest
 from django.db.utils import OperationalError, ProgrammingError
@@ -32,7 +33,7 @@ def get_items_per_page():
         items_per_page = get_site_conf().items_per_page
     except (OperationalError, ProgrammingError):
         items_per_page = 6
-    return items_per_page
+    return int(items_per_page)
 
 
 def get_order_by_field():
@@ -62,9 +63,8 @@ class Render404(View):
 
 
 class GetData(View):
-    title = "Home"
+    title = None
     template = "pagination.html"
-    item_type = "roster"
     filter = Q()  # empty filter by default
 
     def get_data(self, request):
@@ -75,15 +75,10 @@ class GetData(View):
         )
 
     def get(self, request, page=1):
-        data = []
-        for item in self.get_data(request):
-            data.append(
-                {
-                    "type": self.item_type,
-                    "label": self.item_type.capitalize(),
-                    "item": item,
-                }
-            )
+        if self.title is None or self.template is None:
+            raise Exception("title and template must be defined")
+
+        data = list(self.get_data(request))
 
         paginator = Paginator(data, get_items_per_page())
         data = paginator.get_page(page)
@@ -96,7 +91,6 @@ class GetData(View):
             self.template,
             {
                 "title": self.title,
-                "type": self.item_type,
                 "data": data,
                 "matches": paginator.count,
                 "page_range": page_range,
@@ -104,18 +98,36 @@ class GetData(View):
         )
 
 
-class GetRoster(GetData):
-    title = "The Roster"
-    item_type = "roster"
+class GetHome(GetData):
+    title = "Home"
+    template = "home.html"
 
     def get_data(self, request):
-        return RollingStock.objects.get_published(request.user).order_by(
-            *get_order_by_field()
-        )
+        max_items = min(settings.FEATURED_ITEMS_MAX, get_items_per_page())
+        return (
+            RollingStock.objects.get_published(request.user)
+            .filter(featured=True)
+            .order_by(*get_order_by_field())[:max_items]
+        ) or super().get_data(request)
+
+
+class GetRoster(GetData):
+    title = "The Roster"
 
 
 class SearchObjects(View):
     def run_search(self, request, search, _filter, page=1):
+        """
+        Run the search query on the database and return the results.
+        param request: HTTP request
+        param search: search string
+        param _filter: filter to apply (type, company, manufacturer, scale)
+        param page: page number for pagination
+        return: tuple (data, matches, page_range)
+        1. data: list of dicts with keys "type" and "item"
+        2. matches: total number of matches
+        3. page_range: elided page range for pagination
+        """
         if _filter is None:
             query = reduce(
                 operator.or_,
@@ -158,15 +170,13 @@ class SearchObjects(View):
         # FIXME duplicated code!
         # FIXME see if it makes sense to filter calatogs and books by scale
         #       and manufacturer as well
-        data = []
         roster = (
             RollingStock.objects.get_published(request.user)
             .filter(query)
             .distinct()
             .order_by(*get_order_by_field())
         )
-        for item in roster:
-            data.append({"type": "roster", "item": item})
+        data = list(roster)
 
         if _filter is None:
             consists = (
@@ -179,8 +189,7 @@ class SearchObjects(View):
                 )
                 .distinct()
             )
-            for item in consists:
-                data.append({"type": "consist", "item": item})
+            data = list(chain(data, consists))
             books = (
                 Book.objects.get_published(request.user)
                 .filter(
@@ -201,14 +210,7 @@ class SearchObjects(View):
                 )
                 .distinct()
             )
-            for item in list(chain(books, catalogs)):
-                data.append(
-                    {
-                        "type": item._meta.model_name,
-                        "label": item._meta.object_name,
-                        "item": item,
-                    }
-                )
+            data = list(chain(data, books, catalogs))
             magazine_issues = (
                 MagazineIssue.objects.get_published(request.user)
                 .filter(
@@ -219,14 +221,7 @@ class SearchObjects(View):
                 )
                 .distinct()
             )
-            for item in magazine_issues:
-                data.append(
-                    {
-                        "type": "book",
-                        "label": "Magazine Issue",
-                        "item": item,
-                    }
-                )
+            data = list(chain(data, magazine_issues))
 
         paginator = Paginator(data, get_items_per_page())
         data = paginator.get_page(page)
@@ -282,10 +277,25 @@ class SearchObjects(View):
 
 class GetManufacturerItem(View):
     def get(self, request, manufacturer, search="all", page=1):
+        """
+        Get all items from a specific manufacturer. If `search` is not "all",
+        filter by item number as well, for example to get all itmes from the
+        same set.
+        The view returns both rolling stock and catalogs.
+        param request: HTTP request
+        param manufacturer: Manufacturer slug
+        param search: item number slug or "all"
+        param page: page number for pagination
+        return: rendered template
+        1. manufacturer: Manufacturer object
+        2. search: item number slug or "all"
+        3. data: list of dicts with keys "type" and "item"
+        4. matches: total number of matches
+        5. page_range: elided page range for pagination
+        """
         manufacturer = get_object_or_404(
             Manufacturer, slug__iexact=manufacturer
         )
-
         if search != "all":
             roster = get_list_or_404(
                 RollingStock.objects.get_published(request.user).order_by(
@@ -296,6 +306,7 @@ class GetManufacturerItem(View):
                     & Q(item_number_slug__exact=search)
                 ),
             )
+            catalogs = []  # no catalogs when searching for a specific item
             title = "{0}: {1}".format(
                 manufacturer,
                 # all returned records must have the same `item_number``;
@@ -317,20 +328,7 @@ class GetManufacturerItem(View):
             )
             title = "Manufacturer: {0}".format(manufacturer)
 
-        data = []
-        for item in roster:
-            data.append({"type": "roster", "item": item})
-
-        if catalogs is not None:
-            for item in catalogs:
-                data.append(
-                    {
-                        "type": "catalog",
-                        "label": "Catalog",
-                        "item": item,
-                    }
-                )
-
+        data = list(chain(roster, catalogs))
         paginator = Paginator(data, get_items_per_page())
         data = paginator.get_page(page)
         page_range = paginator.get_elided_page_range(
@@ -379,9 +377,7 @@ class GetObjectsFiltered(View):
             .order_by(*get_order_by_field())
         )
 
-        data = []
-        for item in roster:
-            data.append({"type": "roster", "item": item})
+        data = list(roster)
 
         if _filter == "scale":
             catalogs = (
@@ -389,14 +385,7 @@ class GetObjectsFiltered(View):
                 .filter(scales__slug=search)
                 .distinct()
             )
-            for item in catalogs:
-                data.append(
-                    {
-                        "type": "catalog",
-                        "label": "Catalog",
-                        "item": item,
-                    }
-                )
+            data = list(chain(data, catalogs))
 
         try:  # Execute only if query_2nd is defined
             consists = (
@@ -404,8 +393,7 @@ class GetObjectsFiltered(View):
                 .filter(query_2nd)
                 .distinct()
             )
-            for item in consists:
-                data.append({"type": "consist", "item": item})
+            data = list(chain(data, consists))
             if _filter == "tag":  # Books can be filtered only by tag
                 books = (
                     Book.objects.get_published(request.user)
@@ -417,27 +405,12 @@ class GetObjectsFiltered(View):
                     .filter(query_2nd)
                     .distinct()
                 )
-                for item in list(chain(books, catalogs)):
-                    data.append(
-                        {
-                            "type": item._meta.model_name,
-                            "label": item._meta.object_name,
-                            "item": item,
-                        }
-                    )
                 magazine_issues = (
                     MagazineIssue.objects.get_published(request.user)
                     .filter(query_2nd)
                     .distinct()
                 )
-                for item in magazine_issues:
-                    data.append(
-                        {
-                            "type": "book",
-                            "label": "Magazine Issue",
-                            "item": item,
-                        }
-                    )
+                data = list(chain(data, books, catalogs, magazine_issues))
         except NameError:
             pass
 
@@ -491,16 +464,14 @@ class GetRollingStock(View):
                 request.user
             )
 
-        consists = [
-            {"type": "consist", "item": c}
-            for c in Consist.objects.get_published(request.user).filter(
+        consists = list(
+            Consist.objects.get_published(request.user).filter(
                 consist_item__rolling_stock=rolling_stock
             )
-        ]  # A dict with "item" is required by the consists card
+        )
 
-        set = [
-            {"type": "set", "item": s}
-            for s in RollingStock.objects.get_published(request.user)
+        trainset = list(
+            RollingStock.objects.get_published(request.user)
             .filter(
                 Q(
                     Q(item_number__exact=rolling_stock.item_number)
@@ -508,7 +479,7 @@ class GetRollingStock(View):
                 )
             )
             .order_by(*get_order_by_field())
-        ]
+        )
 
         return render(
             request,
@@ -521,7 +492,7 @@ class GetRollingStock(View):
                 "decoder_documents": decoder_documents,
                 "documents": documents,
                 "journal": journal,
-                "set": set,
+                "set": trainset,
                 "consists": consists,
             },
         )
@@ -529,7 +500,6 @@ class GetRollingStock(View):
 
 class Consists(GetData):
     title = "Consists"
-    item_type = "consist"
 
     def get_data(self, request):
         return Consist.objects.get_published(request.user).all()
@@ -543,16 +513,13 @@ class GetConsist(View):
             )
         except ObjectDoesNotExist:
             raise Http404
-        data = [
-            {
-                "type": "roster",
-                "item": RollingStock.objects.get_published(request.user).get(
-                    uuid=r.rolling_stock_id
-                ),
-            }
-            for r in consist.consist_item.all()
-        ]
 
+        data = list(
+            RollingStock.objects.get_published(request.user).get(
+                uuid=r.rolling_stock_id
+            )
+            for r in consist.consist_item.all()
+        )
         paginator = Paginator(data, get_items_per_page())
         data = paginator.get_page(page)
         page_range = paginator.get_elided_page_range(
@@ -573,7 +540,6 @@ class GetConsist(View):
 
 class Manufacturers(GetData):
     title = "Manufacturers"
-    item_type = "manufacturer"
 
     def get_data(self, request):
         return (
@@ -642,7 +608,6 @@ class Manufacturers(GetData):
 
 class Companies(GetData):
     title = "Companies"
-    item_type = "company"
 
     def get_data(self, request):
         return (
@@ -681,7 +646,6 @@ class Companies(GetData):
 
 class Scales(GetData):
     title = "Scales"
-    item_type = "scale"
 
     def get_data(self, request):
         return (
@@ -717,7 +681,6 @@ class Scales(GetData):
 
 class Types(GetData):
     title = "Types"
-    item_type = "rolling_stock_type"
 
     def get_data(self, request):
         return RollingStockType.objects.annotate(
@@ -734,7 +697,6 @@ class Types(GetData):
 
 class Books(GetData):
     title = "Books"
-    item_type = "book"
 
     def get_data(self, request):
         return Book.objects.get_published(request.user).all()
@@ -742,7 +704,6 @@ class Books(GetData):
 
 class Catalogs(GetData):
     title = "Catalogs"
-    item_type = "catalog"
 
     def get_data(self, request):
         return Catalog.objects.get_published(request.user).all()
@@ -750,7 +711,6 @@ class Catalogs(GetData):
 
 class Magazines(GetData):
     title = "Magazines"
-    item_type = "magazine"
 
     def get_data(self, request):
         return (
@@ -777,14 +737,7 @@ class GetMagazine(View):
             )
         except ObjectDoesNotExist:
             raise Http404
-        data = [
-            {
-                "type": "magazineissue",
-                "label": "Magazine issue",
-                "item": i,
-            }
-            for i in magazine.issue.get_published(request.user).all()
-        ]
+        data = list(magazine.issue.get_published(request.user).all())
         paginator = Paginator(data, get_items_per_page())
         data = paginator.get_page(page)
         page_range = paginator.get_elided_page_range(
@@ -820,11 +773,9 @@ class GetMagazineIssue(View):
             "bookshelf/book.html",
             {
                 "title": issue,
-                "book": issue,
+                "data": issue,
                 "documents": documents,
                 "properties": properties,
-                "type": "magazineissue",
-                "label": "Magazine issue",
             },
         )
 
@@ -851,11 +802,9 @@ class GetBookCatalog(View):
             "bookshelf/book.html",
             {
                 "title": book,
-                "book": book,
+                "data": book,
                 "documents": documents,
                 "properties": properties,
-                "type": selector,
-                "label": selector.capitalize(),
             },
         )
 

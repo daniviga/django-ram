@@ -6,21 +6,21 @@
       <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
       {% block cards %}
         {% for d in data %}
-        {% if d.type == "roster" %}
+        {% if d.obj_type == "rollingstock" %}
         {% include "cards/roster.html" %}
-        {% elif d.type == "company" %}
+        {% elif d.obj_type == "company" %}
         {% include "cards/company.html" %}
-        {% elif d.type == "rolling_stock_type" %}
+        {% elif d.obj_type == "rollingstocktype" %}
         {% include "cards/rolling_stock_type.html" %}
-        {% elif d.type == "scale" %}
+        {% elif d.obj_type == "scale" %}
         {% include "cards/scale.html" %}
-        {% elif d.type == "consist" %}
+        {% elif d.obj_type == "consist" %}
         {% include "cards/consist.html" %}
-        {% elif d.type == "manufacturer" %}
+        {% elif d.obj_type == "manufacturer" %}
         {% include "cards/manufacturer.html" %}
-        {% elif d.type == "magazine"  or d.type == "magazineissue" %}
+        {% elif d.obj_type == "magazine"  or d.obj_type == "magazineissue" %}
         {% include "cards/magazine.html" %}
-        {% elif d.type == "book" or d.type == "catalog" %}
+        {% elif d.obj_type == "book" or d.obj_type == "catalog" %}
         {% include "cards/book.html" %}
         {% endif %}
         {% endfor %}

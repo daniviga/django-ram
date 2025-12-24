@@ -7,11 +7,12 @@ from django.dispatch.dispatcher import receiver
 from django.core.exceptions import ValidationError
 from django_countries.fields import CountryField
 
+from ram.models import SimpleBaseModel
 from ram.utils import DeduplicatedStorage, get_image_preview, slugify
 from ram.managers import PublicManager
 
 
-class Property(models.Model):
+class Property(SimpleBaseModel):
     name = models.CharField(max_length=128, unique=True)
     private = models.BooleanField(
         default=False,
@@ -28,7 +29,7 @@ class Property(models.Model):
     objects = PublicManager()
 
 
-class Manufacturer(models.Model):
+class Manufacturer(SimpleBaseModel):
     name = models.CharField(max_length=128, unique=True)
     slug = models.CharField(max_length=128, unique=True, editable=False)
     category = models.CharField(
@@ -68,7 +69,7 @@ class Manufacturer(models.Model):
     logo_thumbnail.short_description = "Preview"
 
 
-class Company(models.Model):
+class Company(SimpleBaseModel):
     name = models.CharField(max_length=64, unique=True)
     slug = models.CharField(max_length=64, unique=True, editable=False)
     extended_name = models.CharField(max_length=128, blank=True)
@@ -106,7 +107,7 @@ class Company(models.Model):
     logo_thumbnail.short_description = "Preview"
 
 
-class Decoder(models.Model):
+class Decoder(SimpleBaseModel):
     name = models.CharField(max_length=128, unique=True)
     manufacturer = models.ForeignKey(
         Manufacturer,
@@ -142,7 +143,7 @@ def calculate_ratio(ratio):
         raise ValidationError("Invalid ratio format")
 
 
-class Scale(models.Model):
+class Scale(SimpleBaseModel):
     scale = models.CharField(max_length=32, unique=True)
     slug = models.CharField(max_length=32, unique=True, editable=False)
     ratio = models.CharField(max_length=16, validators=[calculate_ratio])
@@ -177,7 +178,7 @@ def scale_save(sender, instance, **kwargs):
     instance.ratio_int = calculate_ratio(instance.ratio)
 
 
-class RollingStockType(models.Model):
+class RollingStockType(SimpleBaseModel):
     type = models.CharField(max_length=64)
     order = models.PositiveSmallIntegerField()
     category = models.CharField(
@@ -207,7 +208,7 @@ class RollingStockType(models.Model):
         return "{0} {1}".format(self.type, self.category)
 
 
-class Tag(models.Model):
+class Tag(SimpleBaseModel):
     name = models.CharField(max_length=128, unique=True)
     slug = models.CharField(max_length=128, unique=True)
 
@@ -227,7 +228,7 @@ class Tag(models.Model):
         )
 
 
-class Shop(models.Model):
+class Shop(SimpleBaseModel):
     name = models.CharField(max_length=128, unique=True)
     country = CountryField(blank=True)
     website = models.URLField(blank=True)

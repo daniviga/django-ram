@@ -2,6 +2,7 @@ import html
 
 from django.conf import settings
 from django.contrib import admin
+
 # from django.forms import BaseInlineFormSet  # for future reference
 from django.utils.html import format_html, strip_tags
 from adminsortable2.admin import (
@@ -46,15 +47,22 @@ class ConsistAdmin(SortableAdminBase, admin.ModelAdmin):
         "creation_time",
         "updated_time",
     )
-    list_filter = ("company__name", "era", "scale", "published")
-    list_display = ("__str__",) + list_filter + ("country_flag",)
+    list_filter = ("published", "company__name", "era", "scale")
+    list_display = (
+        "__str__",
+        "company__name",
+        "era",
+        "scale",
+        "country_flag",
+        "published",
+    )
     search_fields = ("identifier",) + list_filter
     save_as = True
 
     @admin.display(description="Country")
     def country_flag(self, obj):
         return format_html(
-            '<img src="{}" /> {}', obj.country.flag, obj.country
+            '<img src="{}" title="{}" />', obj.country.flag, obj.country.name
         )
 
     fieldsets = (
@@ -138,6 +146,7 @@ class ConsistAdmin(SortableAdminBase, admin.ModelAdmin):
                 )
 
         return generate_csv(header, data, "consists.csv")
+
     download_csv.short_description = "Download selected items as CSV"
 
     actions = [publish, unpublish, download_csv]
