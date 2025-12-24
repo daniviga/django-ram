@@ -45,7 +45,8 @@ class RollingClass(admin.ModelAdmin):
     def country_flag(self, obj):
         return format_html(
             '<img src="{}" title="{}" />',
-            obj.company.country.flag, obj.company.country.name
+            obj.company.country.flag,
+            obj.company.country.name,
         )
 
 
@@ -229,8 +230,8 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
         if obj.invoice.exists():
             html = format_html_join(
                 "<br>",
-                "<a href=\"{}\" target=\"_blank\">{}</a>",
-                ((i.file.url, i) for i in obj.invoice.all())
+                '<a href="{}" target="_blank">{}</a>',
+                ((i.file.url, i) for i in obj.invoice.all()),
             )
         else:
             html = "-"
@@ -325,10 +326,12 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
             )
             return
         queryset.update(featured=True)
+
     set_featured.short_description = "Mark selected rolling stock as featured"
 
     def unset_featured(modeladmin, request, queryset):
         queryset.update(featured=False)
+
     unset_featured.short_description = (
         "Unmark selected rolling stock as featured"
     )

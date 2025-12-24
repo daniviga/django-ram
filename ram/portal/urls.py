@@ -25,37 +25,21 @@ from portal.views import (
 urlpatterns = [
     path("", GetHome.as_view(), name="index"),
     path("roster", GetRoster.as_view(), name="roster"),
-    path(
-        "roster/page/<int:page>",
-        GetRoster.as_view(),
-        name="roster"
-    ),
+    path("roster/page/<int:page>", GetRoster.as_view(), name="roster"),
     path(
         "page/<str:flatpage>",
         GetFlatpage.as_view(),
         name="flatpage",
     ),
-    path(
-        "consists",
-        Consists.as_view(),
-        name="consists"
-    ),
-    path(
-        "consists/page/<int:page>",
-        Consists.as_view(),
-        name="consists"
-    ),
+    path("consists", Consists.as_view(), name="consists"),
+    path("consists/page/<int:page>", Consists.as_view(), name="consists"),
     path("consist/<uuid:uuid>", GetConsist.as_view(), name="consist"),
     path(
         "consist/<uuid:uuid>/page/<int:page>",
         GetConsist.as_view(),
         name="consist",
     ),
-    path(
-        "companies",
-        Companies.as_view(),
-        name="companies"
-    ),
+    path("companies", Companies.as_view(), name="companies"),
     path(
         "companies/page/<int:page>",
         Companies.as_view(),
@@ -64,47 +48,23 @@ urlpatterns = [
     path(
         "manufacturers/<str:category>",
         Manufacturers.as_view(template="pagination_manufacturers.html"),
-        name="manufacturers"
+        name="manufacturers",
     ),
     path(
         "manufacturers/<str:category>/page/<int:page>",
         Manufacturers.as_view(template="pagination_manufacturers.html"),
         name="manufacturers",
     ),
-    path(
-        "scales",
-        Scales.as_view(),
-        name="scales"
-    ),
-    path(
-        "scales/page/<int:page>",
-        Scales.as_view(),
-        name="scales"
-    ),
-    path(
-        "types",
-        Types.as_view(),
-        name="rolling_stock_types"
-    ),
-    path(
-        "types/page/<int:page>",
-        Types.as_view(),
-        name="rolling_stock_types"
-    ),
-    path(
-        "bookshelf/books",
-        Books.as_view(),
-        name="books"
-    ),
-    path(
-        "bookshelf/books/page/<int:page>",
-        Books.as_view(),
-        name="books"
-    ),
+    path("scales", Scales.as_view(), name="scales"),
+    path("scales/page/<int:page>", Scales.as_view(), name="scales"),
+    path("types", Types.as_view(), name="rolling_stock_types"),
+    path("types/page/<int:page>", Types.as_view(), name="rolling_stock_types"),
+    path("bookshelf/books", Books.as_view(), name="books"),
+    path("bookshelf/books/page/<int:page>", Books.as_view(), name="books"),
     path(
         "bookshelf/magazine/<uuid:uuid>",
         GetMagazine.as_view(),
-        name="magazine"
+        name="magazine",
     ),
     path(
         "bookshelf/magazine/<uuid:uuid>/page/<int:page>",
@@ -116,30 +76,22 @@ urlpatterns = [
         GetMagazineIssue.as_view(),
         name="issue",
     ),
-    path(
-        "bookshelf/magazines",
-        Magazines.as_view(),
-        name="magazines"
-    ),
+    path("bookshelf/magazines", Magazines.as_view(), name="magazines"),
     path(
         "bookshelf/magazines/page/<int:page>",
         Magazines.as_view(),
-        name="magazines"
+        name="magazines",
     ),
     path(
         "bookshelf/<str:selector>/<uuid:uuid>",
         GetBookCatalog.as_view(),
-        name="bookshelf_item"
+        name="bookshelf_item",
     ),
-    path(
-        "bookshelf/catalogs",
-        Catalogs.as_view(),
-        name="catalogs"
-    ),
+    path("bookshelf/catalogs", Catalogs.as_view(), name="catalogs"),
     path(
         "bookshelf/catalogs/page/<int:page>",
         Catalogs.as_view(),
-        name="catalogs"
+        name="catalogs",
     ),
     path(
         "search",

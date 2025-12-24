@@ -517,7 +517,8 @@ class GetConsist(View):
         data = list(
             RollingStock.objects.get_published(request.user).get(
                 uuid=r.rolling_stock_id
-            ) for r in consist.consist_item.all()
+            )
+            for r in consist.consist_item.all()
         )
         paginator = Paginator(data, get_items_per_page())
         data = paginator.get_page(page)

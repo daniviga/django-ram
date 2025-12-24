@@ -83,9 +83,7 @@ class RollingStock(BaseModel):
         help_text="Catalog item number or code",
     )
     item_number_slug = models.CharField(
-        max_length=32,
-        blank=True,
-        editable=False
+        max_length=32, blank=True, editable=False
     )
     set = models.BooleanField(
         default=False,
@@ -170,7 +168,7 @@ class RollingStock(BaseModel):
             os.path.join(
                 settings.MEDIA_ROOT, "images", "rollingstock", str(self.uuid)
             ),
-            ignore_errors=True
+            ignore_errors=True,
         )
         super(RollingStock, self).delete(*args, **kwargs)
 
@@ -198,10 +196,7 @@ def pre_save_internal_fields(sender, instance, *args, **kwargs):
 
 def rolling_stock_image_upload(instance, filename):
     return os.path.join(
-        "images",
-        "rollingstock",
-        str(instance.rolling_stock.uuid),
-        filename
+        "images", "rollingstock", str(instance.rolling_stock.uuid), filename
     )
 
 

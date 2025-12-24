@@ -2,6 +2,7 @@ import html
 
 from django.conf import settings
 from django.contrib import admin
+
 # from django.forms import BaseInlineFormSet  # for future reference
 from django.utils.html import format_html, strip_tags
 from adminsortable2.admin import (
@@ -145,6 +146,7 @@ class ConsistAdmin(SortableAdminBase, admin.ModelAdmin):
                 )
 
         return generate_csv(header, data, "consists.csv")
+
     download_csv.short_description = "Download selected items as CSV"
 
     actions = [publish, unpublish, download_csv]

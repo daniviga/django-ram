@@ -11,7 +11,7 @@ from portal.utils import get_site_conf
 from repository.models import (
     BookDocument,
     CatalogDocument,
-    MagazineIssueDocument
+    MagazineIssueDocument,
 )
 from bookshelf.models import (
     BaseBookProperty,
@@ -135,8 +135,8 @@ class BookAdmin(SortableAdminBase, admin.ModelAdmin):
         if obj.invoice.exists():
             html = format_html_join(
                 "<br>",
-                "<a href=\"{}\" target=\"_blank\">{}</a>",
-                ((i.file.url, i) for i in obj.invoice.all())
+                '<a href="{}" target="_blank">{}</a>',
+                ((i.file.url, i) for i in obj.invoice.all()),
             )
         else:
             html = "-"
@@ -303,8 +303,8 @@ class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
         if obj.invoice.exists():
             html = format_html_join(
                 "<br>",
-                "<a href=\"{}\" target=\"_blank\">{}</a>",
-                ((i.file.url, i) for i in obj.invoice.all())
+                '<a href="{}" target="_blank">{}</a>',
+                ((i.file.url, i) for i in obj.invoice.all()),
             )
         else:
             html = "-"
@@ -449,14 +449,12 @@ class MagazineIssueInline(admin.TabularInline):
     readonly_fields = ("preview",)
 
     class Media:
-        js = ('admin/js/magazine_issue_defaults.js',)
+        js = ("admin/js/magazine_issue_defaults.js",)
 
 
 @admin.register(Magazine)
 class MagazineAdmin(SortableAdminBase, admin.ModelAdmin):
-    inlines = (
-        MagazineIssueInline,
-    )
+    inlines = (MagazineIssueInline,)
 
     list_display = (
         "__str__",
@@ -466,7 +464,10 @@ class MagazineAdmin(SortableAdminBase, admin.ModelAdmin):
     autocomplete_fields = ("publisher",)
     readonly_fields = ("creation_time", "updated_time")
     search_fields = ("name", "publisher__name")
-    list_filter = ("published", "publisher__name",)
+    list_filter = (
+        "published",
+        "publisher__name",
+    )
 
     fieldsets = (
         (
