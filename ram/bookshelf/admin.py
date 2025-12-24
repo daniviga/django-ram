@@ -66,12 +66,12 @@ class BookAdmin(SortableAdminBase, admin.ModelAdmin):
         BookDocInline,
     )
     list_display = (
+        "published",
         "title",
         "get_authors",
         "get_publisher",
         "publication_year",
         "number_of_pages",
-        "published",
     )
     autocomplete_fields = ("authors", "publisher", "shop")
     readonly_fields = ("invoices", "creation_time", "updated_time")
@@ -212,11 +212,11 @@ class AuthorAdmin(admin.ModelAdmin):
 
 @admin.register(Publisher)
 class PublisherAdmin(admin.ModelAdmin):
-    list_display = ("name", "country_flag")
+    list_display = ("name", "country_flag_name")
     search_fields = ("name",)
 
     @admin.display(description="Country")
-    def country_flag(self, obj):
+    def country_flag_name(self, obj):
         return format_html(
             '<img src="{}" /> {}', obj.country.flag, obj.country.name
         )
@@ -240,10 +240,10 @@ class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
     readonly_fields = ("invoices", "creation_time", "updated_time")
     search_fields = ("manufacturer__name", "years", "scales__scale")
     list_filter = (
+        "published",
         "manufacturer__name",
         "publication_year",
         "scales__scale",
-        "published",
     )
 
     fieldsets = (
@@ -466,7 +466,7 @@ class MagazineAdmin(SortableAdminBase, admin.ModelAdmin):
     autocomplete_fields = ("publisher",)
     readonly_fields = ("creation_time", "updated_time")
     search_fields = ("name", "publisher__name")
-    list_filter = ("publisher__name", "published")
+    list_filter = ("published", "publisher__name",)
 
     fieldsets = (
         (

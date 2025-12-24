@@ -47,12 +47,12 @@ class ScaleAdmin(admin.ModelAdmin):
 @admin.register(Company)
 class CompanyAdmin(admin.ModelAdmin):
     readonly_fields = ("logo_thumbnail",)
-    list_display = ("name", "country_flag")
+    list_display = ("name", "country_flag_name")
     list_filter = ("name", "country")
     search_fields = ("name",)
 
     @admin.display(description="Country")
-    def country_flag(self, obj):
+    def country_flag_name(self, obj):
         return format_html(
             '<img src="{}" /> {}', obj.country.flag, obj.country.name
         )
@@ -61,12 +61,12 @@ class CompanyAdmin(admin.ModelAdmin):
 @admin.register(Manufacturer)
 class ManufacturerAdmin(admin.ModelAdmin):
     readonly_fields = ("logo_thumbnail",)
-    list_display = ("name", "category", "country_flag")
+    list_display = ("name", "category", "country_flag_name")
     list_filter = ("category",)
     search_fields = ("name",)
 
     @admin.display(description="Country")
-    def country_flag(self, obj):
+    def country_flag_name(self, obj):
         return format_html(
             '<img src="{}" /> {}', obj.country.flag, obj.country.name
         )
@@ -88,6 +88,12 @@ class RollingStockTypeAdmin(SortableAdminMixin, admin.ModelAdmin):
 
 @admin.register(Shop)
 class ShopAdmin(admin.ModelAdmin):
-    list_display = ("name", "on_line", "active")
+    list_display = ("name", "on_line", "active", "country_flag_name")
     list_filter = ("on_line", "active")
     search_fields = ("name",)
+
+    @admin.display(description="Country")
+    def country_flag_name(self, obj):
+        return format_html(
+            '<img src="{}" /> {}', obj.country.flag, obj.country.name
+        )

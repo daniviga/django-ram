@@ -1,7 +1,7 @@
 from django.urls import path
 
 from portal.views import (
-    GetData,
+    GetHome,
     GetRoster,
     GetObjectsFiltered,
     GetManufacturerItem,
@@ -23,7 +23,7 @@ from portal.views import (
 )
 
 urlpatterns = [
-    path("", GetData.as_view(template="home.html"), name="index"),
+    path("", GetHome.as_view(), name="index"),
     path("roster", GetRoster.as_view(), name="roster"),
     path(
         "roster/page/<int:page>",

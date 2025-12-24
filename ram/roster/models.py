@@ -5,6 +5,7 @@ from django.db import models
 from django.urls import reverse
 from django.conf import settings
 from django.dispatch import receiver
+from django.core.exceptions import ValidationError
 
 from tinymce import models as tinymce
 
@@ -113,6 +114,10 @@ class RollingStock(BaseModel):
         null=True,
         blank=True,
     )
+    featured = models.BooleanField(
+        default=False,
+        help_text="Featured rolling stock will appear on the homepage",
+    )
     tags = models.ManyToManyField(
         Tag, related_name="rolling_stock", blank=True
     )
@@ -168,6 +173,14 @@ class RollingStock(BaseModel):
             ignore_errors=True
         )
         super(RollingStock, self).delete(*args, **kwargs)
+
+    def clean(self, *args, **kwargs):
+        if self.featured:
+            MAX = settings.FEATURED_ITEMS_MAX
+            if RollingStock.objects.filter(featured=True).count() > MAX - 1:
+                raise ValidationError(
+                    "There are already {} featured items".format(MAX)
+                )
 
 
 @receiver(models.signals.pre_save, sender=RollingStock)

@@ -46,15 +46,22 @@ class ConsistAdmin(SortableAdminBase, admin.ModelAdmin):
         "creation_time",
         "updated_time",
     )
-    list_filter = ("company__name", "era", "scale", "published")
-    list_display = ("__str__",) + list_filter + ("country_flag",)
+    list_filter = ("published", "company__name", "era", "scale")
+    list_display = (
+        "__str__",
+        "company__name",
+        "era",
+        "scale",
+        "country_flag",
+        "published",
+    )
     search_fields = ("identifier",) + list_filter
     save_as = True
 
     @admin.display(description="Country")
     def country_flag(self, obj):
         return format_html(
-            '<img src="{}" /> {}', obj.country.flag, obj.country
+            '<img src="{}" title="{}" />', obj.country.flag, obj.country.name
         )
 
     fieldsets = (

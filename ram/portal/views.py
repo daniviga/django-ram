@@ -4,6 +4,7 @@ from itertools import chain
 from functools import reduce
 from urllib.parse import unquote
 
+from django.conf import settings
 from django.views import View
 from django.http import Http404, HttpResponseBadRequest
 from django.db.utils import OperationalError, ProgrammingError
@@ -62,7 +63,7 @@ class Render404(View):
 
 
 class GetData(View):
-    title = "Home"
+    title = None
     template = "pagination.html"
     filter = Q()  # empty filter by default
 
@@ -73,10 +74,10 @@ class GetData(View):
             .filter(self.filter)
         )
 
-    def get_page_url(self, request):
-        return request.resolver_match.url_name
-
     def get(self, request, page=1):
+        if self.title is None or self.template is None:
+            raise Exception("title and template must be defined")
+
         data = list(self.get_data(request))
 
         paginator = Paginator(data, get_items_per_page())
@@ -90,7 +91,6 @@ class GetData(View):
             self.template,
             {
                 "title": self.title,
-                "type": self.get_page_url(request),
                 "data": data,
                 "matches": paginator.count,
                 "page_range": page_range,
@@ -98,13 +98,21 @@ class GetData(View):
         )
 
 
-class GetRoster(GetData):
-    title = "The Roster"
+class GetHome(GetData):
+    title = "Home"
+    template = "home.html"
 
     def get_data(self, request):
-        return RollingStock.objects.get_published(request.user).order_by(
-            *get_order_by_field()
-        )
+        max_items = min(settings.FEATURED_MAX_ITEMS, get_items_per_page())
+        return (
+            RollingStock.objects.get_published(request.user)
+            .filter(featured=True)
+            .order_by(*get_order_by_field())[:max_items]
+        ) or super().get_data(request)
+
+
+class GetRoster(GetData):
+    title = "The Roster"
 
 
 class SearchObjects(View):
