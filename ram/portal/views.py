@@ -33,7 +33,7 @@ def get_items_per_page():
         items_per_page = get_site_conf().items_per_page
     except (OperationalError, ProgrammingError):
         items_per_page = 6
-    return items_per_page
+    return int(items_per_page)
 
 
 def get_order_by_field():
@@ -103,7 +103,7 @@ class GetHome(GetData):
     template = "home.html"
 
     def get_data(self, request):
-        max_items = min(settings.FEATURED_MAX_ITEMS, get_items_per_page())
+        max_items = min(settings.FEATURED_ITEMS_MAX, get_items_per_page())
         return (
             RollingStock.objects.get_published(request.user)
             .filter(featured=True)
