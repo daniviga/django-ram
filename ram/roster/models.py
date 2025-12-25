@@ -175,7 +175,12 @@ class RollingStock(BaseModel):
     def clean(self, *args, **kwargs):
         if self.featured:
             MAX = settings.FEATURED_ITEMS_MAX
-            if RollingStock.objects.filter(featured=True).count() > MAX - 1:
+            featured_count = (
+                RollingStock.objects.filter(featured=True)
+                .exclude(uuid=self.uuid)
+                .count()
+            )
+            if featured_count > MAX - 1:
                 raise ValidationError(
                     "There are already {} featured items".format(MAX)
                 )
