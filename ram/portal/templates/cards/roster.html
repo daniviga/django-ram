@@ -3,12 +3,19 @@
 
         <div class="col">
           <div class="card shadow-sm">
-            {% if d.image.exists %}
-            <a href="{{d.get_absolute_url}}"><img class="card-img-top" src="{{ d.image.first.image.url }}" alt="{{ d }}"></a>
-            {% else %}
-            <!-- Do not show the "Coming soon" image when running in a single card column mode (e.g. on mobile) -->
-            <a href="{{d.get_absolute_url}}"><img class="card-img-top d-none d-sm-block" src="{% static DEFAULT_CARD_IMAGE %}" alt="{{ d }}"></a>
-            {% endif %}
+            <div id="card-img-container" class="position-relative">
+              {% if d.featured %}
+              <span class="position-absolute translate-middle top-0 start-0 m-3 text-danger">
+                <abbr title="Featured item"><i class="bi bi-heart-fill"></i></abbr>
+              </span>
+              {% endif %}
+              {% if d.image.exists %}
+              <a href="{{d.get_absolute_url}}"><img class="card-img-top" src="{{ d.image.first.image.url }}" alt="{{ d }}"></a>
+              {% else %}
+              <!-- Do not show the "Coming soon" image when running in a single card column mode (e.g. on mobile) -->
+              <a href="{{d.get_absolute_url}}"><img class="card-img-top d-none d-sm-block" src="{% static DEFAULT_CARD_IMAGE %}" alt="{{ d }}"></a>
+              {% endif %}
+            </div>
             <div class="card-body">
               <p class="card-text" style="position: relative;">
                 <strong>{{ d }}</strong>
