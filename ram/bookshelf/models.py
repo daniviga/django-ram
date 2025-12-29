@@ -262,7 +262,12 @@ class TocEntry(BaseModel):
         return f"{self.title} (p. {self.page})"
 
     def clean(self):
-        if self.page > self.book.number_of_pages:
-            raise ValidationError(
-                "Page number exceeds the publication's number of pages."
-            )
+        if self.page < 1:
+            raise ValidationError("Page number is invalid.")
+        try:
+            if self.page > self.book.number_of_pages:
+                raise ValidationError(
+                    "Page number exceeds the publication's number of pages."
+                )
+        except TypeError:
+            pass  # number_of_pages is None
