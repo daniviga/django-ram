@@ -1,4 +1,4 @@
 from ram.utils import git_suffix
 
-__version__ = "0.18.10"
+__version__ = "0.19.1"
 __version__ += git_suffix(__file__)

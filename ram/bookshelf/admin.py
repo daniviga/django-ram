@@ -22,6 +22,7 @@ from bookshelf.models import (
     Catalog,
     Magazine,
     MagazineIssue,
+    TocEntry,
 )
 
 
@@ -363,9 +364,23 @@ class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
     actions = [publish, unpublish, download_csv]
 
 
+class MagazineIssueToc(admin.TabularInline):
+    model = TocEntry
+    min_num = 0
+    extra = 0
+    fields = (
+        "title",
+        "subtitle",
+        "authors",
+        "page",
+        "featured",
+    )
+
+
 @admin.register(MagazineIssue)
 class MagazineIssueAdmin(SortableAdminBase, admin.ModelAdmin):
     inlines = (
+        MagazineIssueToc,
         BookPropertyInline,
         BookImageInline,
         MagazineIssueDocInline,

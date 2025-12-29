@@ -239,3 +239,30 @@ class MagazineIssue(BaseBook):
         return reverse(
             "issue", kwargs={"uuid": self.uuid, "magazine": self.magazine.uuid}
         )
+
+
+class TocEntry(BaseModel):
+    book = models.ForeignKey(
+        BaseBook, on_delete=models.CASCADE, related_name="toc"
+    )
+    title = models.CharField(max_length=200)
+    subtitle = models.CharField(max_length=200, blank=True)
+    authors = models.CharField(max_length=256, blank=True)
+    page = models.SmallIntegerField()
+    featured = models.BooleanField(
+        default=False,
+    )
+
+    class Meta:
+        ordering = ["page"]
+        verbose_name = "Table of Contents Entry"
+        verbose_name_plural = "Table of Contents Entries"
+
+    def __str__(self):
+        return f"{self.title} (p. {self.page})"
+
+    def clean(self):
+        if self.page > self.book.number_of_pages:
+            raise ValidationError(
+                "Page number exceeds the publication's number of pages."
+            )
