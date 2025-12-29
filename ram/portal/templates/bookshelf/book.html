@@ -49,10 +49,12 @@
             <div class="mx-auto">
               <nav class="nav nav-tabs d-none d-lg-flex flex-row mb-2" id="nav-tab" role="tablist">
                 <button class="nav-link active" id="nav-summary-tab" data-bs-toggle="tab" data-bs-target="#nav-summary" type="button" role="tab" aria-controls="nav-summary" aria-selected="true">Summary</button>
+                {% if data.toc.all %}<button class="nav-link" id="nav-toc-tab" data-bs-toggle="tab" data-bs-target="#nav-toc" type="button" role="tab" aria-controls="nav-toc" aria-selected="true">Table of contents</button>{% endif %}
                 {% if documents %}<button class="nav-link" id="nav-documents-tab" data-bs-toggle="tab" data-bs-target="#nav-documents" type="button" role="tab" aria-controls="nav-documents" aria-selected="false">Documents</button>{% endif %}
               </nav>
               <select class="form-select d-lg-none mb-2" id="tabSelector" aria-label="Tab selector">
                 <option value="nav-summary" selected>Summary</option>
+                {% if data.toc.all %}<option value="nav-toc">Table of contents</option>{% endif %}
                 {% if documents %}<option value="nav-documents">Documents</option>{% endif %}
               </select>
               <div class="tab-content" id="nav-tabContent">
@@ -188,6 +190,30 @@
                     </tbody>
                   </table>
                   {% endif %}
+                </div>
+                <div class="tab-pane" id="nav-toc" role="tabpanel" aria-labelledby="nav-toc-tab">
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th scope="row">Title</th>
+                        <th scope="row">Subtitle</th>
+                        <th scope="row">Authors</th>
+                        <th scope="row">Page</th>
+                        <th scope="row"><abbr title="Featured article"><i class="bi bi-star-fill"></i></abbr></th>
+                      </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                      {% for toc in data.toc.all %}
+                      <tr>
+                        <td class="w-33">{{ toc.title }}</td>
+                        <td class="w-33">{{ toc.subtitle }}</td>
+                        <td>{{ toc.authors }}</td>
+                        <td>{{ toc.page }}</td>
+                          <td>{% if toc.featured %}<abbr title="Featured article"><i class="bi bi-star-fill text-warning"></i></abbr>{% endif %}</td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
                 </div>
                 <div class="tab-pane" id="nav-documents" role="tabpanel" aria-labelledby="nav-documents-tab">
                   <table class="table table-striped">

@@ -191,6 +191,15 @@ class Magazine(BaseModel):
     def get_absolute_url(self):
         return reverse("magazine", kwargs={"uuid": self.uuid})
 
+    def get_cover(self):
+        if self.image:
+            return self.image
+        else:
+            cover_issue = self.issue.filter(published=True).first()
+            if cover_issue and cover_issue.image.exists():
+                return cover_issue.image.first().image
+        return None
+
     def website_short(self):
         if self.website:
             return urlparse(self.website).netloc.replace("www.", "")

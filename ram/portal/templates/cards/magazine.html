@@ -4,12 +4,8 @@
         <div class="card shadow-sm">
           {% if d.obj_type == "magazine" %}
           <a href="{{ d.get_absolute_url }}">
-            {% if d.image and d.obj_type == "magazine" %}
-            <img class="card-img-top" src="{{ d.image.url }}" alt="{{ d }}">
-            {% elif d.issue.first.image.exists %}
-            {% with d.issue.first as i %}
-            <img class="card-img-top" src="{{ i.image.first.image.url }}" alt="{{ d }}">
-            {% endwith %}
+            {% if d.get_cover %}
+            <img class="card-img-top" src="{{ d.get_cover.url }}" alt="{{ d }}">
             {% else %}
             <!-- Do not show the "Coming soon" image when running in a single card column mode (e.g. on mobile) -->
             <img class="card-img-top d-none d-sm-block" src="{% static DEFAULT_CARD_IMAGE %}" alt="{{ d }}">
