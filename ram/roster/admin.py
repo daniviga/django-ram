@@ -6,8 +6,8 @@ from django.utils.html import format_html, format_html_join, strip_tags
 
 from adminsortable2.admin import SortableAdminBase, SortableInlineAdminMixin
 
-from ram.admin import publish, unpublish
 from ram.utils import generate_csv
+from ram.admin import publish, unpublish, set_featured, unset_featured
 from repository.models import RollingStockDocument
 from portal.utils import get_site_conf
 from roster.models import (
@@ -302,38 +302,5 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
         return generate_csv(header, data, "rolling_stock.csv")
 
     download_csv.short_description = "Download selected items as CSV"
-
-    def set_featured(modeladmin, request, queryset):
-        count = queryset.count()
-        if count > settings.FEATURED_ITEMS_MAX:
-            modeladmin.message_user(
-                request,
-                "You can only mark up to {} items as featured.".format(
-                    settings.FEATURED_ITEMS_MAX
-                ),
-                level="error",
-            )
-            return
-        featured = RollingStock.objects.filter(featured=True).count()
-        if featured + count > settings.FEATURED_ITEMS_MAX:
-            modeladmin.message_user(
-                request,
-                "There are already {} featured items. You can only mark {} more items as featured.".format(  # noqa: E501
-                    featured,
-                    settings.FEATURED_ITEMS_MAX - featured,
-                ),
-                level="error",
-            )
-            return
-        queryset.update(featured=True)
-
-    set_featured.short_description = "Mark selected rolling stock as featured"
-
-    def unset_featured(modeladmin, request, queryset):
-        queryset.update(featured=False)
-
-    unset_featured.short_description = (
-        "Unmark selected rolling stock as featured"
-    )
 
     actions = [publish, unpublish, set_featured, unset_featured, download_csv]
