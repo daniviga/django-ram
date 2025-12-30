@@ -196,6 +196,7 @@ class SearchObjects(View):
                     Q(
                         Q(title__icontains=search)
                         | Q(description__icontains=search)
+                        | Q(toc__title__icontains=search)
                     )
                 )
                 .distinct()
@@ -217,6 +218,7 @@ class SearchObjects(View):
                     Q(
                         Q(magazine__name__icontains=search)
                         | Q(description__icontains=search)
+                        | Q(toc__title__icontains=search)
                     )
                 )
                 .distinct()
