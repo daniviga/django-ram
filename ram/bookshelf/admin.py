@@ -59,20 +59,34 @@ class MagazineIssueDocInline(BookDocInline):
     model = MagazineIssueDocument
 
 
+class BookTocInline(admin.TabularInline):
+    model = TocEntry
+    min_num = 0
+    extra = 0
+    fields = (
+        "title",
+        "subtitle",
+        "authors",
+        "page",
+        "featured",
+    )
+
+
 @admin.register(Book)
 class BookAdmin(SortableAdminBase, admin.ModelAdmin):
     inlines = (
+        BookTocInline,
         BookPropertyInline,
         BookImageInline,
         BookDocInline,
     )
     list_display = (
-        "published",
         "title",
         "get_authors",
         "get_publisher",
         "publication_year",
         "number_of_pages",
+        "published",
     )
     autocomplete_fields = ("authors", "publisher", "shop")
     readonly_fields = ("invoices", "creation_time", "updated_time")
@@ -364,23 +378,10 @@ class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
     actions = [publish, unpublish, download_csv]
 
 
-class MagazineIssueToc(admin.TabularInline):
-    model = TocEntry
-    min_num = 0
-    extra = 0
-    fields = (
-        "title",
-        "subtitle",
-        "authors",
-        "page",
-        "featured",
-    )
-
-
 @admin.register(MagazineIssue)
 class MagazineIssueAdmin(SortableAdminBase, admin.ModelAdmin):
     inlines = (
-        MagazineIssueToc,
+        BookTocInline,
         BookPropertyInline,
         BookImageInline,
         MagazineIssueDocInline,
