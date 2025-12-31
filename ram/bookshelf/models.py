@@ -254,9 +254,9 @@ class TocEntry(BaseModel):
     book = models.ForeignKey(
         BaseBook, on_delete=models.CASCADE, related_name="toc"
     )
-    title = models.CharField(max_length=200)
-    subtitle = models.CharField(max_length=200, blank=True)
-    authors = models.CharField(max_length=256, blank=True)
+    title = models.CharField()
+    subtitle = models.CharField(blank=True)
+    authors = models.CharField(blank=True)
     page = models.SmallIntegerField()
     featured = models.BooleanField(
         default=False,
@@ -268,7 +268,11 @@ class TocEntry(BaseModel):
         verbose_name_plural = "Table of Contents Entries"
 
     def __str__(self):
-        return f"{self.title} (p. {self.page})"
+        if self.subtitle:
+            title = f"{self.title}: {self.subtitle}"
+        else:
+            title = self.title
+        return f"{title} (p. {self.page})"
 
     def clean(self):
         if self.page < 1:
