@@ -275,6 +275,8 @@ class TocEntry(BaseModel):
         return f"{title} (p. {self.page})"
 
     def clean(self):
+        if self.page is None:
+            raise ValidationError("Page number is required.")
         if self.page < 1:
             raise ValidationError("Page number is invalid.")
         try:
