@@ -22,14 +22,17 @@ class SiteConfiguration(SingletonModel):
         default="6",
     )
     items_ordering = models.CharField(
-        max_length=10,
+        max_length=11,
         choices=[
-            ("type", "By rolling stock type"),
-            ("company", "By company name"),
-            ("identifier", "By rolling stock class"),
+            ("type", "By rolling stock type and company"),
+            ("class", "By rolling stock type and class"),
+            ("company", "By company and type"),
+            ("country", "By country and type"),
+            ("cou+com", "By country and company"),
         ],
         default="type",
     )
+    featured_items_ordering = items_ordering.clone()
     currency = models.CharField(max_length=3, default="EUR")
     footer = tinymce.HTMLField(blank=True)
     footer_extended = tinymce.HTMLField(blank=True)

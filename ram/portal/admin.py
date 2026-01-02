@@ -20,6 +20,7 @@ class SiteConfigurationAdmin(SingletonModelAdmin):
                     "about",
                     "items_per_page",
                     "items_ordering",
+                    "featured_items_ordering",
                     "currency",
                     "footer",
                     "footer_extended",

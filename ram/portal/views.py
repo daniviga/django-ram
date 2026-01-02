@@ -36,25 +36,29 @@ def get_items_per_page():
     return int(items_per_page)
 
 
-def get_order_by_field():
+def get_items_ordering(config="items_ordering"):
     try:
-        order_by = get_site_conf().items_ordering
+        order_by = getattr(get_site_conf(), config)
     except (OperationalError, ProgrammingError):
         order_by = "type"
 
     fields = [
-        "rolling_class__type",
-        "rolling_class__company",
-        "rolling_class__identifier",
-        "road_number_int",
+        "rolling_class__type",              # 0
+        "rolling_class__company",           # 1
+        "rolling_class__company__country",  # 2
+        "rolling_class__identifier",        # 3
+        "road_number_int",                  # 4
     ]
 
-    if order_by == "type":
-        return (fields[0], fields[1], fields[2], fields[3])
-    elif order_by == "company":
-        return (fields[1], fields[0], fields[2], fields[3])
-    elif order_by == "identifier":
-        return (fields[2], fields[0], fields[1], fields[3])
+    order_map = {
+        "type": (0, 1, 3, 4),
+        "company": (1, 0, 3, 4),
+        "country": (2, 0, 1, 3, 4),
+        "cou+com": (2, 1, 0, 3, 4),
+        "class": (0, 3, 1, 4),
+    }
+
+    return tuple(fields[i] for i in order_map.get(order_by, "type"))
 
 
 class Render404(View):
@@ -70,7 +74,7 @@ class GetData(View):
     def get_data(self, request):
         return (
             RollingStock.objects.get_published(request.user)
-            .order_by(*get_order_by_field())
+            .order_by(*get_items_ordering())
             .filter(self.filter)
         )
 
@@ -107,7 +111,9 @@ class GetHome(GetData):
         return (
             RollingStock.objects.get_published(request.user)
             .filter(featured=True)
-            .order_by(*get_order_by_field())[:max_items]
+            .order_by(*get_items_ordering(config="featured_items_ordering"))[
+                :max_items
+            ]
         ) or super().get_data(request)
 
 
@@ -174,7 +180,7 @@ class SearchObjects(View):
             RollingStock.objects.get_published(request.user)
             .filter(query)
             .distinct()
-            .order_by(*get_order_by_field())
+            .order_by(*get_items_ordering())
         )
         data = list(roster)
 
@@ -301,7 +307,7 @@ class GetManufacturerItem(View):
         if search != "all":
             roster = get_list_or_404(
                 RollingStock.objects.get_published(request.user).order_by(
-                    *get_order_by_field()
+                    *get_items_ordering()
                 ),
                 Q(
                     Q(manufacturer=manufacturer)
@@ -323,7 +329,7 @@ class GetManufacturerItem(View):
                     | Q(rolling_class__manufacturer=manufacturer)
                 )
                 .distinct()
-                .order_by(*get_order_by_field())
+                .order_by(*get_items_ordering())
             )
             catalogs = Catalog.objects.get_published(request.user).filter(
                 manufacturer=manufacturer
@@ -376,7 +382,7 @@ class GetObjectsFiltered(View):
             RollingStock.objects.get_published(request.user)
             .filter(query)
             .distinct()
-            .order_by(*get_order_by_field())
+            .order_by(*get_items_ordering())
         )
 
         data = list(roster)
@@ -480,7 +486,7 @@ class GetRollingStock(View):
                     & Q(set=True)
                 )
             )
-            .order_by(*get_order_by_field())
+            .order_by(*get_items_ordering())
         )
 
         return render(
