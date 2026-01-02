@@ -217,49 +217,8 @@
                       {% endif %}
                     </tbody>
                   </table>
-                  {% if request.user.is_staff %}
-                  <table class="table table-striped">
-                    <thead>
-                      <tr>
-                        <th colspan="2" scope="row">Purchase</th>
-                      </tr>
-                    </thead>
-                    <tbody class="table-group-divider">
-                      <tr>
-                        <th class="w-33" scope="row">Shop</th>
-                        <td>
-                          {{ rolling_stock.shop | default:"-" }}
-                          {% if rolling_stock.shop.website %} <a href="{{ rolling_stock.shop.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
-                        </td>
-                      </tr>
-                      <tr>
-                        <th class="w-33" scope="row">Purchase date</th>
-                        <td>{{ rolling_stock.purchase_date | default:"-" }}</td>
-                      </tr>
-                      <tr>
-                        <th scope="row">Price ({{ site_conf.currency }})</th>
-                        <td>{{ rolling_stock.price | default:"-" }}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  {% endif %}
-                  {% if properties %}
-                  <table class="table table-striped">
-                    <thead>
-                      <tr>
-                        <th colspan="2" scope="row">Properties</th>
-                      </tr>
-                    </thead>
-                    <tbody class="table-group-divider">
-                    {% for p in properties %}
-                      <tr>
-                        <th class="w-33" scope="row">{{ p.property }}</th>
-                        <td>{{ p.value }}</td>
-                      </tr>
-                    {% endfor %}
-                    </tbody>
-                  </table>
-                  {% endif %}
+                  {% include "_modules/purchase_data.html" with data=rolling_stock %}
+                  {% include "_modules/properties.html" %}
                 </div>
                 <div class="tab-pane" id="nav-class" role="tabpanel" aria-labelledby="nav-class-tab">
                   <table class="table table-striped">
@@ -296,23 +255,7 @@
                       {% endif %}
                     </tbody>
                   </table>
-                  {% if class_properties %}
-                  <table class="table table-striped">
-                    <thead>
-                      <tr>
-                        <th colspan="2" scope="row">Properties</th>
-                      </tr>
-                    </thead>
-                    <tbody class="table-group-divider">
-                    {% for p in class_properties %}
-                      <tr>
-                        <th class="w-33" scope="row">{{ p.property }}</th>
-                        <td>{{ p.value }}</td>
-                      </tr>
-                    {% endfor %}
-                    </tbody>
-                  </table>
-                  {% endif %}
+                  {% include "_modules/properties.html" with properties=class_properties %}
                 </div>
                 <div class="tab-pane" id="nav-company" role="tabpanel" aria-labelledby="nav-company-tab">
                   <table class="table table-striped">
@@ -403,8 +346,8 @@
                   </table>
                 </div>
                 <div class="tab-pane table-responsive" id="nav-documents" role="tabpanel" aria-labelledby="nav-documents-tab">
-                  {% include "includes/documents.html" %}
-                  {% include "includes/documents.html" with documents=decoder_documents header="Decoder documents" %}
+                  {% include "_modules/documents.html" %}
+                  {% include "_modules/documents.html" with documents=decoder_documents header="Decoder documents" %}
                 </div>
                 <div class="tab-pane" id="nav-journal" role="tabpanel" aria-labelledby="nav-journal-tab">
                   <table class="table table-striped">

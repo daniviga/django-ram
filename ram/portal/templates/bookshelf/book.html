@@ -147,49 +147,8 @@
                       {% endif %}
                     </tbody>
                   </table>
-                  {% if request.user.is_staff %}
-                  <table class="table table-striped">
-                    <thead>
-                      <tr>
-                        <th colspan="2" scope="row">Purchase</th>
-                      </tr>
-                    </thead>
-                    <tbody class="table-group-divider">
-                      <tr>
-                        <th class="w-33" scope="row">Shop</th>
-                        <td>
-                          {{ data.shop|default:"-" }}
-                          {% if data.shop.website %} <a href="{{ data.shop.website }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
-                        </td>
-                      </tr>
-                      <tr>
-                        <th class="w-33" scope="row">Purchase date</th>
-                        <td>{{ data.purchase_date|default:"-" }}</td>
-                      </tr>
-                      <tr>
-                        <th scope="row">Price ({{ site_conf.currency }})</th>
-                        <td>{{ data.price|default:"-" }}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  {% endif %}
-                  {% if properties %}
-                  <table class="table table-striped">
-                    <thead>
-                      <tr>
-                        <th colspan="2" scope="row">Properties</th>
-                      </tr>
-                    </thead>
-                    <tbody class="table-group-divider">
-                    {% for p in properties %}
-                      <tr>
-                        <th class="w-33" scope="row">{{ p.property }}</th>
-                        <td>{{ p.value }}</td>
-                      </tr>
-                    {% endfor %}
-                    </tbody>
-                  </table>
-                  {% endif %}
+                  {% include "_modules/purchase_data.html" %}
+                  {% include "_modules/properties.html" %}
                 </div>
                 <div class="tab-pane table-responsive" id="nav-toc" role="tabpanel" aria-labelledby="nav-toc-tab">
                   <table class="table table-striped">
@@ -216,7 +175,7 @@
                   </table>
                 </div>
                 <div class="tab-pane" id="nav-documents" role="tabpanel" aria-labelledby="nav-documents-tab">
-                  {% include "includes/documents.html" %}
+                  {% include "_modules/documents.html" %}
                 </div>
               </div>
               <div class="d-grid gap-2 d-md-flex justify-content-md-end">

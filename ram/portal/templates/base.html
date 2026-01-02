@@ -148,7 +148,7 @@
               <strong>{{ site_conf.site_name }}</strong>
             </a>
          </div>
-         {% include 'includes/login.html' %}
+         {% include '_includes/login.html' %}
         </div>
       </nav>
     </header>
@@ -186,7 +186,7 @@
                 {% show_bookshelf_menu %}
                 {% show_flatpages_menu user %}
               </ul>
-              {% include 'includes/search.html' %}
+              {% include '_includes/search.html' %}
             </div>
           </div>
         </nav>
@@ -211,9 +211,9 @@
         <div class="container">{% block pagination %}{% endblock %}</div>
       </div>
       {% block extra_content %}{% endblock %}
-      {% include 'includes/symbols.html' %}
+      {% include '_includes/symbols.html' %}
     </main>
-    {% include 'includes/footer.html' %}
+    {% include '_includes/footer.html' %}
     {% if site_conf.use_cdn %}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     {% else %}

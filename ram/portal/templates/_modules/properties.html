@@ -1,0 +1,18 @@
+                  {% if properties %}
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th colspan="2" scope="row">Properties</th>
+                      </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                    {% for p in properties %}
+                      <tr>
+                        <th class="w-33" scope="row">{{ p.property }}</th>
+                        <td>{{ p.value }}</td>
+                      </tr>
+                    {% endfor %}
+                    </tbody>
+                  </table>
+                  {% endif %}
+
