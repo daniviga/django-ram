@@ -43,10 +43,10 @@ class Consist(BaseModel):
 
     @property
     def length(self):
-        return self.consist_item.count()
+        return self.consist_item.filter(load=False).count()
 
     def get_type_count(self):
-        return self.consist_item.annotate(
+        return self.consist_item.filter(load=False).annotate(
             type=models.F("rolling_stock__rolling_class__type__type")
         ).values(
             "type"
@@ -69,6 +69,7 @@ class ConsistItem(models.Model):
         Consist, on_delete=models.CASCADE, related_name="consist_item"
     )
     rolling_stock = models.ForeignKey(RollingStock, on_delete=models.CASCADE)
+    load = models.BooleanField(default=False)
     order = models.PositiveIntegerField(blank=False, null=False)
 
     class Meta:
@@ -92,9 +93,14 @@ class ConsistItem(models.Model):
         # because the consist is not saved yet and it must be moved
         # to the admin form validation via InlineFormSet.clean()
         consist = self.consist
-        if rolling_stock.scale != consist.scale:
+        # Scale must match, but allow loads of any scale
+        if rolling_stock.scale != consist.scale and not self.load:
             raise ValidationError(
                 "The rolling stock and consist must be of the same scale."
+            )
+        if self.load and rolling_stock.scale.ratio != consist.scale.ratio:
+            raise ValidationError(
+                "The load and consist must be of the same scale ratio."
             )
         if self.consist.published and not rolling_stock.published:
             raise ValidationError(

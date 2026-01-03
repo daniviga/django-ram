@@ -7,11 +7,11 @@
         {{ t.name }}</a>{# new line is required #}
         {% endfor %}
       </p>
+      {% endif %}
       {% if not consist.published %}
       <span class="badge text-bg-warning">Unpublished</span> |
       {% endif %}
       <small class="text-body-secondary">Updated {{ consist.updated_time | date:"M d, Y H:i" }}</small>
-      {% endif %}
       {% endblock %}
       {% block carousel %}
       {% if consist.image %}
@@ -25,6 +25,33 @@
         </div>
       </div>
       {% endif %}
+      {% endblock %}
+      {% block cards_layout %}
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+      {% block cards %}
+        {% for d in data %}
+        {% include "cards/roster.html" %}
+        {% endfor %}
+      {% endblock %}
+      </div>
+      <div class="accordion shadow-sm mt-4" id="accordionLoads">
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLoads" aria-expanded="false" aria-controls="collapseLoads">
+              <i class="bi bi-download"></i>&nbsp;Rolling Stock loaded on freight cars
+            </button>
+          </h2>
+          <div id="collapseLoads" class="accordion-collapse collapse" data-bs-parent="#accordionLoads">
+            <div class="accordion-body">
+              <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+                {% for l in loads %}
+                {% include "cards/roster.html" with d=l %}
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       {% endblock %}
       {% block pagination %}
       {% if data.has_other_pages %}
@@ -113,7 +140,7 @@
                     </tr>
                     <tr>
                       <th scope="row">Composition</th>
-                      <td>{% for t in consist.get_type_count %}{{ t.count }}x {{ t.type }} {{t.category }}{% if not forloop.last %} &raquo; {% endif %}{% endfor %}</td>
+                      <td>{% for t in consist.get_type_count %}{{ t.count }}x {{ t.type }} {{t.category }}{% if not forloop.last %} &raquo; {% endif %}{% endfor %}{% if loads %} | <i class="bi bi-download"></i> {{ loads|length }}x Load{{ loads|pluralize }}{% endif %}</td>
                     </tr>
                   </tbody>
                 </table>
