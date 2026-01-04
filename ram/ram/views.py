@@ -5,18 +5,24 @@ import posixpath
 from pathlib import Path
 from PIL import Image, UnidentifiedImageError
 
-from django.views import View
+from django.apps import apps
 from django.conf import settings
 from django.http import (
+    Http404,
     HttpResponseBadRequest,
     HttpResponseForbidden,
+    FileResponse,
     JsonResponse,
 )
+from django.views import View
 from django.utils.text import slugify as slugify
+from django.utils.encoding import smart_str
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
 from rest_framework.pagination import LimitOffsetPagination
+
+from ram.models import PrivateDocument
 
 
 class CustomLimitOffsetPagination(LimitOffsetPagination):
@@ -67,3 +73,37 @@ class UploadImage(View):
                     ),
                 }
             )
+
+
+class DownloadFile(View):
+    def get(self, request, filename, disposition="inline"):
+        # Clean up the filename to prevent directory traversal attacks
+        filename = os.path.basename(filename)
+
+        # Find a document where the stored file name matches
+        # Find all models inheriting from PublishableFile
+        for model in apps.get_models():
+            if issubclass(model, PrivateDocument) and not model._meta.abstract:
+                try:
+                    doc = model.objects.get(file__endswith=filename)
+                    if doc.private and not request.user.is_staff:
+                        break
+
+                    file_path = doc.file.path
+                    if not os.path.exists(file_path):
+                        break
+
+                    response = FileResponse(
+                        open(file_path, "rb"), as_attachment=True
+                    )
+                    response["Content-Disposition"] = (
+                        '{}; filename="{}"'.format(
+                            disposition,
+                            smart_str(os.path.basename(file_path))
+                        )
+                    )
+                    return response
+                except model.DoesNotExist:
+                    continue
+
+        raise Http404("File not found")
