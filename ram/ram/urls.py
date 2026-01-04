@@ -21,7 +21,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
-from ram.views import UploadImage
+from ram.views import UploadImage, DownloadFile
 from portal.views import Render404
 
 handler404 = Render404.as_view()
@@ -32,6 +32,7 @@ urlpatterns = [
     path("tinymce/upload_image", UploadImage.as_view(), name="upload_image"),
     path("portal/", include("portal.urls")),
     path("admin/", admin.site.urls),
+    path("media/files/<path:filename>", DownloadFile.as_view(), name="download_file"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # Enable the "/dcc" routing only if the "driver" app is active
