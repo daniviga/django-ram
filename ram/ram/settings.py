@@ -206,6 +206,9 @@ ROLLING_STOCK_TYPES = [
 
 FEATURED_ITEMS_MAX = 6
 
+# If True, use X-Accel-Redirect (Nginx)
+USE_X_ACCEL_REDIRECT = False
+
 try:
     from ram.local_settings import *
 except ImportError:

@@ -9,6 +9,7 @@ from django.apps import apps
 from django.conf import settings
 from django.http import (
     Http404,
+    HttpResponse,
     HttpResponseBadRequest,
     HttpResponseForbidden,
     FileResponse,
@@ -89,17 +90,23 @@ class DownloadFile(View):
                     if doc.private and not request.user.is_staff:
                         break
 
-                    file_path = doc.file.path
-                    if not os.path.exists(file_path):
+                    file = doc.file
+                    if not os.path.exists(file.path):
                         break
 
-                    response = FileResponse(
-                        open(file_path, "rb"), as_attachment=True
-                    )
+                    if getattr(settings, "USE_X_ACCEL_REDIRECT", False):
+                        response = HttpResponse()
+                        response["Content-Type"] = ""
+                        response["X-Accel-Redirect"] = file.url
+                    else:
+                        response = FileResponse(
+                            open(file.path, "rb"), as_attachment=True
+                        )
+
                     response["Content-Disposition"] = (
                         '{}; filename="{}"'.format(
                             disposition,
-                            smart_str(os.path.basename(file_path))
+                            smart_str(os.path.basename(file.path))
                         )
                     )
                     return response
