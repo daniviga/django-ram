@@ -56,6 +56,15 @@ class Consist(BaseModel):
             order=models.Max("order"),
         ).order_by("order")
 
+    def get_cover(self):
+        if self.image:
+            return self.image
+        else:
+            consist_item = self.consist_item.first()
+            if consist_item and consist_item.rolling_stock.image.exists():
+                return consist_item.rolling_stock.image.first().image
+        return None
+
     @property
     def country(self):
         return self.company.country

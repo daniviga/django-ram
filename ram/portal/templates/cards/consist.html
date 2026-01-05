@@ -1,12 +1,13 @@
+{% load static %}
+
       <div class="col">
         <div class="card shadow-sm">
           <a href="{{ d.get_absolute_url }}">
-          {% if d.image %}
-            <img class="card-img-top" src="{{ d.image.url }}" alt="{{ d }}">
+          {% if d.get_cover %}
+            <img class="card-img-top" src="{{ d.get_cover.url }}" alt="{{ d }}">
           {% else %}
-            {% with d.consist_item.first.rolling_stock as r %}
-            <img class="card-img-top" src="{{ r.image.first.image.url }}" alt="{{ d }}">
-            {% endwith %}
+            <!-- Do not show the "Coming soon" image when running in a single card column mode (e.g. on mobile) -->
+            <a href="{{d.get_absolute_url}}"><img class="card-img-top d-none d-sm-block" src="{% static DEFAULT_CARD_IMAGE %}" alt="{{ d }}"></a>
           {% endif %}
           </a>
           <div class="card-body">
