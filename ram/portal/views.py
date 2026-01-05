@@ -63,7 +63,12 @@ def get_items_ordering(config="items_ordering"):
 
 class Render404(View):
     def get(self, request, exception):
-        return render(request, "base.html", {"title": "404 page not found"})
+        return render(
+            request,
+            "base.html",
+            {"title": "404 page not found"},
+            status=404,
+        )
 
 
 class GetData(View):

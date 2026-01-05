@@ -207,6 +207,16 @@ ROLLING_STOCK_TYPES = [
 FEATURED_ITEMS_MAX = 6
 
 # If True, use X-Accel-Redirect (Nginx)
+# when using X-Accel-Redirect, we don't serve the file
+# directly from Django, but let Nginx handle it
+# in Nginx config, we need to map /private/ to
+# the actual media files location with internal directive
+# eg:
+#   location /private {
+#       internal;
+#       alias /path/to/media;
+#   }
+# make also sure that the entire /media is _not_ mapped directly in Nginx
 USE_X_ACCEL_REDIRECT = False
 
 try:

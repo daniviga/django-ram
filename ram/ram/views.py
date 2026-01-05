@@ -94,10 +94,17 @@ class DownloadFile(View):
                     if not os.path.exists(file.path):
                         break
 
+                    # in Nginx config, we need to map /private/ to
+                    # the actual media files location with internal directive
+                    # eg:
+                    #   location /private {
+                    #       internal;
+                    #       alias /path/to/media;
+                    #   }
                     if getattr(settings, "USE_X_ACCEL_REDIRECT", False):
                         response = HttpResponse()
                         response["Content-Type"] = ""
-                        response["X-Accel-Redirect"] = file.url
+                        response["X-Accel-Redirect"] = f"/private/{file.name}"
                     else:
                         response = FileResponse(
                             open(file.path, "rb"), as_attachment=True
