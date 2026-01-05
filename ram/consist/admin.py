@@ -47,7 +47,7 @@ class ConsistAdmin(SortableAdminBase, admin.ModelAdmin):
         "creation_time",
         "updated_time",
     )
-    list_filter = ("published", "company__name", "era", "scale")
+    list_filter = ("published", "company__name", "era", "scale__scale")
     list_display = (
         "__str__",
         "company__name",
