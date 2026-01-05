@@ -6,6 +6,7 @@ from urllib.parse import unquote
 
 from django.conf import settings
 from django.views import View
+from django.urls import Resolver404
 from django.http import Http404, HttpResponseBadRequest
 from django.db.utils import OperationalError, ProgrammingError
 from django.db.models import F, Q, Count
@@ -63,10 +64,16 @@ def get_items_ordering(config="items_ordering"):
 
 class Render404(View):
     def get(self, request, exception):
+        generic_message = "Page not found"
+        if isinstance(exception, Resolver404):
+            message = generic_message
+        else:
+            message = str(exception) if exception else generic_message
+
         return render(
             request,
             "base.html",
-            {"title": "404 page not found"},
+            {"title": message},
             status=404,
         )
 
