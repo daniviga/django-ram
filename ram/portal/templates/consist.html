@@ -34,6 +34,7 @@
         {% endfor %}
       {% endblock %}
       </div>
+      {% if loads %}
       <div class="accordion shadow-sm mt-4" id="accordionLoads">
         <div class="accordion-item">
           <h2 class="accordion-header">
@@ -52,6 +53,7 @@
           </div>
         </div>
       </div>
+      {% endif %}
       {% endblock %}
       {% block pagination %}
       {% if data.has_other_pages %}
