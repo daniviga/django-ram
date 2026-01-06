@@ -29,7 +29,7 @@ from bookshelf.models import (
 class BookImageInline(SortableInlineAdminMixin, admin.TabularInline):
     model = BaseBookImage
     min_num = 0
-    extra = 0
+    extra = 1
     readonly_fields = ("image_thumbnail",)
     classes = ["collapse"]
     verbose_name = "Image"
@@ -47,7 +47,7 @@ class BookPropertyInline(admin.TabularInline):
 class BookDocInline(admin.TabularInline):
     model = BookDocument
     min_num = 0
-    extra = 0
+    extra = 1
     classes = ["collapse"]
 
 

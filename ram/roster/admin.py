@@ -53,14 +53,14 @@ class RollingClass(admin.ModelAdmin):
 class RollingStockDocInline(admin.TabularInline):
     model = RollingStockDocument
     min_num = 0
-    extra = 0
+    extra = 1
     classes = ["collapse"]
 
 
 class RollingStockImageInline(SortableInlineAdminMixin, admin.TabularInline):
     model = RollingStockImage
     min_num = 0
-    extra = 0
+    extra = 1
     readonly_fields = ("image_thumbnail",)
     classes = ["collapse"]
 

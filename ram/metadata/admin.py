@@ -24,7 +24,7 @@ class PropertyAdmin(admin.ModelAdmin):
 class DecoderDocInline(admin.TabularInline):
     model = DecoderDocument
     min_num = 0
-    extra = 0
+    extra = 1
     classes = ["collapse"]
 
 
