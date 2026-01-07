@@ -9,7 +9,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="color-scheme" content="light dark">
-    <meta name="description" content="{{ site_conf.about}}">
+    <meta name="description" content="{{ site_conf.about|striptags }}">
     <meta name="author" content="{{ site_conf.site_author }}">
     <meta name="generator" content="Django Framework">
     <title>{% block title %}{{ title }}{% endblock %} - {{ site_conf.site_name }}</title>
