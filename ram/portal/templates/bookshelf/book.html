@@ -53,9 +53,9 @@
                 {% if documents %}<button class="nav-link" id="nav-documents-tab" data-bs-toggle="tab" data-bs-target="#nav-documents" type="button" role="tab" aria-controls="nav-documents" aria-selected="false">Documents</button>{% endif %}
               </nav>
               <select class="form-select d-lg-none mb-2" id="tabSelector" aria-label="Tab selector">
-                <option value="nav-summary" selected>Summary</option>
-                {% if data.toc.all %}<option value="nav-toc">Table of contents</option>{% endif %}
-                {% if documents %}<option value="nav-documents">Documents</option>{% endif %}
+                <option value="#nav-summary" selected>Summary</option>
+                {% if data.toc.all %}<option value="#nav-toc">Table of contents</option>{% endif %}
+                {% if documents %}<option value="#nav-documents">Documents</option>{% endif %}
               </select>
               <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane show active" id="nav-summary" role="tabpanel" aria-labelledby="nav-summary-tab">

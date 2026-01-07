@@ -59,15 +59,15 @@
                 {% if consists %}<button class="nav-link" id="nav-consists-tab" data-bs-toggle="tab" data-bs-target="#nav-consists" type="button" role="tab" aria-controls="nav-consists" aria-selected="false">Consists</button>{% endif %}
               </nav>
               <select class="form-select d-lg-none mb-2" id="tabSelector" aria-label="Tab selector">
-                <option value="nav-summary" selected>Summary</option>
-                <option value="nav-model">Model</option>
-                <option value="nav-class">Class</option>
-                <option value="nav-company">Company</option>
-                {% if rolling_stock.decoder or rolling_stock.decoder_interface %}<option value="nav-dcc">DCC</option>{% endif %}
-                {% if documents or decoder_documents %}<option value="nav-documents">Documents</option>{% endif %}
-                {% if journal %}<option value="nav-journal">Journal</option>{% endif %}
-                {% if set %}<option value="nav-set">Set</option>{% endif %}
-                {% if consists %}<option value="nav-consists">Consists</option>{% endif %}
+                <option value="#nav-summary" selected>Summary</option>
+                <option value="#nav-model">Model</option>
+                <option value="#nav-class">Class</option>
+                <option value="#nav-company">Company</option>
+                {% if rolling_stock.decoder or rolling_stock.decoder_interface %}<option value="#nav-dcc">DCC</option>{% endif %}
+                {% if documents or decoder_documents %}<option value="#nav-documents">Documents</option>{% endif %}
+                {% if journal %}<option value="#nav-journal">Journal</option>{% endif %}
+                {% if set %}<option value="#nav-set">Set</option>{% endif %}
+                {% if consists %}<option value="#nav-consists">Consists</option>{% endif %}
               </select>
               {% with class=rolling_stock.rolling_class company=rolling_stock.rolling_class.company %}
               <div class="tab-content" id="nav-tabContent">
