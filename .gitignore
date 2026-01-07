@@ -127,6 +127,12 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+# node.js / npm stuff
+node_modules
+package.json
+package-lock.json
+
+# our own stuff
 *.swp
 ram/storage/
 !ram/storage/.gitignore

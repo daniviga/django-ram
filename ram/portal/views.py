@@ -773,7 +773,7 @@ class GetMagazine(View):
 
         return render(
             request,
-            "magazine.html",
+            "bookshelf/magazine.html",
             {
                 "title": magazine,
                 "magazine": magazine,
