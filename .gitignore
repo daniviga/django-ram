@@ -129,7 +129,6 @@ dmypy.json
 
 # node.js / npm stuff
 node_modules
-package.json
 package-lock.json
 
 # our own stuff
