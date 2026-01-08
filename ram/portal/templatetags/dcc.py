@@ -17,15 +17,13 @@ def dcc(object):
             f'<i class="bi bi-dice-6"></i></abbr>'
         )
     if object.decoder:
+        decoder = mark_safe(f'<abbr title="{object.decoder}">')
         if object.decoder.sound:
-            decoder = mark_safe(
-                f'<abbr title="{object.decoder}">'
+            decoder += mark_safe(
                 '<i class="bi bi-volume-up-fill"></i></abbr>'
             )
         else:
-            decoder = mark_safe(
-                f'<abbr title="{object.decoder}'
-                f'({object.get_decoder_interface()})">'
+            decoder += mark_safe(
                 '<i class="bi bi-cpu-fill"></i></abbr>'
             )
     if decoder:
