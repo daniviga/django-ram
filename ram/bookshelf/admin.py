@@ -2,7 +2,12 @@ import html
 
 from django.conf import settings
 from django.contrib import admin
-from django.utils.html import format_html, format_html_join, strip_tags
+from django.utils.html import (
+    format_html,
+    format_html_join,
+    strip_tags,
+    mark_safe,
+)
 from adminsortable2.admin import SortableAdminBase, SortableInlineAdminMixin
 
 from ram.admin import publish, unpublish
@@ -149,7 +154,7 @@ class BookAdmin(SortableAdminBase, admin.ModelAdmin):
     def invoices(self, obj):
         if obj.invoice.exists():
             html = format_html_join(
-                "<br>",
+                mark_safe("<br>"),
                 '<a href="{}" target="_blank">{}</a>',
                 ((i.file.url, i) for i in obj.invoice.all()),
             )
@@ -317,7 +322,7 @@ class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
     def invoices(self, obj):
         if obj.invoice.exists():
             html = format_html_join(
-                "<br>",
+                mark_safe("<br>"),
                 '<a href="{}" target="_blank">{}</a>',
                 ((i.file.url, i) for i in obj.invoice.all()),
             )
