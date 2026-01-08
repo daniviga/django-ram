@@ -151,10 +151,10 @@ DECODER_INTERFACES = [
     (0, "Built-in"),
     (1, "NEM651"),
     (2, "NEM652"),
-    (3, "NEM658 (Plux22)"),
+    (3, "NEM658 (Plux16)"),
+    (6, "NEM658 (Plux22)"),
     (4, "NEM660 (21MTC)"),
     (5, "NEM662 (Next18/Next18S)"),
-    (3, "NEM658 (Plux16)"),
 ]
 
 MANUFACTURER_TYPES = [
