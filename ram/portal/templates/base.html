@@ -23,7 +23,7 @@
     <link href="{% static "bootstrap-icons@1.13.1/font/bootstrap-icons.css" %}" rel="stylesheet">
     {% endif %}
     <link href="{% static "css/main.min.css" %}?v={{ site_conf.version }}" rel="stylesheet">
-    <script src="{% static "js/main.min.js" %}"></script>
+    <script src="{% static "js/main.min.js" %}?v={{ site_conf.version }}"></script>
     {% block extra_head %}
     {{ site_conf.extra_head | safe }}
     {% endblock %}
