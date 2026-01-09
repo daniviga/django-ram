@@ -30,7 +30,7 @@ class Property(SimpleBaseModel):
 
 
 class Manufacturer(SimpleBaseModel):
-    name = models.CharField(max_length=128, unique=True)
+    name = models.CharField(max_length=128)
     slug = models.CharField(max_length=128, unique=True, editable=False)
     category = models.CharField(
         max_length=64, choices=settings.MANUFACTURER_TYPES
@@ -46,6 +46,12 @@ class Manufacturer(SimpleBaseModel):
 
     class Meta:
         ordering = ["category", "slug"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["name", "category"],
+                name="unique_name_category"
+            )
+        ]
 
     def __str__(self):
         return self.name

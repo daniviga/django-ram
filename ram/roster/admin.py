@@ -35,7 +35,7 @@ class RollingClassPropertyInline(admin.TabularInline):
 class RollingClass(admin.ModelAdmin):
     inlines = (RollingClassPropertyInline,)
     autocomplete_fields = ("manufacturer",)
-    list_display = ("__str__", "type", "company", "country_flag")
+    list_display = ("__str__", "identifier", "type", "company", "country_flag")
     list_filter = ("company", "type__category", "type")
     search_fields = (
         "identifier",
