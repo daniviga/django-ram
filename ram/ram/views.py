@@ -85,39 +85,42 @@ class DownloadFile(View):
         # Find all models inheriting from PublishableFile
         for model in apps.get_models():
             if issubclass(model, PrivateDocument) and not model._meta.abstract:
-                try:
-                    doc = model.objects.get(file__endswith=filename)
-                    if doc.private and not request.user.is_staff:
-                        break
-
-                    file = doc.file
-                    if not os.path.exists(file.path):
-                        break
-
-                    # in Nginx config, we need to map /private/ to
-                    # the actual media files location with internal directive
-                    # eg:
-                    #   location /private {
-                    #       internal;
-                    #       alias /path/to/media;
-                    #   }
-                    if getattr(settings, "USE_X_ACCEL_REDIRECT", False):
-                        response = HttpResponse()
-                        response["Content-Type"] = ""
-                        response["X-Accel-Redirect"] = f"/private/{file.name}"
-                    else:
-                        response = FileResponse(
-                            open(file.path, "rb"), as_attachment=True
-                        )
-
-                    response["Content-Disposition"] = (
-                        '{}; filename="{}"'.format(
-                            disposition,
-                            smart_str(os.path.basename(file.path))
-                        )
-                    )
-                    return response
-                except model.DoesNotExist:
+                # Due to deduplication, multiple documents may have
+                # the same file name; if any is private, use a failsafe
+                # approach enforce access control
+                docs = model.objects.filter(file__endswith=filename)
+                if not docs.exists():
                     continue
+
+                if (
+                    any(doc.private for doc in docs)
+                    and not request.user.is_staff
+                ):
+                    break
+
+                file = docs.first().file
+                if not os.path.exists(file.path):
+                    break
+
+                # in Nginx config, we need to map /private/ to
+                # the actual media files location with internal directive
+                # eg:
+                #   location /private {
+                #       internal;
+                #       alias /path/to/media;
+                #   }
+                if getattr(settings, "USE_X_ACCEL_REDIRECT", False):
+                    response = HttpResponse()
+                    response["Content-Type"] = ""
+                    response["X-Accel-Redirect"] = f"/private/{file.name}"
+                else:
+                    response = FileResponse(
+                        open(file.path, "rb"), as_attachment=True
+                    )
+
+                response["Content-Disposition"] = '{}; filename="{}"'.format(
+                    disposition, smart_str(os.path.basename(file.path))
+                )
+                return response
 
         raise Http404("File not found")
