@@ -109,6 +109,12 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 MEDIA_URL = "media/"
 MEDIA_ROOT = STORAGE_DIR / "media"
 
+# cookies hardening
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_HTTPONLY = True
+
 # django-ram REST API settings
 REST_ENABLED = False  # Set to True to enable the REST API
 REST_FRAMEWORK = {
