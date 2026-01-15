@@ -1,5 +1,7 @@
 // use Bootstrap 5's Tab component to manage tab navigation and synchronize with URL hash
 document.addEventListener("DOMContentLoaded", function () {
+  'use strict';
+
   const selectElement = document.getElementById('tabSelector');
   // code to handle tab selection and URL hash synchronization
   const hash = window.location.hash.substring(1) // remove the '#' prefix
@@ -8,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const trigger = document.querySelector(`[data-bs-target="${target}"]`);
     if (trigger) {
       bootstrap.Tab.getOrCreateInstance(trigger).show();
-      selectElement.value = target // keep the dropdown in sync
+      selectElement.value = target; // keep the dropdown in sync
     }
   }
 
@@ -35,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll('[data-bs-toggle="tab"]').forEach(btn => {
     btn.addEventListener('shown.bs.tab', event => {
       const target = event.target.getAttribute('data-bs-target');
-      selectElement.value = target
+      selectElement.value = target;
     });
   });
 });

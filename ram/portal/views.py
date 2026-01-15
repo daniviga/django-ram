@@ -277,6 +277,9 @@ class SearchObjects(View):
         return _filter, search
 
     def get(self, request, search, page=1):
+        if not search:
+            return HttpResponseBadRequest()
+
         try:
             encoded_search = search
             search = base64.b64decode(search.encode()).decode()
