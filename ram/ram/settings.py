@@ -3,6 +3,7 @@ Django settings for ram project.
 """
 
 from pathlib import Path
+from django.utils.csp import CSP
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -12,9 +13,7 @@ STORAGE_DIR = BASE_DIR / "storage"
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = (
-    "django-ram-insecure-Chang3m3-1n-Pr0duct10n!"
-)
+SECRET_KEY = "django-ram-insecure-Chang3m3-1n-Pr0duct10n!"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -48,6 +47,7 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
+    "django.middleware.csp.ContentSecurityPolicyMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -109,11 +109,25 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 MEDIA_URL = "media/"
 MEDIA_ROOT = STORAGE_DIR / "media"
 
-# cookies hardening
-SESSION_COOKIE_NAME = '__Secure-sessionid'
+# Enforce a CSP policy:
+CDN_WHITELIST_CSP = ["https://cdn.jsdelivr.net/"]
+SECURE_CSP = {
+    "default-src": [CSP.SELF] + CDN_WHITELIST_CSP,
+    "img-src": ["data:", "*"],
+    "script-src": [
+        CSP.SELF,
+        CSP.UNSAFE_INLINE,
+        "https://www.googletagmanager.com/",
+    ]
+    + CDN_WHITELIST_CSP,
+    "style-src": [CSP.SELF, CSP.UNSAFE_INLINE] + CDN_WHITELIST_CSP,
+}
+
+# Cookies hardening
+SESSION_COOKIE_NAME = "__Secure-sessionid"
 SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_HTTPONLY = True
-CSRF_COOKIE_NAME = '__Secure-csrftoken'
+CSRF_COOKIE_NAME = "__Secure-csrftoken"
 CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_HTTPONLY = True
 
@@ -169,7 +183,7 @@ MANUFACTURER_TYPES = [
     ("model", "Model"),
     ("real", "Real"),
     ("accessory", "Accessory"),
-    ("other", "Other")
+    ("other", "Other"),
 ]
 
 ROLLING_STOCK_TYPES = [

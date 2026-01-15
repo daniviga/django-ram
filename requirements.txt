@@ -1,7 +1,7 @@
 pytz
 pillow
 markdown
-Django
+Django>=6.0
 djangorestframework
 django-solo
 django-countries
