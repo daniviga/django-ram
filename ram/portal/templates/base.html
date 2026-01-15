@@ -25,7 +25,8 @@
     <link href="{% static "css/main.min.css" %}?v={{ site_conf.version }}" rel="stylesheet">
     <script src="{% static "js/main.min.js" %}?v={{ site_conf.version }}"></script>
     {% block extra_head %}
-    {{ site_conf.extra_head | safe }}
+    {%  if site_conf.extra_html %}{{ site_conf.extra_html | safe }}{% endif %}
+    {%  if site_conf.extra_js %}<script src="{% url 'extra_js' %}"></script>{% endif %}
     {% endblock %}
   </head>
   <body>

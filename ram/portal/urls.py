@@ -1,6 +1,7 @@
 from django.urls import path
 
 from portal.views import (
+    RenderExtraJS,
     GetHome,
     GetRoster,
     GetObjectsFiltered,
@@ -24,6 +25,7 @@ from portal.views import (
 
 urlpatterns = [
     path("", GetHome.as_view(), name="index"),
+    path("extra.js", RenderExtraJS.as_view(), name="extra_js"),
     path("roster", GetRoster.as_view(), name="roster"),
     path("roster/page/<int:page>", GetRoster.as_view(), name="roster"),
     path(

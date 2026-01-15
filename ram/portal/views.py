@@ -7,7 +7,7 @@ from urllib.parse import unquote
 from django.conf import settings
 from django.views import View
 from django.urls import Resolver404
-from django.http import Http404, HttpResponseBadRequest
+from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.db.utils import OperationalError, ProgrammingError
 from django.db.models import F, Q, Count
 from django.db.models.functions import Lower
@@ -76,6 +76,16 @@ class Render404(View):
             {"title": message},
             status=404,
         )
+
+
+class RenderExtraJS(View):
+    def get(self, request):
+        try:
+            extra_js = get_site_conf().extra_js
+        except (OperationalError, ProgrammingError):
+            extra_js = ""
+
+        return HttpResponse(extra_js, content_type="application/javascript")
 
 
 class GetData(View):

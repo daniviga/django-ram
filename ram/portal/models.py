@@ -39,7 +39,14 @@ class SiteConfiguration(SingletonModel):
     disclaimer = tinymce.HTMLField(blank=True)
     show_version = models.BooleanField(default=True)
     use_cdn = models.BooleanField(default=True)
-    extra_head = models.TextField(blank=True)
+    extra_html = models.TextField(
+        blank=True,
+        help_text="Extra HTML to be dinamically loaded into the site.",
+    )
+    extra_js = models.TextField(
+        blank=True,
+        help_text="Extra JS to be dinamically loaded into the site.",
+    )
 
     class Meta:
         verbose_name = "Site Configuration"

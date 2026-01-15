@@ -35,7 +35,8 @@ class SiteConfigurationAdmin(SingletonModelAdmin):
                 "fields": (
                     "show_version",
                     "use_cdn",
-                    "extra_head",
+                    "extra_html",
+                    "extra_js",
                     "rest_api",
                     "version",
                 ),

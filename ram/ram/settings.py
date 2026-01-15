@@ -116,7 +116,6 @@ SECURE_CSP = {
     "img-src": ["data:", "*"],
     "script-src": [
         CSP.SELF,
-        CSP.UNSAFE_INLINE,
         "https://www.googletagmanager.com/",
     ]
     + CDN_WHITELIST_CSP,
