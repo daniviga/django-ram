@@ -110,8 +110,10 @@ MEDIA_URL = "media/"
 MEDIA_ROOT = STORAGE_DIR / "media"
 
 # cookies hardening
+SESSION_COOKIE_NAME = '__Secure-sessionid'
 SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_NAME = '__Secure-csrftoken'
 CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_HTTPONLY = True
 
