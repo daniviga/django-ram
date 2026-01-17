@@ -11,6 +11,7 @@ from django_countries.fields import CountryField
 
 from ram.utils import DeduplicatedStorage
 from ram.models import BaseModel, Image, PropertyInstance
+from ram.managers import BookManager, CatalogManager, MagazineIssueManager
 from metadata.models import Scale, Manufacturer, Shop, Tag
 
 
@@ -105,6 +106,8 @@ class Book(BaseBook):
     authors = models.ManyToManyField(Author, blank=True)
     publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE)
 
+    objects = BookManager()
+
     class Meta:
         ordering = ["title"]
 
@@ -133,6 +136,8 @@ class Catalog(BaseBook):
     )
     years = models.CharField(max_length=12)
     scales = models.ManyToManyField(Scale, related_name="catalogs")
+
+    objects = CatalogManager()
 
     class Meta:
         ordering = ["manufacturer", "publication_year"]
@@ -213,6 +218,8 @@ class MagazineIssue(BaseBook):
     publication_month = models.SmallIntegerField(
         null=True, blank=True, choices=MONTHS.items()
     )
+
+    objects = MagazineIssueManager()
 
     class Meta:
         unique_together = ("magazine", "issue_number")

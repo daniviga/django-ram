@@ -98,6 +98,13 @@ class BookAdmin(SortableAdminBase, admin.ModelAdmin):
     search_fields = ("title", "publisher__name", "authors__last_name")
     list_filter = ("publisher__name", "authors", "published")
 
+    def get_queryset(self, request):
+        """Optimize queryset with select_related and prefetch_related."""
+        qs = super().get_queryset(request)
+        return qs.select_related('publisher', 'shop').prefetch_related(
+            'authors', 'tags', 'image', 'toc'
+        )
+
     fieldsets = (
         (
             None,
@@ -265,6 +272,13 @@ class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
         "publication_year",
         "scales__scale",
     )
+
+    def get_queryset(self, request):
+        """Optimize queryset with select_related and prefetch_related."""
+        qs = super().get_queryset(request)
+        return qs.select_related('manufacturer', 'shop').prefetch_related(
+            'scales', 'tags', 'image'
+        )
 
     fieldsets = (
         (
@@ -489,6 +503,11 @@ class MagazineAdmin(SortableAdminBase, admin.ModelAdmin):
         "published",
         "publisher__name",
     )
+
+    def get_queryset(self, request):
+        """Optimize queryset with select_related and prefetch_related."""
+        qs = super().get_queryset(request)
+        return qs.select_related('publisher').prefetch_related('tags')
 
     fieldsets = (
         (

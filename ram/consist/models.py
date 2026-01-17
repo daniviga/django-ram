@@ -8,6 +8,7 @@ from django.core.exceptions import ValidationError
 
 from ram.models import BaseModel
 from ram.utils import DeduplicatedStorage
+from ram.managers import ConsistManager
 from metadata.models import Company, Scale, Tag
 from roster.models import RollingStock
 
@@ -34,6 +35,8 @@ class Consist(BaseModel):
         null=True,
         blank=True,
     )
+
+    objects = ConsistManager()
 
     def __str__(self):
         return "{0} {1}".format(self.company, self.identifier)

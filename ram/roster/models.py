@@ -11,7 +11,7 @@ from tinymce import models as tinymce
 
 from ram.models import BaseModel, Image, PropertyInstance
 from ram.utils import DeduplicatedStorage, slugify
-from ram.managers import PublicManager
+from ram.managers import PublicManager, RollingStockManager
 from metadata.models import (
     Scale,
     Manufacturer,
@@ -248,7 +248,7 @@ class RollingStockJournal(models.Model):
     class Meta:
         ordering = ["date", "rolling_stock"]
 
-    objects = PublicManager()
+    objects = RollingStockManager()
 
 
 # @receiver(models.signals.post_delete, sender=Cab)
