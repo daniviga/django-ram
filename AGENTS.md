@@ -86,7 +86,7 @@ python manage.py test --keepdb
 python manage.py test --pattern="test_*.py"
 ```
 
-### Linting
+### Linting and Formatting
 ```bash
 # Run flake8 (configured in requirements-dev.txt)
 flake8 .                                  # Lint entire project
@@ -95,6 +95,13 @@ flake8 roster/models.py                   # Lint specific file
 
 # Note: No .flake8 config exists; uses PEP 8 defaults
 # Long lines use # noqa: E501 comments in settings.py
+
+# Run black formatter with 79 character line length
+black -l 79 .                             # Format entire project
+black -l 79 roster/                       # Format specific app
+black -l 79 roster/models.py              # Format specific file
+black -l 79 --check .                     # Check formatting without changes
+black -l 79 --diff .                      # Show formatting changes
 ```
 
 ### Admin Commands
