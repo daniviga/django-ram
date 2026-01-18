@@ -128,6 +128,7 @@ python manage.py runserver --noreload     # With pyinstrument middleware
 - **Long lines**: Use `# noqa: E501` comment when necessary (see settings.py)
 - **Indentation**: 4 spaces (no tabs)
 - **Encoding**: UTF-8
+- **Blank lines**: Must not contain any whitespace (spaces or tabs)
 
 ### Import Organization
 Follow Django's import style (as seen in models.py, views.py, admin.py):
