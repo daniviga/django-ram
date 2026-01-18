@@ -579,6 +579,12 @@ class GetConsist(View):
         except ObjectDoesNotExist:
             raise Http404
 
+        # Get all published rolling stock IDs for efficient filtering
+        published_ids = set(
+            RollingStock.objects.get_published(request.user)
+            .values_list('uuid', flat=True)
+        )
+
         # Fetch consist items with related rolling stock in one query
         consist_items = consist.consist_item.select_related(
             'rolling_stock',
@@ -589,21 +595,17 @@ class GetConsist(View):
             'rolling_stock__scale',
         ).prefetch_related('rolling_stock__image')
 
-        # Filter items and loads
-        data = list(
+        # Filter items and loads efficiently
+        data = [
             item.rolling_stock
             for item in consist_items.filter(load=False)
-            if RollingStock.objects.get_published(request.user)
-            .filter(uuid=item.rolling_stock_id)
-            .exists()
-        )
-        loads = list(
+            if item.rolling_stock.uuid in published_ids
+        ]
+        loads = [
             item.rolling_stock
             for item in consist_items.filter(load=True)
-            if RollingStock.objects.get_published(request.user)
-            .filter(uuid=item.rolling_stock_id)
-            .exists()
-        )
+            if item.rolling_stock.uuid in published_ids
+        ]
 
         paginator = Paginator(data, get_items_per_page())
         data = paginator.get_page(page)
@@ -619,6 +621,7 @@ class GetConsist(View):
                 "consist": consist,
                 "data": data,
                 "loads": loads,
+                "loads_count": len(loads),
                 "page_range": page_range,
             },
         )

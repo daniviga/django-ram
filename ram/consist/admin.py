@@ -122,12 +122,27 @@ class ConsistAdmin(SortableAdminBase, admin.ModelAdmin):
             "Item ID",
         ]
         data = []
+
+        # Prefetch related data to avoid N+1 queries
+        queryset = queryset.select_related(
+            'company', 'scale'
+        ).prefetch_related(
+            'tags',
+            'consist_item__rolling_stock__rolling_class__type'
+        )
+
         for obj in queryset:
+            # Cache the type count to avoid recalculating for each item
+            types = " + ".join(
+                "{}x {}".format(t["count"], t["type"])
+                for t in obj.get_type_count()
+            )
+            # Cache tags to avoid repeated queries
+            tags_str = settings.CSV_SEPARATOR_ALT.join(
+                t.name for t in obj.tags.all()
+            )
+
             for item in obj.consist_item.all():
-                types = " + ".join(
-                    "{}x {}".format(t["count"], t["type"])
-                    for t in obj.get_type_count()
-                )
                 data.append(
                     [
                         obj.uuid,
@@ -139,9 +154,7 @@ class ConsistAdmin(SortableAdminBase, admin.ModelAdmin):
                         obj.scale.scale,
                         obj.era,
                         html.unescape(strip_tags(obj.description)),
-                        settings.CSV_SEPARATOR_ALT.join(
-                            t.name for t in obj.tags.all()
-                        ),
+                        tags_str,
                         obj.length,
                         types,
                         item.rolling_stock.__str__(),

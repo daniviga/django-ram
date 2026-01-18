@@ -194,6 +194,12 @@ class BookAdmin(SortableAdminBase, admin.ModelAdmin):
         ]
 
         data = []
+
+        # Prefetch related data to avoid N+1 queries
+        queryset = queryset.select_related(
+            'publisher', 'shop'
+        ).prefetch_related('authors', 'tags', 'property__property')
+
         for obj in queryset:
             properties = settings.CSV_SEPARATOR_ALT.join(
                 "{}:{}".format(property.property.name, property.value)
@@ -360,6 +366,12 @@ class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
         ]
 
         data = []
+
+        # Prefetch related data to avoid N+1 queries
+        queryset = queryset.select_related(
+            'manufacturer', 'shop'
+        ).prefetch_related('scales', 'tags', 'property__property')
+
         for obj in queryset:
             properties = settings.CSV_SEPARATOR_ALT.join(
                 "{}:{}".format(property.property.name, property.value)

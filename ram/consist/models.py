@@ -48,6 +48,11 @@ class Consist(BaseModel):
     def length(self):
         return self.consist_item.filter(load=False).count()
 
+    @property
+    def loads_count(self):
+        """Count of loads in this consist using database aggregation."""
+        return self.consist_item.filter(load=True).count()
+
     def get_type_count(self):
         return self.consist_item.filter(load=False).annotate(
             type=models.F("rolling_stock__rolling_class__type__type")

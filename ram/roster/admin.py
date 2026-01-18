@@ -273,6 +273,18 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
             "Properties",
         ]
         data = []
+
+        # Prefetch related data to avoid N+1 queries
+        queryset = queryset.select_related(
+            'rolling_class',
+            'rolling_class__type',
+            'rolling_class__company',
+            'manufacturer',
+            'scale',
+            'decoder',
+            'shop'
+        ).prefetch_related('tags', 'property__property')
+
         for obj in queryset:
             properties = settings.CSV_SEPARATOR_ALT.join(
                 "{}:{}".format(property.property.name, property.value)
