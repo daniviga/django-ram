@@ -38,6 +38,14 @@ class RollingClass(models.Model):
         ordering = ["company", "identifier"]
         verbose_name = "Class"
         verbose_name_plural = "Classes"
+        indexes = [
+            models.Index(fields=["company"], name="roster_rc_company_idx"),
+            models.Index(fields=["type"], name="roster_rc_type_idx"),
+            models.Index(
+                fields=["company", "identifier"],
+                name="roster_rc_co_ident_idx",  # Shortened to fit 30 char limit
+            ),
+        ]
 
     def __str__(self):
         return "{0} {1}".format(self.company, self.identifier)
@@ -125,6 +133,30 @@ class RollingStock(BaseModel):
     class Meta:
         ordering = ["rolling_class", "road_number_int"]
         verbose_name_plural = "Rolling stock"
+        indexes = [
+            # Index for published/featured filtering
+            models.Index(fields=["published"], name="roster_published_idx"),
+            models.Index(fields=["featured"], name="roster_featured_idx"),
+            # Index for item number searches
+            models.Index(
+                fields=["item_number_slug"], name="roster_item_slug_idx"
+            ),
+            # Index for road number searches and ordering
+            models.Index(
+                fields=["road_number_int"], name="roster_road_num_idx"
+            ),
+            # Composite index for common filtering patterns
+            models.Index(
+                fields=["published", "featured"], name="roster_pub_feat_idx"
+            ),
+            # Composite index for manufacturer+item_number lookups
+            models.Index(
+                fields=["manufacturer", "item_number_slug"],
+                name="roster_mfr_item_idx",
+            ),
+            # Index for scale filtering
+            models.Index(fields=["scale"], name="roster_scale_idx"),
+        ]
 
     def __str__(self):
         return "{0} {1}".format(self.rolling_class, self.road_number)

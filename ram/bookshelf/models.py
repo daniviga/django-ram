@@ -110,6 +110,12 @@ class Book(BaseBook):
 
     class Meta:
         ordering = ["title"]
+        indexes = [
+            # Index for title searches (local field)
+            models.Index(fields=["title"], name="book_title_idx"),
+            # Note: published and publication_year are inherited from BaseBook/BaseModel
+            # and cannot be indexed here due to multi-table inheritance
+        ]
 
     def __str__(self):
         return self.title
@@ -141,6 +147,14 @@ class Catalog(BaseBook):
 
     class Meta:
         ordering = ["manufacturer", "publication_year"]
+        indexes = [
+            # Index for manufacturer filtering (local field)
+            models.Index(
+                fields=["manufacturer"], name="catalog_mfr_idx"
+            ),
+            # Note: published and publication_year are inherited from BaseBook/BaseModel
+            # and cannot be indexed here due to multi-table inheritance
+        ]
 
     def __str__(self):
         # if the object is new, return an empty string to avoid
@@ -189,6 +203,12 @@ class Magazine(BaseModel):
 
     class Meta:
         ordering = [Lower("name")]
+        indexes = [
+            # Index for published filtering
+            models.Index(fields=["published"], name="magazine_published_idx"),
+            # Index for name searches (case-insensitive via db_collation if needed)
+            models.Index(fields=["name"], name="magazine_name_idx"),
+        ]
 
     def __str__(self):
         return self.name
@@ -228,6 +248,17 @@ class MagazineIssue(BaseBook):
             "publication_year",
             "publication_month",
             "issue_number",
+        ]
+        indexes = [
+            # Index for magazine filtering (local field)
+            models.Index(fields=["magazine"], name="mag_issue_mag_idx"),
+            # Index for publication month (local field)
+            models.Index(
+                fields=["publication_month"],
+                name="mag_issue_pub_month_idx",
+            ),
+            # Note: published and publication_year are inherited from BaseBook/BaseModel
+            # and cannot be indexed here due to multi-table inheritance
         ]
 
     def __str__(self):

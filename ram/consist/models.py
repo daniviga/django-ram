@@ -74,6 +74,18 @@ class Consist(BaseModel):
 
     class Meta:
         ordering = ["company", "-creation_time"]
+        indexes = [
+            # Index for published filtering
+            models.Index(fields=["published"], name="consist_published_idx"),
+            # Index for scale filtering
+            models.Index(fields=["scale"], name="consist_scale_idx"),
+            # Index for company filtering
+            models.Index(fields=["company"], name="consist_company_idx"),
+            # Composite index for published+scale filtering
+            models.Index(
+                fields=["published", "scale"], name="consist_pub_scale_idx"
+            ),
+        ]
 
 
 class ConsistItem(models.Model):
@@ -89,8 +101,18 @@ class ConsistItem(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=["consist", "rolling_stock"],
-                name="one_stock_per_consist"
+                name="one_stock_per_consist",
             )
+        ]
+        indexes = [
+            # Index for filtering by load status
+            models.Index(fields=["load"], name="consist_item_load_idx"),
+            # Index for ordering
+            models.Index(fields=["order"], name="consist_item_order_idx"),
+            # Composite index for consist+load filtering
+            models.Index(
+                fields=["consist", "load"], name="consist_item_con_load_idx"
+            ),
         ]
 
     def __str__(self):
