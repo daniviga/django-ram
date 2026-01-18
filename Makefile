@@ -10,7 +10,8 @@ CSS_SRC_DIR = ram/portal/static/css/src
 CSS_OUT_DIR = ram/portal/static/css
 
 # Source files
-JS_SOURCES = $(JS_SRC_DIR)/theme_selector.js $(JS_SRC_DIR)/tabs_selector.js
+JS_SOURCES = $(JS_SRC_DIR)/theme_selector.js $(JS_SRC_DIR)/tabs_selector.js $(JS_SRC_DIR)/validators.js
+
 CSS_SOURCES = $(CSS_SRC_DIR)/main.css
 
 # Output files
