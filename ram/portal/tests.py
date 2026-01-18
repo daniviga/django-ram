@@ -161,7 +161,7 @@ class PortalTestBase(TestCase):
         self.catalog.scales.add(self.scale_ho)
 
         self.magazine = Magazine.objects.create(
-            name="Model Railroader", published=True
+            name="Model Railroader", publisher=self.publisher, published=True
         )
 
         self.magazine_issue = MagazineIssue.objects.create(
