@@ -96,16 +96,7 @@ class GetData(View):
     def get_data(self, request):
         return (
             RollingStock.objects.get_published(request.user)
-            .select_related(
-                'rolling_class',
-                'rolling_class__company',
-                'rolling_class__type',
-                'manufacturer',
-                'scale',
-                'decoder',
-                'shop',
-            )
-            .prefetch_related('tags', 'image')
+            .with_related()
             .order_by(*get_items_ordering())
             .filter(self.filter)
         )
@@ -142,16 +133,7 @@ class GetHome(GetData):
         max_items = min(settings.FEATURED_ITEMS_MAX, get_items_per_page())
         return (
             RollingStock.objects.get_published(request.user)
-            .select_related(
-                'rolling_class',
-                'rolling_class__company',
-                'rolling_class__type',
-                'manufacturer',
-                'scale',
-                'decoder',
-                'shop',
-            )
-            .prefetch_related('tags', 'image')
+            .with_related()
             .filter(featured=True)
             .order_by(*get_items_ordering(config="featured_items_ordering"))[
                 :max_items
@@ -220,14 +202,7 @@ class SearchObjects(View):
         #       and manufacturer as well
         roster = (
             RollingStock.objects.get_published(request.user)
-            .select_related(
-                'rolling_class',
-                'rolling_class__company',
-                'rolling_class__type',
-                'manufacturer',
-                'scale',
-            )
-            .prefetch_related('tags', 'image')
+            .with_related()
             .filter(query)
             .distinct()
             .order_by(*get_items_ordering())
@@ -237,8 +212,7 @@ class SearchObjects(View):
         if _filter is None:
             consists = (
                 Consist.objects.get_published(request.user)
-                .select_related('company', 'scale')
-                .prefetch_related('tags', 'consist_item')
+                .with_related()
                 .filter(
                     Q(
                         Q(identifier__icontains=search)
@@ -250,7 +224,7 @@ class SearchObjects(View):
             data = list(chain(data, consists))
             books = (
                 Book.objects.get_published(request.user)
-                .prefetch_related('toc', 'image')
+                .with_related()
                 .filter(
                     Q(
                         Q(title__icontains=search)
@@ -262,8 +236,7 @@ class SearchObjects(View):
             )
             catalogs = (
                 Catalog.objects.get_published(request.user)
-                .select_related('manufacturer')
-                .prefetch_related('scales', 'image')
+                .with_related()
                 .filter(
                     Q(
                         Q(manufacturer__name__icontains=search)
@@ -275,8 +248,7 @@ class SearchObjects(View):
             data = list(chain(data, books, catalogs))
             magazine_issues = (
                 MagazineIssue.objects.get_published(request.user)
-                .select_related('magazine')
-                .prefetch_related('toc', 'image')
+                .with_related()
                 .filter(
                     Q(
                         Q(magazine__name__icontains=search)
@@ -391,14 +363,7 @@ class GetManufacturerItem(View):
         else:
             roster = (
                 RollingStock.objects.get_published(request.user)
-                .select_related(
-                    'rolling_class',
-                    'rolling_class__company',
-                    'rolling_class__type',
-                    'manufacturer',
-                    'scale',
-                )
-                .prefetch_related('image')
+                .with_related()
                 .filter(
                     Q(manufacturer=manufacturer)
                     | Q(rolling_class__manufacturer=manufacturer)
@@ -408,8 +373,7 @@ class GetManufacturerItem(View):
             )
             catalogs = (
                 Catalog.objects.get_published(request.user)
-                .select_related('manufacturer')
-                .prefetch_related('scales', 'image')
+                .with_related()
                 .filter(manufacturer=manufacturer)
             )
             title = "Manufacturer: {0}".format(manufacturer)
@@ -458,14 +422,7 @@ class GetObjectsFiltered(View):
 
         roster = (
             RollingStock.objects.get_published(request.user)
-            .select_related(
-                'rolling_class',
-                'rolling_class__company',
-                'rolling_class__type',
-                'manufacturer',
-                'scale',
-            )
-            .prefetch_related('tags', 'image')
+            .with_related()
             .filter(query)
             .distinct()
             .order_by(*get_items_ordering())
@@ -476,8 +433,7 @@ class GetObjectsFiltered(View):
         if _filter == "scale":
             catalogs = (
                 Catalog.objects.get_published(request.user)
-                .select_related('manufacturer')
-                .prefetch_related('scales', 'image')
+                .with_related()
                 .filter(scales__slug=search)
                 .distinct()
             )
@@ -486,8 +442,7 @@ class GetObjectsFiltered(View):
         try:  # Execute only if query_2nd is defined
             consists = (
                 Consist.objects.get_published(request.user)
-                .select_related('company', 'scale')
-                .prefetch_related('tags', 'consist_item')
+                .with_related()
                 .filter(query_2nd)
                 .distinct()
             )
@@ -495,21 +450,19 @@ class GetObjectsFiltered(View):
             if _filter == "tag":  # Books can be filtered only by tag
                 books = (
                     Book.objects.get_published(request.user)
-                    .prefetch_related('toc', 'tags', 'image')
+                    .with_related()
                     .filter(query_2nd)
                     .distinct()
                 )
                 catalogs = (
                     Catalog.objects.get_published(request.user)
-                    .select_related('manufacturer')
-                    .prefetch_related('scales', 'tags', 'image')
+                    .with_related()
                     .filter(query_2nd)
                     .distinct()
                 )
                 magazine_issues = (
                     MagazineIssue.objects.get_published(request.user)
-                    .select_related('magazine')
-                    .prefetch_related('toc', 'tags', 'image')
+                    .with_related()
                     .filter(query_2nd)
                     .distinct()
                 )
@@ -549,25 +502,7 @@ class GetRollingStock(View):
         try:
             rolling_stock = (
                 RollingStock.objects.get_published(request.user)
-                .select_related(
-                    'rolling_class',
-                    'rolling_class__company',
-                    'rolling_class__type',
-                    'manufacturer',
-                    'scale',
-                    'decoder',
-                    'shop',
-                )
-                .prefetch_related(
-                    'tags',
-                    'image',
-                    'property',
-                    'document',
-                    'journal',
-                    'rolling_class__property',
-                    'rolling_class__manufacturer',
-                    'decoder__document',
-                )
+                .with_details()
                 .get(uuid=uuid)
             )
         except ObjectDoesNotExist:
@@ -589,21 +524,13 @@ class GetRollingStock(View):
 
         consists = list(
             Consist.objects.get_published(request.user)
-            .select_related('company', 'scale')
-            .prefetch_related('tags', 'consist_item')
+            .with_related()
             .filter(consist_item__rolling_stock=rolling_stock)
         )
 
         trainset = list(
             RollingStock.objects.get_published(request.user)
-            .select_related(
-                'rolling_class',
-                'rolling_class__company',
-                'rolling_class__type',
-                'manufacturer',
-                'scale',
-            )
-            .prefetch_related('image')
+            .with_related()
             .filter(
                 Q(
                     Q(item_number__exact=rolling_stock.item_number)
@@ -636,8 +563,7 @@ class Consists(GetData):
     def get_data(self, request):
         return (
             Consist.objects.get_published(request.user)
-            .select_related('company', 'scale')
-            .prefetch_related('tags', 'consist_item')
+            .with_related()
             .all()
         )
 
@@ -647,18 +573,7 @@ class GetConsist(View):
         try:
             consist = (
                 Consist.objects.get_published(request.user)
-                .select_related('company', 'scale')
-                .prefetch_related(
-                    'tags',
-                    'consist_item',
-                    'consist_item__rolling_stock',
-                    'consist_item__rolling_stock__rolling_class',
-                    'consist_item__rolling_stock__rolling_class__company',
-                    'consist_item__rolling_stock__rolling_class__type',
-                    'consist_item__rolling_stock__manufacturer',
-                    'consist_item__rolling_stock__scale',
-                    'consist_item__rolling_stock__image',
-                )
+                .with_rolling_stock()
                 .get(uuid=uuid)
             )
         except ObjectDoesNotExist:
@@ -872,7 +787,7 @@ class Books(GetData):
     def get_data(self, request):
         return (
             Book.objects.get_published(request.user)
-            .prefetch_related('tags', 'image', 'toc')
+            .with_related()
             .all()
         )
 
@@ -883,8 +798,7 @@ class Catalogs(GetData):
     def get_data(self, request):
         return (
             Catalog.objects.get_published(request.user)
-            .select_related('manufacturer')
-            .prefetch_related('scales', 'tags', 'image')
+            .with_related()
             .all()
         )
 
@@ -924,7 +838,7 @@ class GetMagazine(View):
             raise Http404
         data = list(
             magazine.issue.get_published(request.user)
-            .prefetch_related('image', 'toc')
+            .with_related()
             .all()
         )
         paginator = Paginator(data, get_items_per_page())
@@ -951,8 +865,7 @@ class GetMagazineIssue(View):
         try:
             issue = (
                 MagazineIssue.objects.get_published(request.user)
-                .select_related('magazine')
-                .prefetch_related('property', 'document', 'image', 'toc')
+                .with_details()
                 .get(uuid=uuid, magazine__uuid=magazine)
             )
         except ObjectDoesNotExist:
@@ -976,14 +889,13 @@ class GetBookCatalog(View):
         if selector == "book":
             return (
                 Book.objects.get_published(request.user)
-                .prefetch_related('property', 'document', 'image', 'toc', 'tags')
+                .with_details()
                 .get(uuid=uuid)
             )
         elif selector == "catalog":
             return (
                 Catalog.objects.get_published(request.user)
-                .select_related('manufacturer')
-                .prefetch_related('property', 'document', 'image', 'scales', 'tags')
+                .with_details()
                 .get(uuid=uuid)
             )
         else:

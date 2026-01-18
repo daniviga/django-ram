@@ -11,7 +11,7 @@ from tinymce import models as tinymce
 
 from ram.models import BaseModel, Image, PropertyInstance
 from ram.utils import DeduplicatedStorage, slugify
-from ram.managers import PublicManager, RollingStockManager
+from ram.managers import RollingStockManager
 from metadata.models import (
     Scale,
     Manufacturer,
@@ -119,6 +119,8 @@ class RollingStock(BaseModel):
     tags = models.ManyToManyField(
         Tag, related_name="rolling_stock", blank=True
     )
+
+    objects = RollingStockManager()
 
     class Meta:
         ordering = ["rolling_class", "road_number_int"]

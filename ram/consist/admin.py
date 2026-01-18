@@ -62,9 +62,7 @@ class ConsistAdmin(SortableAdminBase, admin.ModelAdmin):
     def get_queryset(self, request):
         """Optimize queryset with select_related and prefetch_related."""
         qs = super().get_queryset(request)
-        return qs.select_related(
-            'company', 'scale'
-        ).prefetch_related('tags', 'consist_item')
+        return qs.with_related()
 
     @admin.display(description="Country")
     def country_flag(self, obj):

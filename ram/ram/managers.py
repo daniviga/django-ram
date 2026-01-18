@@ -2,16 +2,18 @@ from django.db import models
 from django.core.exceptions import FieldError
 
 
-class PublicManager(models.Manager):
+class PublicQuerySet(models.QuerySet):
+    """Base QuerySet with published/public filtering."""
+
     def get_published(self, user):
         """
         Get published items based on user authentication status.
         Returns all items for authenticated users, only published for anonymous.
         """
         if user.is_authenticated:
-            return self.get_queryset()
+            return self
         else:
-            return self.get_queryset().filter(published=True)
+            return self.filter(published=True)
 
     def get_public(self, user):
         """
@@ -19,16 +21,29 @@ class PublicManager(models.Manager):
         Returns all items for authenticated users, only non-private for anonymous.
         """
         if user.is_authenticated:
-            return self.get_queryset()
+            return self
         else:
             try:
-                return self.get_queryset().filter(private=False)
+                return self.filter(private=False)
             except FieldError:
-                return self.get_queryset().filter(property__private=False)
+                return self.filter(property__private=False)
 
 
-class RollingStockManager(PublicManager):
-    """Optimized manager for RollingStock with prefetch methods."""
+class PublicManager(models.Manager):
+    """Manager using PublicQuerySet."""
+
+    def get_queryset(self):
+        return PublicQuerySet(self.model, using=self._db)
+
+    def get_published(self, user):
+        return self.get_queryset().get_published(user)
+
+    def get_public(self, user):
+        return self.get_queryset().get_public(user)
+
+
+class RollingStockQuerySet(PublicQuerySet):
+    """QuerySet with optimization methods for RollingStock."""
 
     def with_related(self):
         """
@@ -59,6 +74,19 @@ class RollingStockManager(PublicManager):
             'decoder__document',
         )
 
+
+class RollingStockManager(PublicManager):
+    """Optimized manager for RollingStock with prefetch methods."""
+
+    def get_queryset(self):
+        return RollingStockQuerySet(self.model, using=self._db)
+
+    def with_related(self):
+        return self.get_queryset().with_related()
+
+    def with_details(self):
+        return self.get_queryset().with_details()
+
     def get_published_with_related(self, user):
         """
         Convenience method combining get_published with related objects.
@@ -66,8 +94,8 @@ class RollingStockManager(PublicManager):
         return self.get_published(user).with_related()
 
 
-class ConsistManager(PublicManager):
-    """Optimized manager for Consist with prefetch methods."""
+class ConsistQuerySet(PublicQuerySet):
+    """QuerySet with optimization methods for Consist."""
 
     def with_related(self):
         """
@@ -94,8 +122,21 @@ class ConsistManager(PublicManager):
         )
 
 
-class BookManager(PublicManager):
-    """Optimized manager for Book/Catalog with prefetch methods."""
+class ConsistManager(PublicManager):
+    """Optimized manager for Consist with prefetch methods."""
+
+    def get_queryset(self):
+        return ConsistQuerySet(self.model, using=self._db)
+
+    def with_related(self):
+        return self.get_queryset().with_related()
+
+    def with_rolling_stock(self):
+        return self.get_queryset().with_rolling_stock()
+
+
+class BookQuerySet(PublicQuerySet):
+    """QuerySet with optimization methods for Book."""
 
     def with_related(self):
         """
@@ -112,8 +153,21 @@ class BookManager(PublicManager):
         return self.with_related().prefetch_related('property', 'document')
 
 
-class CatalogManager(PublicManager):
-    """Optimized manager for Catalog with prefetch methods."""
+class BookManager(PublicManager):
+    """Optimized manager for Book/Catalog with prefetch methods."""
+
+    def get_queryset(self):
+        return BookQuerySet(self.model, using=self._db)
+
+    def with_related(self):
+        return self.get_queryset().with_related()
+
+    def with_details(self):
+        return self.get_queryset().with_details()
+
+
+class CatalogQuerySet(PublicQuerySet):
+    """QuerySet with optimization methods for Catalog."""
 
     def with_related(self):
         """
@@ -130,8 +184,21 @@ class CatalogManager(PublicManager):
         return self.with_related().prefetch_related('property', 'document')
 
 
-class MagazineIssueManager(PublicManager):
-    """Optimized manager for MagazineIssue with prefetch methods."""
+class CatalogManager(PublicManager):
+    """Optimized manager for Catalog with prefetch methods."""
+
+    def get_queryset(self):
+        return CatalogQuerySet(self.model, using=self._db)
+
+    def with_related(self):
+        return self.get_queryset().with_related()
+
+    def with_details(self):
+        return self.get_queryset().with_details()
+
+
+class MagazineIssueQuerySet(PublicQuerySet):
+    """QuerySet with optimization methods for MagazineIssue."""
 
     def with_related(self):
         """
@@ -146,3 +213,16 @@ class MagazineIssueManager(PublicManager):
         Optimize queryset for detail views with properties and documents.
         """
         return self.with_related().prefetch_related('property', 'document')
+
+
+class MagazineIssueManager(PublicManager):
+    """Optimized manager for MagazineIssue with prefetch methods."""
+
+    def get_queryset(self):
+        return MagazineIssueQuerySet(self.model, using=self._db)
+
+    def with_related(self):
+        return self.get_queryset().with_related()
+
+    def with_details(self):
+        return self.get_queryset().with_details()

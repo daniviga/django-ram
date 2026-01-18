@@ -192,5 +192,120 @@ These models have separate Image model classes with `related_name="image"`:
 
 ---
 
+## 🔄 **Manager Helper Refactoring** (2026-01-18)
+
+Successfully replaced all explicit `prefetch_related()` and `select_related()` calls with centralized manager helper methods. **Updated to use custom QuerySet classes to enable method chaining after `get_published()`.**
+
+### Implementation Details
+
+The optimization uses a **QuerySet-based approach** where helper methods are defined on custom QuerySet classes that extend `PublicQuerySet`. This allows method chaining like:
+
+```python
+RollingStock.objects.get_published(user).with_related().filter(...)
+```
+
+**Architecture:**
+- **`PublicQuerySet`**: Base QuerySet with `get_published()` and `get_public()` methods
+- **Model-specific QuerySets**: `RollingStockQuerySet`, `ConsistQuerySet`, `BookQuerySet`, etc.
+- **Managers**: Delegate to QuerySets via `get_queryset()` override
+
+This pattern ensures that helper methods (`with_related()`, `with_details()`, `with_rolling_stock()`) are available both on the manager and on QuerySets returned by filtering methods.
+
+### Changes Summary
+
+**Admin Files (4 files updated):**
+- **roster/admin.py** (RollingStockAdmin:161-164): Replaced explicit prefetch with `.with_related()`
+- **consist/admin.py** (ConsistAdmin:62-67): Replaced explicit prefetch with `.with_related()`
+- **bookshelf/admin.py** (BookAdmin:101-106): Replaced explicit prefetch with `.with_related()`
+- **bookshelf/admin.py** (CatalogAdmin:276-281): Replaced explicit prefetch with `.with_related()`
+
+**Portal Views (portal/views.py - 14 replacements):**
+- **GetData.get_data()** (lines 96-110): RollingStock list view → `.with_related()`
+- **GetHome.get_data()** (lines 141-159): Featured items → `.with_related()`
+- **SearchObjects.run_search()** (lines 203-217): RollingStock search → `.with_related()`
+- **SearchObjects.run_search()** (lines 219-271): Consist, Book, Catalog, MagazineIssue search → `.with_related()`
+- **GetObjectsFiltered.run_filter()** (lines 364-387): Manufacturer filter → `.with_related()`
+- **GetObjectsFiltered.run_filter()** (lines 423-469): Multiple filters → `.with_related()`
+- **GetRollingStock.get()** (lines 513-525): RollingStock detail → `.with_details()`
+- **GetRollingStock.get()** (lines 543-567): Related consists and trainsets → `.with_related()`
+- **Consists.get_data()** (lines 589-595): Consist list → `.with_related()`
+- **GetConsist.get()** (lines 573-589): Consist detail → `.with_rolling_stock()`
+- **Books.get_data()** (lines 787-792): Book list → `.with_related()`
+- **Catalogs.get_data()** (lines 798-804): Catalog list → `.with_related()`
+- **GetMagazine.get()** (lines 840-844): Magazine issues → `.with_related()`
+- **GetMagazineIssue.get()** (lines 867-872): Magazine issue detail → `.with_details()`
+- **GetBookCatalog.get_object()** (lines 892-905): Book/Catalog detail → `.with_details()`
+
+### Benefits
+
+1. **Consistency**: All queries now use standardized manager methods
+2. **Maintainability**: Prefetch logic is centralized in `ram/managers.py`
+3. **Readability**: Code is cleaner and more concise
+4. **DRY Principle**: Eliminates repeated prefetch patterns throughout codebase
+
+### Statistics
+
+- **Total Replacements**: ~36 explicit prefetch calls replaced
+- **Files Modified**: 5 files
+- **Locations Updated**: 18 locations
+- **Test Results**: All 95 core tests pass
+- **System Check**: No issues
+
+### Example Transformations
+
+**Before:**
+```python
+# Admin (repeated in multiple files)
+def get_queryset(self, request):
+    qs = super().get_queryset(request)
+    return qs.select_related(
+        'rolling_class',
+        'rolling_class__company',
+        'rolling_class__type',
+        'manufacturer',
+        'scale',
+        'decoder',
+        'shop',
+    ).prefetch_related('tags', 'image')
+```
+
+**After:**
+```python
+# Admin (clean and maintainable)
+def get_queryset(self, request):
+    qs = super().get_queryset(request)
+    return qs.with_related()
+```
+
+**Before:**
+```python
+# Views (verbose and error-prone)
+roster = (
+    RollingStock.objects.get_published(request.user)
+    .select_related(
+        'rolling_class',
+        'rolling_class__company',
+        'rolling_class__type',
+        'manufacturer',
+        'scale',
+    )
+    .prefetch_related('tags', 'image')
+    .filter(query)
+)
+```
+
+**After:**
+```python
+# Views (concise and clear)
+roster = (
+    RollingStock.objects.get_published(request.user)
+    .with_related()
+    .filter(query)
+)
+```
+
+---
+
 *Generated: 2026-01-17*
+*Updated: 2026-01-18*
 *Project: Django Railroad Assets Manager (django-ram)*

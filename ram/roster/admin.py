@@ -161,15 +161,7 @@ class RollingStockAdmin(SortableAdminBase, admin.ModelAdmin):
     def get_queryset(self, request):
         """Optimize queryset with select_related and prefetch_related."""
         qs = super().get_queryset(request)
-        return qs.select_related(
-            'rolling_class',
-            'rolling_class__company',
-            'rolling_class__type',
-            'manufacturer',
-            'scale',
-            'decoder',
-            'shop',
-        ).prefetch_related('tags', 'image')
+        return qs.with_related()
 
     @admin.display(description="Country")
     def country_flag(self, obj):

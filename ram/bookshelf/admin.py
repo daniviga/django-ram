@@ -101,9 +101,7 @@ class BookAdmin(SortableAdminBase, admin.ModelAdmin):
     def get_queryset(self, request):
         """Optimize queryset with select_related and prefetch_related."""
         qs = super().get_queryset(request)
-        return qs.select_related('publisher', 'shop').prefetch_related(
-            'authors', 'tags', 'image', 'toc'
-        )
+        return qs.with_related()
 
     fieldsets = (
         (
@@ -276,9 +274,7 @@ class CatalogAdmin(SortableAdminBase, admin.ModelAdmin):
     def get_queryset(self, request):
         """Optimize queryset with select_related and prefetch_related."""
         qs = super().get_queryset(request)
-        return qs.select_related('manufacturer', 'shop').prefetch_related(
-            'scales', 'tags', 'image'
-        )
+        return qs.with_related()
 
     fieldsets = (
         (
