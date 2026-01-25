@@ -48,9 +48,18 @@ class Manufacturer(SimpleBaseModel):
         ordering = ["category", "slug"]
         constraints = [
             models.UniqueConstraint(
-                fields=["name", "category"],
-                name="unique_name_category"
+                fields=["name", "category"], name="unique_name_category"
             )
+        ]
+        indexes = [
+            # Index for category filtering
+            models.Index(fields=["category"], name="mfr_category_idx"),
+            # Index for slug lookups
+            models.Index(fields=["slug"], name="mfr_slug_idx"),
+            # Composite index for category+slug (already in ordering)
+            models.Index(
+                fields=["category", "slug"], name="mfr_cat_slug_idx"
+            ),
         ]
 
     def __str__(self):
@@ -91,6 +100,14 @@ class Company(SimpleBaseModel):
     class Meta:
         verbose_name_plural = "Companies"
         ordering = ["slug"]
+        indexes = [
+            # Index for slug lookups (used frequently in URLs)
+            models.Index(fields=["slug"], name="company_slug_idx"),
+            # Index for country filtering
+            models.Index(fields=["country"], name="company_country_idx"),
+            # Index for freelance filtering
+            models.Index(fields=["freelance"], name="company_freelance_idx"),
+        ]
 
     def __str__(self):
         return self.name
@@ -165,6 +182,16 @@ class Scale(SimpleBaseModel):
 
     class Meta:
         ordering = ["-ratio_int", "-tracks", "scale"]
+        indexes = [
+            # Index for slug lookups
+            models.Index(fields=["slug"], name="scale_slug_idx"),
+            # Index for ratio_int ordering and filtering
+            models.Index(fields=["ratio_int"], name="scale_ratio_idx"),
+            # Composite index for common ordering pattern
+            models.Index(
+                fields=["-ratio_int", "-tracks"], name="scale_ratio_tracks_idx"
+            ),
+        ]
 
     def get_absolute_url(self):
         return reverse(

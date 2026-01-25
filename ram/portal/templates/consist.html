@@ -142,7 +142,7 @@
                     </tr>
                     <tr>
                       <th scope="row">Composition</th>
-                      <td>{% for t in consist.get_type_count %}{{ t.count }}x {{ t.type }} {{t.category }}{% if not forloop.last %} &raquo; {% endif %}{% endfor %}{% if loads %} | <i class="bi bi-download"></i> {{ loads|length }}x Load{{ loads|pluralize }}{% endif %}</td>
+                      <td>{% for t in consist.get_type_count %}{{ t.count }}x {{ t.type }} {{t.category }}{% if not forloop.last %} &raquo; {% endif %}{% endfor %}{% if loads %} | <i class="bi bi-download"></i> {{ loads_count }}x Load{{ loads|pluralize }}{% endif %}</td>
                     </tr>
                   </tbody>
                 </table>

@@ -8,6 +8,7 @@ from django.core.exceptions import ValidationError
 
 from ram.models import BaseModel
 from ram.utils import DeduplicatedStorage
+from ram.managers import ConsistManager
 from metadata.models import Company, Scale, Tag
 from roster.models import RollingStock
 
@@ -35,6 +36,8 @@ class Consist(BaseModel):
         blank=True,
     )
 
+    objects = ConsistManager()
+
     def __str__(self):
         return "{0} {1}".format(self.company, self.identifier)
 
@@ -44,6 +47,11 @@ class Consist(BaseModel):
     @property
     def length(self):
         return self.consist_item.filter(load=False).count()
+
+    @property
+    def loads_count(self):
+        """Count of loads in this consist using database aggregation."""
+        return self.consist_item.filter(load=True).count()
 
     def get_type_count(self):
         return self.consist_item.filter(load=False).annotate(
@@ -71,6 +79,18 @@ class Consist(BaseModel):
 
     class Meta:
         ordering = ["company", "-creation_time"]
+        indexes = [
+            # Index for published filtering
+            models.Index(fields=["published"], name="consist_published_idx"),
+            # Index for scale filtering
+            models.Index(fields=["scale"], name="consist_scale_idx"),
+            # Index for company filtering
+            models.Index(fields=["company"], name="consist_company_idx"),
+            # Composite index for published+scale filtering
+            models.Index(
+                fields=["published", "scale"], name="consist_pub_scale_idx"
+            ),
+        ]
 
 
 class ConsistItem(models.Model):
@@ -86,8 +106,18 @@ class ConsistItem(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=["consist", "rolling_stock"],
-                name="one_stock_per_consist"
+                name="one_stock_per_consist",
             )
+        ]
+        indexes = [
+            # Index for filtering by load status
+            models.Index(fields=["load"], name="consist_item_load_idx"),
+            # Index for ordering
+            models.Index(fields=["order"], name="consist_item_order_idx"),
+            # Composite index for consist+load filtering
+            models.Index(
+                fields=["consist", "load"], name="consist_item_con_load_idx"
+            ),
         ]
 
     def __str__(self):

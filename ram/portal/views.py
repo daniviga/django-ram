@@ -96,6 +96,7 @@ class GetData(View):
     def get_data(self, request):
         return (
             RollingStock.objects.get_published(request.user)
+            .with_related()
             .order_by(*get_items_ordering())
             .filter(self.filter)
         )
@@ -132,6 +133,7 @@ class GetHome(GetData):
         max_items = min(settings.FEATURED_ITEMS_MAX, get_items_per_page())
         return (
             RollingStock.objects.get_published(request.user)
+            .with_related()
             .filter(featured=True)
             .order_by(*get_items_ordering(config="featured_items_ordering"))[
                 :max_items
@@ -200,6 +202,7 @@ class SearchObjects(View):
         #       and manufacturer as well
         roster = (
             RollingStock.objects.get_published(request.user)
+            .with_related()
             .filter(query)
             .distinct()
             .order_by(*get_items_ordering())
@@ -209,6 +212,7 @@ class SearchObjects(View):
         if _filter is None:
             consists = (
                 Consist.objects.get_published(request.user)
+                .with_related()
                 .filter(
                     Q(
                         Q(identifier__icontains=search)
@@ -220,6 +224,7 @@ class SearchObjects(View):
             data = list(chain(data, consists))
             books = (
                 Book.objects.get_published(request.user)
+                .with_related()
                 .filter(
                     Q(
                         Q(title__icontains=search)
@@ -231,6 +236,7 @@ class SearchObjects(View):
             )
             catalogs = (
                 Catalog.objects.get_published(request.user)
+                .with_related()
                 .filter(
                     Q(
                         Q(manufacturer__name__icontains=search)
@@ -242,6 +248,7 @@ class SearchObjects(View):
             data = list(chain(data, books, catalogs))
             magazine_issues = (
                 MagazineIssue.objects.get_published(request.user)
+                .with_related()
                 .filter(
                     Q(
                         Q(magazine__name__icontains=search)
@@ -331,9 +338,16 @@ class GetManufacturerItem(View):
         )
         if search != "all":
             roster = get_list_or_404(
-                RollingStock.objects.get_published(request.user).order_by(
-                    *get_items_ordering()
-                ),
+                RollingStock.objects.get_published(request.user)
+                .select_related(
+                    'rolling_class',
+                    'rolling_class__company',
+                    'rolling_class__type',
+                    'manufacturer',
+                    'scale',
+                )
+                .prefetch_related('image')
+                .order_by(*get_items_ordering()),
                 Q(
                     Q(manufacturer=manufacturer)
                     & Q(item_number_slug__exact=search)
@@ -349,6 +363,7 @@ class GetManufacturerItem(View):
         else:
             roster = (
                 RollingStock.objects.get_published(request.user)
+                .with_related()
                 .filter(
                     Q(manufacturer=manufacturer)
                     | Q(rolling_class__manufacturer=manufacturer)
@@ -356,8 +371,10 @@ class GetManufacturerItem(View):
                 .distinct()
                 .order_by(*get_items_ordering())
             )
-            catalogs = Catalog.objects.get_published(request.user).filter(
-                manufacturer=manufacturer
+            catalogs = (
+                Catalog.objects.get_published(request.user)
+                .with_related()
+                .filter(manufacturer=manufacturer)
             )
             title = "Manufacturer: {0}".format(manufacturer)
 
@@ -405,6 +422,7 @@ class GetObjectsFiltered(View):
 
         roster = (
             RollingStock.objects.get_published(request.user)
+            .with_related()
             .filter(query)
             .distinct()
             .order_by(*get_items_ordering())
@@ -415,6 +433,7 @@ class GetObjectsFiltered(View):
         if _filter == "scale":
             catalogs = (
                 Catalog.objects.get_published(request.user)
+                .with_related()
                 .filter(scales__slug=search)
                 .distinct()
             )
@@ -423,6 +442,7 @@ class GetObjectsFiltered(View):
         try:  # Execute only if query_2nd is defined
             consists = (
                 Consist.objects.get_published(request.user)
+                .with_related()
                 .filter(query_2nd)
                 .distinct()
             )
@@ -430,16 +450,19 @@ class GetObjectsFiltered(View):
             if _filter == "tag":  # Books can be filtered only by tag
                 books = (
                     Book.objects.get_published(request.user)
+                    .with_related()
                     .filter(query_2nd)
                     .distinct()
                 )
                 catalogs = (
                     Catalog.objects.get_published(request.user)
+                    .with_related()
                     .filter(query_2nd)
                     .distinct()
                 )
                 magazine_issues = (
                     MagazineIssue.objects.get_published(request.user)
+                    .with_related()
                     .filter(query_2nd)
                     .distinct()
                 )
@@ -477,9 +500,11 @@ class GetObjectsFiltered(View):
 class GetRollingStock(View):
     def get(self, request, uuid):
         try:
-            rolling_stock = RollingStock.objects.get_published(
-                request.user
-            ).get(uuid=uuid)
+            rolling_stock = (
+                RollingStock.objects.get_published(request.user)
+                .with_details()
+                .get(uuid=uuid)
+            )
         except ObjectDoesNotExist:
             raise Http404
 
@@ -498,13 +523,14 @@ class GetRollingStock(View):
             )
 
         consists = list(
-            Consist.objects.get_published(request.user).filter(
-                consist_item__rolling_stock=rolling_stock
-            )
+            Consist.objects.get_published(request.user)
+            .with_related()
+            .filter(consist_item__rolling_stock=rolling_stock)
         )
 
         trainset = list(
             RollingStock.objects.get_published(request.user)
+            .with_related()
             .filter(
                 Q(
                     Q(item_number__exact=rolling_stock.item_number)
@@ -535,30 +561,52 @@ class Consists(GetData):
     title = "Consists"
 
     def get_data(self, request):
-        return Consist.objects.get_published(request.user).all()
+        return (
+            Consist.objects.get_published(request.user)
+            .with_related()
+            .all()
+        )
 
 
 class GetConsist(View):
     def get(self, request, uuid, page=1):
         try:
-            consist = Consist.objects.get_published(request.user).get(
-                uuid=uuid
+            consist = (
+                Consist.objects.get_published(request.user)
+                .with_rolling_stock()
+                .get(uuid=uuid)
             )
         except ObjectDoesNotExist:
             raise Http404
 
-        data = list(
-            RollingStock.objects.get_published(request.user).get(
-                uuid=r.rolling_stock_id
-            )
-            for r in consist.consist_item.filter(load=False)
+        # Get all published rolling stock IDs for efficient filtering
+        published_ids = set(
+            RollingStock.objects.get_published(request.user)
+            .values_list('uuid', flat=True)
         )
-        loads = list(
-            RollingStock.objects.get_published(request.user).get(
-                uuid=r.rolling_stock_id
-            )
-            for r in consist.consist_item.filter(load=True)
-        )
+
+        # Fetch consist items with related rolling stock in one query
+        consist_items = consist.consist_item.select_related(
+            'rolling_stock',
+            'rolling_stock__rolling_class',
+            'rolling_stock__rolling_class__company',
+            'rolling_stock__rolling_class__type',
+            'rolling_stock__manufacturer',
+            'rolling_stock__scale',
+        ).prefetch_related('rolling_stock__image')
+
+        # Filter items and loads efficiently
+        data = [
+            item.rolling_stock
+            for item in consist_items.filter(load=False)
+            if item.rolling_stock.uuid in published_ids
+        ]
+        loads = [
+            item.rolling_stock
+            for item in consist_items.filter(load=True)
+            if item.rolling_stock.uuid in published_ids
+        ]
+
         paginator = Paginator(data, get_items_per_page())
         data = paginator.get_page(page)
         page_range = paginator.get_elided_page_range(
@@ -573,6 +621,7 @@ class GetConsist(View):
                 "consist": consist,
                 "data": data,
                 "loads": loads,
+                "loads_count": len(loads),
                 "page_range": page_range,
             },
         )
@@ -739,14 +788,22 @@ class Books(GetData):
     title = "Books"
 
     def get_data(self, request):
-        return Book.objects.get_published(request.user).all()
+        return (
+            Book.objects.get_published(request.user)
+            .with_related()
+            .all()
+        )
 
 
 class Catalogs(GetData):
     title = "Catalogs"
 
     def get_data(self, request):
-        return Catalog.objects.get_published(request.user).all()
+        return (
+            Catalog.objects.get_published(request.user)
+            .with_related()
+            .all()
+        )
 
 
 class Magazines(GetData):
@@ -755,6 +812,8 @@ class Magazines(GetData):
     def get_data(self, request):
         return (
             Magazine.objects.get_published(request.user)
+            .select_related('publisher')
+            .prefetch_related('tags')
             .order_by(Lower("name"))
             .annotate(
                 issues=Count(
@@ -772,12 +831,19 @@ class Magazines(GetData):
 class GetMagazine(View):
     def get(self, request, uuid, page=1):
         try:
-            magazine = Magazine.objects.get_published(request.user).get(
-                uuid=uuid
+            magazine = (
+                Magazine.objects.get_published(request.user)
+                .select_related('publisher')
+                .prefetch_related('tags')
+                .get(uuid=uuid)
             )
         except ObjectDoesNotExist:
             raise Http404
-        data = list(magazine.issue.get_published(request.user).all())
+        data = list(
+            magazine.issue.get_published(request.user)
+            .with_related()
+            .all()
+        )
         paginator = Paginator(data, get_items_per_page())
         data = paginator.get_page(page)
         page_range = paginator.get_elided_page_range(
@@ -800,9 +866,10 @@ class GetMagazine(View):
 class GetMagazineIssue(View):
     def get(self, request, uuid, magazine, page=1):
         try:
-            issue = MagazineIssue.objects.get_published(request.user).get(
-                uuid=uuid,
-                magazine__uuid=magazine,
+            issue = (
+                MagazineIssue.objects.get_published(request.user)
+                .with_details()
+                .get(uuid=uuid, magazine__uuid=magazine)
             )
         except ObjectDoesNotExist:
             raise Http404
@@ -823,9 +890,17 @@ class GetMagazineIssue(View):
 class GetBookCatalog(View):
     def get_object(self, request, uuid, selector):
         if selector == "book":
-            return Book.objects.get_published(request.user).get(uuid=uuid)
+            return (
+                Book.objects.get_published(request.user)
+                .with_details()
+                .get(uuid=uuid)
+            )
         elif selector == "catalog":
-            return Catalog.objects.get_published(request.user).get(uuid=uuid)
+            return (
+                Catalog.objects.get_published(request.user)
+                .with_details()
+                .get(uuid=uuid)
+            )
         else:
             raise Http404
 

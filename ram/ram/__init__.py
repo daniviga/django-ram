@@ -9,5 +9,5 @@ if DJANGO_VERSION < (6, 0):
         )
     )
 
-__version__ = "0.19.10"
+__version__ = "0.20.1"
 __version__ += git_suffix(__file__)
