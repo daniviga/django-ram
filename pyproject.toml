@@ -1,0 +1,39 @@
+[tool.ruff]
+# Exclude patterns matching flake8 config
+exclude = [
+    "*settings.py*",
+    "*/migrations/*",
+    ".git",
+    ".venv",
+    "venv",
+    "__pycache__",
+    "*.pyc",
+]
+
+# Target Python 3.13+ as per project requirements
+target-version = "py313"
+
+# Line length set to 79 (PEP 8 standard)
+line-length = 79
+
+[tool.ruff.lint]
+# Enable Pyflakes (F) and pycodestyle (E, W) rules to match flake8
+select = ["E", "F", "W"]
+
+# Ignore E501 (line-too-long) to match flake8 config
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+# Additional per-file ignores if needed
+"*settings.py*" = ["F403", "F405"]  # Allow star imports in settings
+"*/migrations/*" = ["E", "F", "W"]  # Ignore all rules in migrations
+
+[tool.ruff.format]
+# Use double quotes for strings (project preference)
+quote-style = "double"
+
+# Use 4 spaces for indentation
+indent-style = "space"
+
+# Auto-detect line ending style
+line-ending = "auto"

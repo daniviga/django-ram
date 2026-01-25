@@ -27,6 +27,15 @@ help:
 	@echo "  make minify-js   - Minify JavaScript files only"
 	@echo "  make minify-css  - Minify CSS files only"
 	@echo "  make clean       - Remove minified files"
+	@echo "  make watch       - Watch for changes and auto-minify (requires inotify-tools)"
+	@echo "  make run         - Run Django development server"
+	@echo "  make test        - Run Django test suite"
+	@echo "  make lint        - Run flake8 linter"
+	@echo "  make format      - Run black formatter (line length 79)"
+	@echo "  make ruff-check  - Run ruff linter"
+	@echo "  make ruff-format - Run ruff formatter"
+	@echo "  make dump-data   - Dump database to gzipped JSON (usage: make dump-data FILE=backup.json.gz)"
+	@echo "  make load-data   - Load data from fixture file (usage: make load-data FILE=backup.json.gz)"
 	@echo "  make help        - Show this help message"
 	@echo ""
 
@@ -44,7 +53,11 @@ minify-js: $(JS_OUTPUT)
 
 $(JS_OUTPUT): $(JS_SOURCES)
 	@echo "Minifying JavaScript..."
-	npx terser $(JS_SOURCES) -c -m -o $(JS_OUTPUT)
+	npx terser $(JS_SOURCES) \
+		--compress \
+		--mangle \
+		--source-map "url=main.min.js.map" \
+		--output $(JS_OUTPUT)
 	@echo "Created: $(JS_OUTPUT)"
 
 # Minify CSS
@@ -69,3 +82,60 @@ watch:
 		inotifywait -e modify,create $(JS_SRC_DIR)/*.js $(CSS_SRC_DIR)/*.css 2>/dev/null && \
 		make minify; \
 	done || echo "Note: install inotify-tools for file watching support"
+
+# Run Django development server
+run:
+	@cd ram && python manage.py runserver
+
+# Run Django tests
+test:
+	@echo "Running Django tests..."
+	@cd ram && python manage.py test
+
+# Run flake8 linter
+lint:
+	@echo "Running flake8..."
+	@flake8 ram/
+
+# Run black formatter
+format:
+	@echo "Running black formatter..."
+	@black -l 79 --extend-exclude="/migrations/" ram/
+
+# Run ruff linter
+ruff-check:
+	@echo "Running ruff check..."
+	@ruff check ram/
+
+# Run ruff formatter
+ruff-format:
+	@echo "Running ruff format..."
+	@ruff format ram/
+
+# Dump database to gzipped JSON file
+# Usage: make dump-data FILE=backup.json.gz
+dump-data:
+ifndef FILE
+	$(error FILE is not set. Usage: make dump-data FILE=backup.json.gz)
+endif
+	$(eval FILE_ABS := $(shell realpath -m $(FILE)))
+	@echo "Dumping database to $(FILE_ABS)..."
+	@cd ram && python manage.py dumpdata \
+		--indent=2 \
+		-e admin \
+		-e contenttypes \
+		-e sessions \
+		--natural-foreign \
+		--natural-primary | gzip > $(FILE_ABS)
+	@echo "✓ Database dumped successfully to $(FILE_ABS)"
+
+# Load data from fixture file
+# Usage: make load-data FILE=backup.json.gz
+load-data:
+ifndef FILE
+	$(error FILE is not set. Usage: make load-data FILE=backup.json.gz)
+endif
+	$(eval FILE_ABS := $(shell realpath $(FILE)))
+	@echo "Loading data from $(FILE_ABS)..."
+	@cd ram && python manage.py loaddata $(FILE_ABS)
+	@echo "✓ Data loaded successfully from $(FILE_ABS)"
