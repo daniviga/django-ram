@@ -17,7 +17,7 @@ from django.http import (
 )
 from django.views import View
 from django.utils.text import slugify as slugify
-from django.utils.encoding import smart_str
+from django.utils.encoding import iri_to_uri, smart_str
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
@@ -112,7 +112,9 @@ class DownloadFile(View):
                 if getattr(settings, "USE_X_ACCEL_REDIRECT", False):
                     response = HttpResponse()
                     response["Content-Type"] = ""
-                    response["X-Accel-Redirect"] = f"/private/{file.name}"
+                    response["X-Accel-Redirect"] = iri_to_uri(
+                        f"/private/{file.name}"
+                    )
                 else:
                     response = FileResponse(
                         open(file.path, "rb"), as_attachment=True
