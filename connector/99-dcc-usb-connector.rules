@@ -1,7 +1,7 @@
-# Udev rule to auto-start dcc-usb-connector.service when USB device is connected
+# Udev rule to auto-start/stop dcc-usb-connector.service when USB device is connected/removed
 #
 # This rule detects when a CH340 USB-to-serial adapter (ID 1a86:7523)
-# is connected and assigned to /dev/ttyUSB0, then automatically starts
+# is connected/removed on /dev/ttyUSB0, then automatically starts/stops
 # the dcc-usb-connector.service (user systemd service).
 #
 # Installation:
@@ -13,8 +13,10 @@
 #   udevadm test /sys/class/tty/ttyUSB0
 #   udevadm monitor --property --subsystem-match=tty
 #
-# The service will be started/stopped automatically when the device
-# is plugged in/unplugged.
+# The service will be started when the device is plugged in and stopped
+# when the device is unplugged.
 
-# Match USB device 1a86:7523 on ttyUSB0 and trigger user systemd service
+# Match USB device 1a86:7523 on ttyUSB0
+# TAG+="systemd" tells systemd to track this device
+# ENV{SYSTEMD_USER_WANTS} starts the service on "add" and stops it on "remove"
 SUBSYSTEM=="tty", ATTRS{idVendor}=="1a86", ATTRS{idProduct}=="7523", KERNEL=="ttyUSB0", TAG+="systemd", ENV{SYSTEMD_USER_WANTS}="dcc-usb-connector.service"

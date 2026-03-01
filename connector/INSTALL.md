@@ -161,6 +161,17 @@ The service (`dcc-usb-connector.service`):
 2. Executes `ncat -n -k -l 2560 </dev/ttyUSB0 >/dev/ttyUSB0` to bridge serial ↔ network
 3. Uses `KillMode=mixed` for proper process cleanup
 4. Terminates within 5 seconds when stopped
+5. **Uses `StopWhenUnneeded=yes`** - This ensures the service stops when the device is removed
+
+### Auto-Stop Mechanism
+
+When the USB device is unplugged:
+1. **Udev detects** the removal event
+2. **Systemd removes** the device dependency from the service
+3. **StopWhenUnneeded=yes** tells systemd to automatically stop the service when no longer needed
+4. **Service terminates** gracefully within 5 seconds
+
+This combination ensures clean automatic stop without requiring manual intervention or custom scripts.
 
 ## Troubleshooting
 

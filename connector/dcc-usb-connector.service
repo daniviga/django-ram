@@ -1,7 +1,10 @@
 [Unit]
 Description=DCC USB-to-Network Bridge Daemon
 After=network.target
+# Device will be available via udev rule, but add condition as safety check
 ConditionPathIsReadWrite=/dev/ttyUSB0
+# Stop this service when the device is no longer needed (removed)
+StopWhenUnneeded=yes
 
 [Service]
 ExecStartPre=/usr/bin/stty -F /dev/ttyUSB0 -echo 115200
