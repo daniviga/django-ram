@@ -1,0 +1,14 @@
+[Unit]
+Description=DCC USB-to-Network Bridge Daemon
+After=network.target
+ConditionPathIsReadWrite=/dev/ttyUSB0
+
+[Service]
+ExecStartPre=/usr/bin/stty -F /dev/ttyUSB0 -echo 115200
+ExecStart=/usr/bin/bash -c "/usr/bin/ncat -n -k -l 2560 </dev/ttyUSB0 >/dev/ttyUSB0"
+KillMode=mixed
+TimeoutStopSec=5
+PrivateTmp=true
+
+[Install]
+WantedBy=default.target
